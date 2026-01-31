@@ -26,17 +26,9 @@
 
         /* Background scan animation */
         @keyframes scan {
-            0% {
-                transform: translateY(-100%);
-                opacity: 0.03;
-            }
-            50% {
-                opacity: 0.05;
-            }
-            100% {
-                transform: translateY(100vh);
-                opacity: 0.03;
-            }
+            0% { transform: translateY(-100%); opacity: 0.03; }
+            50% { opacity: 0.05; }
+            100% { transform: translateY(100vh); opacity: 0.03; }
         }
 
         .scan-band {
@@ -53,16 +45,8 @@
 
         /* Panel breathe animation */
         @keyframes breathe {
-            0%, 100% {
-                box-shadow: 0 0 20px rgba(200, 220, 255, 0.15),
-                            0 0 40px rgba(200, 220, 255, 0.08),
-                            inset 0 0 20px rgba(200, 220, 255, 0.05);
-            }
-            50% {
-                box-shadow: 0 0 25px rgba(200, 220, 255, 0.2),
-                            0 0 50px rgba(200, 220, 255, 0.12),
-                            inset 0 0 25px rgba(200, 220, 255, 0.08);
-            }
+            0%, 100% { box-shadow: 0 0 20px rgba(200, 220, 255, 0.15), 0 0 40px rgba(200, 220, 255, 0.08), inset 0 0 20px rgba(200, 220, 255, 0.05); }
+            50% { box-shadow: 0 0 25px rgba(200, 220, 255, 0.2), 0 0 50px rgba(200, 220, 255, 0.12), inset 0 0 25px rgba(200, 220, 255, 0.08); }
         }
 
         .warning-panel {
@@ -75,17 +59,12 @@
             border: 1px solid rgba(200, 220, 255, 0.2);
             border-radius: 4px;
             animation: breathe 5s ease-in-out infinite;
-            box-shadow: 0 0 20px rgba(200, 220, 255, 0.15),
-                        0 0 40px rgba(200, 220, 255, 0.08),
-                        inset 0 0 20px rgba(200, 220, 255, 0.05);
+            box-shadow: 0 0 20px rgba(200, 220, 255, 0.15), 0 0 40px rgba(200, 220, 255, 0.08), inset 0 0 20px rgba(200, 220, 255, 0.05);
             text-align: center;
         }
 
         @media (max-width: 768px) {
-            .warning-panel {
-                padding: 2rem 1.5rem;
-                width: 95%;
-            }
+            .warning-panel { padding: 2rem 1.5rem; width: 95%; }
         }
 
         h1 {
@@ -99,15 +78,8 @@
             padding: 0.8rem 1.5rem;
             border: 1px solid #ff0040;
             display: inline-block;
-            box-shadow: 
-                0 0 10px rgba(255, 0, 64, 0.8),
-                0 0 20px rgba(255, 0, 64, 0.5),
-                inset 0 0 10px rgba(255, 0, 64, 0.2);
-            text-shadow: 
-                0 0 15px rgba(255, 0, 64, 1),
-                0 0 30px rgba(255, 0, 64, 0.9),
-                0 0 45px rgba(255, 0, 64, 0.7),
-                0 0 60px rgba(255, 0, 64, 0.5);
+            box-shadow: 0 0 10px rgba(255, 0, 64, 0.8), 0 0 20px rgba(255, 0, 64, 0.5), inset 0 0 10px rgba(255, 0, 64, 0.2);
+            text-shadow: 0 0 15px rgba(255, 0, 64, 1), 0 0 30px rgba(255, 0, 64, 0.9), 0 0 45px rgba(255, 0, 64, 0.7), 0 0 60px rgba(255, 0, 64, 0.5);
         }
 
         h1 .exclamation {
@@ -116,21 +88,12 @@
             color: #ff0040;
             margin-left: 0.2rem;
             vertical-align: middle;
-            text-shadow: 
-                0 0 15px rgba(255, 0, 64, 1),
-                0 0 30px rgba(255, 0, 64, 0.9),
-                0 0 45px rgba(255, 0, 64, 0.7),
-                0 0 60px rgba(255, 0, 64, 0.5);
+            text-shadow: 0 0 15px rgba(255, 0, 64, 1), 0 0 30px rgba(255, 0, 64, 0.9), 0 0 45px rgba(255, 0, 64, 0.7), 0 0 60px rgba(255, 0, 64, 0.5);
         }
 
         @media (max-width: 768px) {
-            h1 {
-                font-size: 1.1rem;
-                letter-spacing: 0.02em;
-            }
-            h1 .exclamation {
-                font-size: 1.1rem;
-            }
+            h1 { font-size: 1.1rem; letter-spacing: 0.02em; }
+            h1 .exclamation { font-size: 1.1rem; }
         }
 
         .body-text {
@@ -141,14 +104,8 @@
             text-align: center;
         }
 
-        .body-text p {
-            margin-bottom: 1rem;
-        }
-
-        .body-text strong {
-            color: #f5f5f5;
-            font-weight: 600;
-        }
+        .body-text p { margin-bottom: 1rem; }
+        .body-text strong { color: #f5f5f5; font-weight: 600; }
 
         .button-group {
             display: flex;
@@ -174,9 +131,7 @@
             letter-spacing: 0.08em;
             text-align: center;
             color: #00ff88;
-            text-shadow: 0 0 10px rgba(0, 255, 136, 0.8),
-                         0 0 20px rgba(0, 255, 136, 0.6),
-                         0 0 30px rgba(0, 255, 136, 0.4);
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.8), 0 0 20px rgba(0, 255, 136, 0.6), 0 0 30px rgba(0, 255, 136, 0.4);
             animation: pulse 2.6s ease-in-out infinite;
         }
 
@@ -196,43 +151,18 @@
             height: 6px;
             background: #00ff88;
             border-radius: 50%;
-            box-shadow: 
-                0 0 8px rgba(0, 255, 136, 1),
-                0 0 16px rgba(0, 255, 136, 0.9),
-                0 0 24px rgba(0, 255, 136, 0.7);
+            box-shadow: 0 0 8px rgba(0, 255, 136, 1), 0 0 16px rgba(0, 255, 136, 0.9), 0 0 24px rgba(0, 255, 136, 0.7);
             animation: travelAround 7s linear infinite;
         }
 
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 0.8;
-            }
-            50% {
-                opacity: 1;
-            }
-        }
+        @keyframes pulse { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; } }
 
         @keyframes travelAround {
-            0% {
-                top: -3px;
-                left: -3px;
-            }
-            25% {
-                top: -3px;
-                left: calc(100% - 3px);
-            }
-            50% {
-                top: calc(100% - 3px);
-                left: calc(100% - 3px);
-            }
-            75% {
-                top: calc(100% - 3px);
-                left: -3px;
-            }
-            100% {
-                top: -3px;
-                left: -3px;
-            }
+            0% { top: -3px; left: -3px; }
+            25% { top: -3px; left: calc(100% - 3px); }
+            50% { top: calc(100% - 3px); left: calc(100% - 3px); }
+            75% { top: calc(100% - 3px); left: -3px; }
+            100% { top: -3px; left: -3px; }
         }
 
         button {
@@ -248,32 +178,10 @@
             text-transform: uppercase;
         }
 
-        .btn-primary {
-            background: rgba(220, 50, 50, 0.15);
-            border-color: rgba(220, 50, 50, 0.5);
-            color: #ffcccc;
-        }
-
-        .btn-primary:hover,
-        .btn-primary:focus {
-            background: rgba(220, 50, 50, 0.25);
-            border-color: rgba(220, 50, 50, 0.7);
-            outline: none;
-        }
-
-        .btn-secondary {
-            background: rgba(200, 220, 255, 0.08);
-            border-color: rgba(200, 220, 255, 0.3);
-            color: #d0d8e8;
-        }
-
-        .btn-secondary:hover,
-        .btn-secondary:focus {
-            background: rgba(200, 220, 255, 0.15);
-            border-color: rgba(200, 220, 255, 0.5);
-            outline: none;
-        }
-
+        .btn-primary { background: rgba(220, 50, 50, 0.15); border-color: rgba(220, 50, 50, 0.5); color: #ffcccc; }
+        .btn-primary:hover, .btn-primary:focus { background: rgba(220, 50, 50, 0.25); border-color: rgba(220, 50, 50, 0.7); outline: none; }
+        .btn-secondary { background: rgba(200, 220, 255, 0.08); border-color: rgba(200, 220, 255, 0.3); color: #d0d8e8; }
+        .btn-secondary:hover, .btn-secondary:focus { background: rgba(200, 220, 255, 0.15); border-color: rgba(200, 220, 255, 0.5); outline: none; }
 
         /* Modal styles */
         .modal-overlay {
@@ -289,67 +197,27 @@
             justify-content: center;
         }
 
-        .modal-overlay.active {
-            display: flex;
-        }
+        .modal-overlay.active { display: flex; }
 
         .modal-content {
             background: rgba(5, 10, 25, 0.98);
             border: 1px solid rgba(200, 220, 255, 0.3);
             border-radius: 4px;
             padding: 2.5rem;
-            max-width: 400px;
+            max-width: 500px;
             width: 90%;
             box-shadow: 0 0 30px rgba(200, 220, 255, 0.2);
         }
 
-        .modal-content h2 {
-            font-size: 1.25rem;
-            margin-bottom: 1.5rem;
-            color: #f0f0f0;
-            text-align: center;
-        }
+        .modal-content h2 { font-size: 1rem; margin-bottom: 1.5rem; color: #00ff88; text-align: left; letter-spacing: 0.1em; }
 
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; font-size: 0.85rem; margin-bottom: 0.5rem; color: #d0d0d0; letter-spacing: 0.03em; }
+        .form-group input { width: 100%; padding: 0.75rem; background: rgba(0, 0, 10, 0.8); border: 1px solid rgba(200, 220, 255, 0.2); border-radius: 2px; color: #e8e8e8; font-family: inherit; font-size: 0.95rem; }
+        .form-group input:focus { outline: none; border-color: rgba(200, 220, 255, 0.5); background: rgba(0, 0, 15, 0.9); }
 
-        .form-group label {
-            display: block;
-            font-size: 0.85rem;
-            margin-bottom: 0.5rem;
-            color: #d0d0d0;
-            letter-spacing: 0.03em;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 0.75rem;
-            background: rgba(0, 0, 10, 0.8);
-            border: 1px solid rgba(200, 220, 255, 0.2);
-            border-radius: 2px;
-            color: #e8e8e8;
-            font-family: inherit;
-            font-size: 0.95rem;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: rgba(200, 220, 255, 0.5);
-            background: rgba(0, 0, 15, 0.9);
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: flex-end;
-            margin-top: 2rem;
-        }
-
-        .modal-buttons button {
-            padding: 0.7rem 1.5rem;
-            font-size: 0.9rem;
-        }
+        .modal-buttons { display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem; }
+        .modal-buttons button { padding: 0.7rem 1.5rem; font-size: 0.9rem; }
 
         .status-message {
             margin-top: 1rem;
@@ -362,76 +230,23 @@
             display: none;
         }
 
-        .status-message.show {
-            display: block;
-        }
+        .status-message.show { display: block; }
+        .status-message.success { background: rgba(50, 200, 100, 0.15); border-color: rgba(50, 200, 100, 0.4); color: #a0ffcc; }
+        .status-message.error { background: rgba(200, 50, 50, 0.15); border-color: rgba(200, 50, 50, 0.4); color: #ffaaaa; }
 
-        .status-message.success {
-            background: rgba(50, 200, 100, 0.15);
-            border-color: rgba(50, 200, 100, 0.4);
-            color: #a0ffcc;
-        }
+        .unlocked-content { display: none; padding: 2rem; text-align: center; color: #e8e8e8; }
+        .unlocked-content.active { display: block; }
+        .unlocked-content h2 { font-size: 1.5rem; margin-bottom: 1rem; color: #a0ffcc; }
 
-        .status-message.error {
-            background: rgba(200, 50, 50, 0.15);
-            border-color: rgba(200, 50, 50, 0.4);
-            color: #ffaaaa;
-        }
+        .terminated-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000011; color: #e8e8e8; align-items: center; justify-content: center; z-index: 1000; }
+        .terminated-screen.active { display: flex; }
+        .terminated-content { text-align: center; font-size: 1.5rem; letter-spacing: 0.1em; color: #d0d0d0; }
 
-        .unlocked-content {
-            display: none;
-            padding: 2rem;
-            text-align: center;
-            color: #e8e8e8;
-        }
+        .security-signature { position: absolute; bottom: 1.5rem; left: 50%; transform: translateX(-50%); font-size: 0.7rem; color: rgba(200, 220, 255, 0.4); letter-spacing: 0.05em; text-align: center; z-index: 10; }
 
-        .unlocked-content.active {
-            display: block;
-        }
+        #stepIndicator { position: fixed; top: 20px; right: 20px; color: #00ff88; font-family: monospace; font-size: 0.8rem; z-index: 200; text-align: right; }
 
-        .unlocked-content h2 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: #a0ffcc;
-        }
-
-        /* Session terminated page */
-        .terminated-screen {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #000011;
-            color: #e8e8e8;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-
-        .terminated-screen.active {
-            display: flex;
-        }
-
-        .terminated-content {
-            text-align: center;
-            font-size: 1.5rem;
-            letter-spacing: 0.1em;
-            color: #d0d0d0;
-        }
-
-        .security-signature {
-            position: absolute;
-            bottom: 1.5rem;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 0.7rem;
-            color: rgba(200, 220, 255, 0.4);
-            letter-spacing: 0.05em;
-            text-align: center;
-            z-index: 10;
-        }
+        @keyframes bioScan { 0% { top: 0; } 100% { top: 100%; } }
     </style>
 </head>
 <body>
@@ -439,162 +254,145 @@
 
     <div class="warning-panel">
         <h1>SECURE SYSTEM — AUTHORISED ACCESS ONLY<span class="exclamation">!</span></h1>
-        
         <div class="body-text">
             <p>This system is designated for <strong>restricted operational use</strong>.</p>
-            
             <p>Access is limited to <strong>authorised personnel</strong> acting within the scope of their approved authority.</p>
-            
             <p><strong>Your presence on this system has been detected.</strong></p>
-            
             <p>Unauthorised access, use, disclosure, copying, or interference with this system or its contents is <strong>prohibited</strong> and may constitute a <strong>criminal offence</strong> under applicable law.</p>
-            
             <p>All system activity is <strong>monitored, logged, and subject to audit</strong>.</p>
-            
             <p>If you are not authorised to access this system, <strong>disconnect immediately</strong>.</p>
-            
             <p><strong>Proceed only if you are explicitly authorised.</strong></p>
         </div>
-
         <div class="button-group">
             <button class="btn-primary" id="exitBtn" autofocus>EXIT SYSTEM</button>
             <button class="btn-secondary" id="authBtn">AUTHORISE ACCESS</button>
         </div>
-
         <div class="monitoring-wrapper">
-            <div class="border-animation">
-                <div class="pin-light"></div>
-            </div>
-            <div class="monitoring-status">
-                <strong>Presence detected · System monitoring active · Biometrics logged</strong>
-            </div>
+            <div class="border-animation"><div class="pin-light"></div></div>
+            <div class="monitoring-status"><strong>Presence detected · System monitoring active · Biometrics logged</strong></div>
         </div>
     </div>
 
-    <div class="security-signature">
-        © 2026 Copyright Zach Crockett · Grace X AI Limited™ · Security Division
+    <div class="security-signature">© 2026 Copyright Zach Crockett · Grace X AI Limited™ · Security Division</div>
+
+    <div id="stepIndicator" style="display:none;">
+        SECURITY CLEARANCE: <span id="clearanceLevel">LEVEL 0</span><br>
+        STATUS: <span id="systemStatus">MONITORING</span><br>
+        ENCRYPTION: <span id="encryptionStatus">256-BIT AES</span>
     </div>
 
-    <!-- Auth Modal -->
     <div class="modal-overlay" id="authModal">
         <div class="modal-content">
-            <h2>Authorise Access</h2>
-            <form id="authForm">
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" name="username" required autocomplete="username">
+            <h2 id="modalTitle">LEVEL 1: IDENTITY VERIFICATION</h2>
+            
+            <div id="step1" class="auth-step">
+                <form id="authForm">
+                    <div class="form-group"><label for="username">OPERATOR ID</label><input type="text" id="username" name="username" required autocomplete="username" placeholder="Enter identification..."></div>
+                    <div class="form-group"><label for="password">ACCESS KEY</label><input type="password" id="password" name="password" required autocomplete="current-password" placeholder="••••••••"></div>
+                    <div class="status-message" id="statusMessage"></div>
+                    <div class="modal-buttons"><button type="button" class="btn-secondary" id="cancelBtn">ABORT</button><button type="submit" class="btn-secondary">PROCEED</button></div>
+                </form>
+            </div>
+
+            <div id="step2" class="auth-step" style="display:none;">
+                <p style="font-size: 0.9rem; margin-bottom: 1.5rem; color: #d0d8e8; text-align: center;">TWO-FACTOR AUTHENTICATION REQUIRED.<br><span style="color: #ffd8a0;">ENTER GENERATED SECURITY TOKEN.</span></p>
+                <form id="2faForm">
+                    <div class="form-group"><label for="token">SECURE TOKEN (6 DIGITS)</label><input type="text" id="token" name="token" required pattern="[0-9]{6}" maxlength="6" placeholder="000000" style="text-align: center; font-size: 2rem; letter-spacing: 0.5rem;"></div>
+                    <div class="status-message" id="2faStatusMessage"></div>
+                    <div class="modal-buttons"><button type="button" class="btn-secondary" id="backTo1">BACK</button><button type="submit" class="btn-secondary" style="border-color: #00ff88; color: #00ff88;">VERIFY TOKEN</button></div>
+                </form>
+            </div>
+
+            <div id="step3" class="auth-step" style="display:none; text-align: center;">
+                <div id="biometricScan" style="height: 100px; border: 1px solid #00ff88; margin-bottom: 1.5rem; position: relative; background: rgba(0, 255, 136, 0.05); overflow: hidden;">
+                    <div style="position: absolute; width: 100%; height: 2px; background: #00ff88; top: 0; left: 0; box-shadow: 0 0 10px #00ff88; animation: bioScan 2s linear infinite;"></div>
+                    <p style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 0.7rem; color: #00ff88; letter-spacing: 0.2em; width: 100%;">SCANNING BIOMETRICS...</p>
                 </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required autocomplete="current-password">
-                </div>
-                <div class="status-message" id="statusMessage">
-                    AUTH PLACEHOLDER — NOT CONFIGURED
-                </div>
-                <div class="modal-buttons">
-                    <button type="button" class="btn-secondary" id="cancelBtn">Cancel</button>
-                    <button type="submit" class="btn-secondary">Authorise</button>
-                </div>
-            </form>
+                <div id="finalStatus" style="font-family: monospace; font-size: 0.8rem; color: #d0d8e8; text-align: left; padding: 10px; background: #000; height: 120px; overflow: hidden; border: 1px solid rgba(200, 220, 255, 0.2);"><div id="logContent">> INITIALISING HANDSHAKE...<br>> ENCRYPTION SYNC...</div></div>
+            </div>
         </div>
     </div>
 
-    <!-- Session Terminated Screen -->
-    <div class="terminated-screen" id="terminatedScreen">
-        <div class="terminated-content">
-            SESSION TERMINATED
-        </div>
-    </div>
-
-    <!-- Unlocked Content (shown after successful auth) -->
-    <div class="unlocked-content" id="unlockedContent">
-        <h2>ACCESS AUTHORISED</h2>
-        <p>System unlocked. Authorised access granted.</p>
-    </div>
+    <div class="terminated-screen" id="terminatedScreen"><div class="terminated-content">SESSION TERMINATED</div></div>
+    <div class="unlocked-content" id="unlockedContent"><h2>ACCESS AUTHORISED</h2><p>System unlocked. Authorised access granted.</p></div>
 
     <script>
         const exitBtn = document.getElementById('exitBtn');
         const authBtn = document.getElementById('authBtn');
         const authModal = document.getElementById('authModal');
         const authForm = document.getElementById('authForm');
+        const 2faForm = document.getElementById('2faForm');
         const cancelBtn = document.getElementById('cancelBtn');
+        const backTo1 = document.getElementById('backTo1');
         const statusMessage = document.getElementById('statusMessage');
+        const 2faStatusMessage = document.getElementById('2faStatusMessage');
         const terminatedScreen = document.getElementById('terminatedScreen');
         const unlockedContent = document.getElementById('unlockedContent');
         const warningPanel = document.querySelector('.warning-panel');
         const scanBand = document.querySelector('.scan-band');
+        const stepIndicator = document.getElementById('stepIndicator');
+        const clearanceLevel = document.getElementById('clearanceLevel');
+        const systemStatus = document.getElementById('systemStatus');
+        const step1 = document.getElementById('step1');
+        const step2 = document.getElementById('step2');
+        const step3 = document.getElementById('step3');
+        const modalTitle = document.getElementById('modalTitle');
+        const logContent = document.getElementById('logContent');
 
-        // Authorised credentials
         const AUTHORISED_PASSWORD = 'BIG_ZAC A0251AH';
+        const AUTHORISED_TOKEN = '025126';
 
-        // Exit System button
-        exitBtn.addEventListener('click', function() {
-            // Try to close the window/tab
-            window.close();
-            
-            // If window.close() is blocked, redirect to terminated screen
-            setTimeout(function() {
-                document.body.style.display = 'none';
-                terminatedScreen.classList.add('active');
-            }, 100);
-        });
+        function updateLog(message) {
+            const line = document.createElement('div');
+            line.textContent = '> ' + message;
+            logContent.appendChild(line);
+            logContent.scrollTop = logContent.scrollHeight;
+        }
 
-        // Authorise Access button
-        authBtn.addEventListener('click', function() {
-            authModal.classList.add('active');
-            document.getElementById('username').focus();
-        });
+        exitBtn.addEventListener('click', () => { window.close(); setTimeout(() => { document.body.style.display = 'none'; terminatedScreen.classList.add('active'); }, 100); });
+        authBtn.addEventListener('click', () => { authModal.classList.add('active'); stepIndicator.style.display = 'block'; document.getElementById('username').focus(); });
+        cancelBtn.addEventListener('click', () => { authModal.classList.remove('active'); stepIndicator.style.display = 'none'; statusMessage.classList.remove('show'); authForm.reset(); });
+        backTo1.addEventListener('click', () => { step2.style.display = 'none'; step1.style.display = 'block'; modalTitle.textContent = 'LEVEL 1: IDENTITY VERIFICATION'; clearanceLevel.textContent = 'LEVEL 0'; });
 
-        // Cancel button
-        cancelBtn.addEventListener('click', function() {
-            authModal.classList.remove('active');
-            statusMessage.classList.remove('show');
-            authForm.reset();
-        });
-
-        // Close modal on overlay click
-        authModal.addEventListener('click', function(e) {
-            if (e.target === authModal) {
-                authModal.classList.remove('active');
-                statusMessage.classList.remove('show');
-                authForm.reset();
-            }
-        });
-
-        // Form submission
-        authForm.addEventListener('submit', function(e) {
+        authForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value.trim();
-
-            // Check credentials
-            if (password === AUTHORISED_PASSWORD) {
-                // Success - unlock system
-                statusMessage.textContent = 'ACCESS AUTHORISED';
+            if (document.getElementById('password').value.trim() === AUTHORISED_PASSWORD) {
+                statusMessage.textContent = 'CREDENTIALS VERIFIED. INITIALISING 2FA...';
                 statusMessage.className = 'status-message show success';
-                
-                // Hide lock screen and show unlocked content
-                setTimeout(function() {
-                    authModal.classList.remove('active');
-                    warningPanel.style.display = 'none';
-                    scanBand.style.display = 'none';
-                    unlockedContent.classList.add('active');
-                }, 1000);
+                setTimeout(() => { step1.style.display = 'none'; step2.style.display = 'block'; modalTitle.textContent = 'LEVEL 2: SECONDARY AUTHENTICATION'; clearanceLevel.textContent = 'LEVEL 1'; systemStatus.textContent = 'CHALLENGED'; document.getElementById('token').focus(); }, 1200);
             } else {
-                // Invalid credentials
-                statusMessage.textContent = 'INVALID CREDENTIALS — ACCESS DENIED';
+                statusMessage.textContent = 'INVALID ACCESS KEY — INCIDENT LOGGED';
                 statusMessage.className = 'status-message show error';
-                
-                // Clear password field
                 document.getElementById('password').value = '';
                 document.getElementById('password').focus();
             }
         });
 
-        // Ensure EXIT SYSTEM button has focus on load
-        window.addEventListener('load', function() {
-            exitBtn.focus();
+        2faForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (document.getElementById('token').value.trim() === AUTHORISED_TOKEN) {
+                2faStatusMessage.textContent = 'TOKEN ACCEPTED. FINALISING AUTHORISATION...';
+                2faStatusMessage.className = 'status-message show success';
+                setTimeout(() => { step2.style.display = 'none'; step3.style.display = 'block'; modalTitle.textContent = 'LEVEL 3: FINAL CLEARANCE'; clearanceLevel.textContent = 'LEVEL 2'; systemStatus.textContent = 'HANDSHAKING'; runFinalSequence(); }, 1000);
+            } else {
+                2faStatusMessage.textContent = 'INVALID TOKEN — SECURITY PROTOCOL ENGAGED';
+                2faStatusMessage.className = 'status-message show error';
+                document.getElementById('token').value = '';
+                document.getElementById('token').focus();
+            }
         });
+
+        function runFinalSequence() {
+            const logs = ["REQUESTING SYSTEM PRIVILEGES...", "BIOMETRIC DATA ACQUIRED.", "VERIFYING RETINAL PATTERN...", "MATCH CONFIRMED.", "BYPASSING KERNEL LOCKS...", "ESTABLISHING SECURE TUNNEL...", "AUTHORISATION GRANTED.", "OPENING SECURITY GATE..."];
+            let i = 0;
+            const interval = setInterval(() => {
+                if (i < logs.length) { updateLog(logs[i]); i++; } 
+                else { clearInterval(interval); clearanceLevel.textContent = 'LEVEL 3'; systemStatus.textContent = 'AUTHORISED'; setTimeout(unlockSystem, 1000); }
+            }, 600);
+        }
+
+        function unlockSystem() { authModal.classList.remove('active'); warningPanel.style.display = 'none'; scanBand.style.display = 'none'; stepIndicator.style.display = 'none'; unlockedContent.classList.add('active'); }
+        window.addEventListener('load', () => { exitBtn.focus(); });
     </script>
 </body>
 </html>
