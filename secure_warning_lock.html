@@ -24,47 +24,6 @@
             justify-content: center;
         }
 
-        /* Background scan animation */
-        @keyframes scan {
-            0% {
-                transform: translateY(-100%);
-                opacity: 0.03;
-            }
-            50% {
-                opacity: 0.05;
-            }
-            100% {
-                transform: translateY(100vh);
-                opacity: 0.03;
-            }
-        }
-
-        .scan-band {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(to bottom, transparent, rgba(200, 220, 255, 0.1), transparent);
-            animation: scan 8s ease-in-out infinite;
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        /* Panel breathe animation */
-        @keyframes breathe {
-            0%, 100% {
-                box-shadow: 0 0 20px rgba(200, 220, 255, 0.15),
-                            0 0 40px rgba(200, 220, 255, 0.08),
-                            inset 0 0 20px rgba(200, 220, 255, 0.05);
-            }
-            50% {
-                box-shadow: 0 0 25px rgba(200, 220, 255, 0.2),
-                            0 0 50px rgba(200, 220, 255, 0.12),
-                            inset 0 0 25px rgba(200, 220, 255, 0.08);
-            }
-        }
-
         .warning-panel {
             position: relative;
             z-index: 10;
@@ -74,7 +33,6 @@
             background: rgba(5, 10, 25, 0.95);
             border: 1px solid rgba(200, 220, 255, 0.2);
             border-radius: 4px;
-            animation: breathe 5s ease-in-out infinite;
             box-shadow: 0 0 20px rgba(200, 220, 255, 0.15),
                         0 0 40px rgba(200, 220, 255, 0.08),
                         inset 0 0 20px rgba(200, 220, 255, 0.05);
@@ -177,53 +135,6 @@
             text-shadow: 0 0 10px rgba(0, 255, 136, 0.8),
                          0 0 20px rgba(0, 255, 136, 0.6),
                          0 0 30px rgba(0, 255, 136, 0.4);
-            animation: pulse 2.6s ease-in-out infinite;
-        }
-
-        .border-animation {
-            position: absolute;
-            top: -3px;
-            left: -3px;
-            right: -3px;
-            bottom: -3px;
-            pointer-events: none;
-            overflow: visible;
-        }
-
-        .pin-light {
-            position: absolute;
-            width: 6px;
-            height: 6px;
-            background: #00ff88;
-            border-radius: 50%;
-            box-shadow: 
-                0 0 8px rgba(0, 255, 136, 1),
-                0 0 16px rgba(0, 255, 136, 0.9),
-                0 0 24px rgba(0, 255, 136, 0.7);
-            animation: travelAround 7s linear infinite;
-        }
-
-        @keyframes travelAround {
-            0% {
-                top: -3px;
-                left: -3px;
-            }
-            25% {
-                top: -3px;
-                left: calc(100% - 3px);
-            }
-            50% {
-                top: calc(100% - 3px);
-                left: calc(100% - 3px);
-            }
-            75% {
-                top: calc(100% - 3px);
-                left: -3px;
-            }
-            100% {
-                top: -3px;
-                left: -3px;
-            }
         }
 
         button {
@@ -265,15 +176,6 @@
             outline: none;
         }
 
-        /* Footer pulse animation */
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 0.8;
-            }
-            50% {
-                opacity: 1;
-            }
-        }
 
         /* Modal styles */
         .modal-overlay {
@@ -435,8 +337,6 @@
     </style>
 </head>
 <body>
-    <div class="scan-band"></div>
-
     <div class="warning-panel">
         <h1>SECURE SYSTEM — AUTHORISED ACCESS ONLY<span class="exclamation">!</span></h1>
         
@@ -462,9 +362,6 @@
         </div>
 
         <div class="monitoring-wrapper">
-            <div class="border-animation">
-                <div class="pin-light"></div>
-            </div>
             <div class="monitoring-status">
                 <strong>Presence detected · System monitoring active · Biometrics logged</strong>
             </div>
@@ -522,7 +419,6 @@
         const terminatedScreen = document.getElementById('terminatedScreen');
         const unlockedContent = document.getElementById('unlockedContent');
         const warningPanel = document.querySelector('.warning-panel');
-        const scanBand = document.querySelector('.scan-band');
 
         // Authorised credentials
         const AUTHORISED_PASSWORD = 'BIG_ZAC A0251AH';
@@ -577,7 +473,6 @@
                 setTimeout(function() {
                     authModal.classList.remove('active');
                     warningPanel.style.display = 'none';
-                    scanBand.style.display = 'none';
                     unlockedContent.classList.add('active');
                 }, 1000);
             } else {
