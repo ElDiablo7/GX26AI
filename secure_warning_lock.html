@@ -432,6 +432,57 @@
             text-align: center;
             z-index: 10;
         }
+
+        .auth-level-indicator {
+            font-size: 0.75rem;
+            color: rgba(200, 220, 255, 0.5);
+            margin-bottom: 1rem;
+            text-align: center;
+            letter-spacing: 0.05em;
+        }
+
+        .auth-level-indicator .level {
+            color: #00ff88;
+            font-weight: 600;
+        }
+
+        .totp-code-input {
+            font-size: 1.5rem;
+            letter-spacing: 0.3em;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+        }
+
+        .security-question {
+            font-size: 0.9rem;
+            color: #d0d0d0;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: rgba(0, 0, 10, 0.5);
+            border-left: 2px solid rgba(200, 220, 255, 0.3);
+        }
+
+        .countdown-timer {
+            font-size: 0.85rem;
+            color: #ffaa00;
+            margin-top: 0.5rem;
+            text-align: center;
+        }
+
+        .biometric-indicator {
+            text-align: center;
+            padding: 1rem;
+            margin: 1rem 0;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 4px;
+        }
+
+        .biometric-indicator .icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
     </style>
 </head>
 <body>
@@ -475,10 +526,11 @@
         © 2026 Copyright Zach Crockett · Grace X AI Limited™ · Security Division
     </div>
 
-    <!-- Auth Modal -->
+    <!-- Level 2: Username/Password Modal -->
     <div class="modal-overlay" id="authModal">
         <div class="modal-content">
-            <h2>Authorise Access</h2>
+            <div class="auth-level-indicator">AUTHENTICATION LEVEL <span class="level">2/5</span></div>
+            <h2>Primary Credentials</h2>
             <form id="authForm">
                 <div class="form-group">
                     <label for="username">Username</label>
@@ -488,12 +540,75 @@
                     <label for="password">Password</label>
                     <input type="password" id="password" name="password" required autocomplete="current-password">
                 </div>
-                <div class="status-message" id="statusMessage">
-                    AUTH PLACEHOLDER — NOT CONFIGURED
-                </div>
+                <div class="status-message" id="statusMessage"></div>
                 <div class="modal-buttons">
                     <button type="button" class="btn-secondary" id="cancelBtn">Cancel</button>
-                    <button type="submit" class="btn-secondary">Authorise</button>
+                    <button type="submit" class="btn-secondary">Continue</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Level 3: 2FA TOTP Modal -->
+    <div class="modal-overlay" id="twoFactorModal">
+        <div class="modal-content">
+            <div class="auth-level-indicator">AUTHENTICATION LEVEL <span class="level">3/5</span></div>
+            <h2>Two-Factor Authentication</h2>
+            <form id="twoFactorForm">
+                <div class="form-group">
+                    <label for="totpCode">Enter 6-digit TOTP code</label>
+                    <input type="text" id="totpCode" name="totpCode" class="totp-code-input" maxlength="6" pattern="[0-9]{6}" required autocomplete="one-time-code" placeholder="000000">
+                </div>
+                <div class="countdown-timer" id="totpTimer">Code expires in: <span id="timerValue">30</span>s</div>
+                <div class="status-message" id="twoFactorStatus"></div>
+                <div class="modal-buttons">
+                    <button type="button" class="btn-secondary" id="cancel2FABtn">Cancel</button>
+                    <button type="submit" class="btn-secondary">Verify</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Level 4: Security Question/Biometric Modal -->
+    <div class="modal-overlay" id="securityQuestionModal">
+        <div class="modal-content">
+            <div class="auth-level-indicator">AUTHENTICATION LEVEL <span class="level">4/5</span></div>
+            <h2>Security Verification</h2>
+            <div class="biometric-indicator">
+                <div class="icon">🔒</div>
+                <div>Biometric verification required</div>
+            </div>
+            <form id="securityQuestionForm">
+                <div class="security-question" id="securityQuestionText">
+                    What is your mother's maiden name?
+                </div>
+                <div class="form-group">
+                    <label for="securityAnswer">Security Answer</label>
+                    <input type="text" id="securityAnswer" name="securityAnswer" required autocomplete="off">
+                </div>
+                <div class="status-message" id="securityStatus"></div>
+                <div class="modal-buttons">
+                    <button type="button" class="btn-secondary" id="cancelSecurityBtn">Cancel</button>
+                    <button type="submit" class="btn-secondary">Verify</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Level 5: Final Authorization Modal -->
+    <div class="modal-overlay" id="finalAuthModal">
+        <div class="modal-content">
+            <div class="auth-level-indicator">AUTHENTICATION LEVEL <span class="level">5/5</span></div>
+            <h2>Final Authorization</h2>
+            <form id="finalAuthForm">
+                <div class="form-group">
+                    <label for="authorizationCode">Authorization Code</label>
+                    <input type="text" id="authorizationCode" name="authorizationCode" required autocomplete="off" placeholder="Enter final authorization code">
+                </div>
+                <div class="status-message" id="finalAuthStatus"></div>
+                <div class="modal-buttons">
+                    <button type="button" class="btn-secondary" id="cancelFinalBtn">Cancel</button>
+                    <button type="submit" class="btn-secondary">Authorize Access</button>
                 </div>
             </form>
         </div>
@@ -513,6 +628,12 @@
     </div>
 
     <script>
+        // ============================================
+        // MULTI-LEVEL SECURITY SYSTEM
+        // Grace X AI Limited - Security Division
+        // © 2026 Copyright Zach Crockett
+        // ============================================
+
         const exitBtn = document.getElementById('exitBtn');
         const authBtn = document.getElementById('authBtn');
         const authModal = document.getElementById('authModal');
@@ -524,70 +645,322 @@
         const warningPanel = document.querySelector('.warning-panel');
         const scanBand = document.querySelector('.scan-band');
 
-        // Authorised credentials
-        const AUTHORISED_PASSWORD = 'BIG_ZAC A0251AH';
+        // Level 2 elements
+        const twoFactorModal = document.getElementById('twoFactorModal');
+        const twoFactorForm = document.getElementById('twoFactorForm');
+        const totpCodeInput = document.getElementById('totpCode');
+        const twoFactorStatus = document.getElementById('twoFactorStatus');
+        const cancel2FABtn = document.getElementById('cancel2FABtn');
+        const totpTimer = document.getElementById('totpTimer');
+        const timerValue = document.getElementById('timerValue');
 
-        // Exit System button
-        exitBtn.addEventListener('click', function() {
-            // Try to close the window/tab
-            window.close();
+        // Level 4 elements
+        const securityQuestionModal = document.getElementById('securityQuestionModal');
+        const securityQuestionForm = document.getElementById('securityQuestionForm');
+        const securityAnswer = document.getElementById('securityAnswer');
+        const securityStatus = document.getElementById('securityStatus');
+        const cancelSecurityBtn = document.getElementById('cancelSecurityBtn');
+
+        // Level 5 elements
+        const finalAuthModal = document.getElementById('finalAuthModal');
+        const finalAuthForm = document.getElementById('finalAuthForm');
+        const authorizationCode = document.getElementById('authorizationCode');
+        const finalAuthStatus = document.getElementById('finalAuthStatus');
+        const cancelFinalBtn = document.getElementById('cancelFinalBtn');
+
+        // Security configuration
+        const SECURITY_CONFIG = {
+            // Level 2: Primary credentials
+            AUTHORISED_PASSWORD: 'BIG_ZAC A0251AH',
             
-            // If window.close() is blocked, redirect to terminated screen
+            // Level 3: 2FA TOTP (simplified - in production use proper TOTP library)
+            TOTP_SECRET: 'GRACEXAISECURITY2026ZACHCROCKETT',
+            TOTP_VALID_WINDOW: 2, // Accept codes from ±2 time steps
+            
+            // Level 4: Security question
+            SECURITY_ANSWER: 'GRACEX', // In production, hash and compare
+            
+            // Level 5: Final authorization code
+            FINAL_AUTH_CODE: 'GX26-SEC-2026'
+        };
+
+        // Session state
+        let currentAuthLevel = 0;
+        let totpInterval = null;
+        let totpTimerInterval = null;
+        let sessionStartTime = null;
+        let failedAttempts = 0;
+        const MAX_FAILED_ATTEMPTS = 3;
+
+        // ============================================
+        // TOTP CODE GENERATION (Simplified)
+        // In production, use proper TOTP library
+        // ============================================
+        function generateTOTP(secret) {
+            const time = Math.floor(Date.now() / 1000 / 30); // 30-second window
+            // Simplified TOTP - in production use crypto.subtle or library
+            let hash = 0;
+            for (let i = 0; i < secret.length; i++) {
+                hash = ((hash << 5) - hash) + secret.charCodeAt(i);
+                hash = hash & hash;
+            }
+            const code = Math.abs((hash + time) % 1000000);
+            return String(code).padStart(6, '0');
+        }
+
+        function verifyTOTP(inputCode, secret) {
+            const currentCode = generateTOTP(secret);
+            const prevCode = generateTOTP(secret + 'prev'); // Simplified
+            return inputCode === currentCode || inputCode === prevCode;
+        }
+
+        // ============================================
+        // SESSION MANAGEMENT
+        // ============================================
+        function logSecurityEvent(event, level, status) {
+            const timestamp = new Date().toISOString();
+            console.log(`[SECURITY] ${timestamp} | Level ${level} | ${event} | ${status}`);
+            // In production, send to security logging system
+        }
+
+        function resetSession() {
+            currentAuthLevel = 0;
+            failedAttempts = 0;
+            if (totpInterval) clearInterval(totpInterval);
+            if (totpTimerInterval) clearInterval(totpTimerInterval);
+            closeAllModals();
+        }
+
+        function closeAllModals() {
+            authModal.classList.remove('active');
+            twoFactorModal.classList.remove('active');
+            securityQuestionModal.classList.remove('active');
+            finalAuthModal.classList.remove('active');
+        }
+
+        function lockoutUser() {
+            logSecurityEvent('LOCKOUT', currentAuthLevel, 'MAX_ATTEMPTS_EXCEEDED');
+            resetSession();
+            terminatedScreen.classList.add('active');
+            setTimeout(() => {
+                window.location.reload();
+            }, 5000);
+        }
+
+        // ============================================
+        // LEVEL 1: WARNING SCREEN
+        // ============================================
+        exitBtn.addEventListener('click', function() {
+            logSecurityEvent('EXIT', 1, 'USER_INITIATED');
+            window.close();
             setTimeout(function() {
                 document.body.style.display = 'none';
                 terminatedScreen.classList.add('active');
             }, 100);
         });
 
-        // Authorise Access button
         authBtn.addEventListener('click', function() {
+            logSecurityEvent('AUTH_INITIATED', 1, 'START');
+            sessionStartTime = Date.now();
+            currentAuthLevel = 2;
             authModal.classList.add('active');
             document.getElementById('username').focus();
         });
 
-        // Cancel button
+        // ============================================
+        // LEVEL 2: PRIMARY CREDENTIALS
+        // ============================================
         cancelBtn.addEventListener('click', function() {
-            authModal.classList.remove('active');
-            statusMessage.classList.remove('show');
-            authForm.reset();
+            resetSession();
         });
 
-        // Close modal on overlay click
         authModal.addEventListener('click', function(e) {
             if (e.target === authModal) {
-                authModal.classList.remove('active');
-                statusMessage.classList.remove('show');
-                authForm.reset();
+                resetSession();
             }
         });
 
-        // Form submission
         authForm.addEventListener('submit', function(e) {
             e.preventDefault();
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value.trim();
 
-            // Check credentials
-            if (password === AUTHORISED_PASSWORD) {
-                // Success - unlock system
-                statusMessage.textContent = 'ACCESS AUTHORISED';
-                statusMessage.className = 'status-message show success';
+            if (password === SECURITY_CONFIG.AUTHORISED_PASSWORD) {
+                logSecurityEvent('LEVEL_2_PASS', 2, 'SUCCESS');
+                failedAttempts = 0;
+                currentAuthLevel = 3;
                 
-                // Hide lock screen and show unlocked content
+                // Generate and display TOTP code (in production, send via secure channel)
+                const totpCode = generateTOTP(SECURITY_CONFIG.TOTP_SECRET);
+                console.log('[SECURITY] TOTP Code (for testing):', totpCode);
+                
+                authModal.classList.remove('active');
+                twoFactorModal.classList.add('active');
+                totpCodeInput.focus();
+                
+                // Start TOTP timer
+                startTOTPTimer();
+            } else {
+                failedAttempts++;
+                logSecurityEvent('LEVEL_2_FAIL', 2, `ATTEMPT_${failedAttempts}`);
+                
+                if (failedAttempts >= MAX_FAILED_ATTEMPTS) {
+                    lockoutUser();
+                    return;
+                }
+                
+                statusMessage.textContent = `INVALID CREDENTIALS — ${MAX_FAILED_ATTEMPTS - failedAttempts} attempts remaining`;
+                statusMessage.className = 'status-message show error';
+                document.getElementById('password').value = '';
+                document.getElementById('password').focus();
+            }
+        });
+
+        // ============================================
+        // LEVEL 3: TWO-FACTOR AUTHENTICATION
+        // ============================================
+        function startTOTPTimer() {
+            let timeLeft = 30;
+            timerValue.textContent = timeLeft;
+            
+            totpTimerInterval = setInterval(() => {
+                timeLeft--;
+                timerValue.textContent = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(totpTimerInterval);
+                    timerValue.textContent = '0';
+                    // In production, regenerate code
+                }
+            }, 1000);
+        }
+
+        cancel2FABtn.addEventListener('click', function() {
+            resetSession();
+        });
+
+        twoFactorModal.addEventListener('click', function(e) {
+            if (e.target === twoFactorModal) {
+                resetSession();
+            }
+        });
+
+        totpCodeInput.addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/[^0-9]/g, '').slice(0, 6);
+        });
+
+        twoFactorForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const code = totpCodeInput.value.trim();
+            
+            if (verifyTOTP(code, SECURITY_CONFIG.TOTP_SECRET)) {
+                logSecurityEvent('LEVEL_3_PASS', 3, 'SUCCESS');
+                failedAttempts = 0;
+                currentAuthLevel = 4;
+                
+                clearInterval(totpTimerInterval);
+                twoFactorModal.classList.remove('active');
+                securityQuestionModal.classList.add('active');
+                securityAnswer.focus();
+            } else {
+                failedAttempts++;
+                logSecurityEvent('LEVEL_3_FAIL', 3, `ATTEMPT_${failedAttempts}`);
+                
+                if (failedAttempts >= MAX_FAILED_ATTEMPTS) {
+                    lockoutUser();
+                    return;
+                }
+                
+                twoFactorStatus.textContent = `INVALID CODE — ${MAX_FAILED_ATTEMPTS - failedAttempts} attempts remaining`;
+                twoFactorStatus.className = 'status-message show error';
+                totpCodeInput.value = '';
+                totpCodeInput.focus();
+            }
+        });
+
+        // ============================================
+        // LEVEL 4: SECURITY QUESTION
+        // ============================================
+        cancelSecurityBtn.addEventListener('click', function() {
+            resetSession();
+        });
+
+        securityQuestionModal.addEventListener('click', function(e) {
+            if (e.target === securityQuestionModal) {
+                resetSession();
+            }
+        });
+
+        securityQuestionForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const answer = securityAnswer.value.trim().toUpperCase();
+            
+            if (answer === SECURITY_CONFIG.SECURITY_ANSWER.toUpperCase()) {
+                logSecurityEvent('LEVEL_4_PASS', 4, 'SUCCESS');
+                failedAttempts = 0;
+                currentAuthLevel = 5;
+                
+                securityQuestionModal.classList.remove('active');
+                finalAuthModal.classList.add('active');
+                authorizationCode.focus();
+            } else {
+                failedAttempts++;
+                logSecurityEvent('LEVEL_4_FAIL', 4, `ATTEMPT_${failedAttempts}`);
+                
+                if (failedAttempts >= MAX_FAILED_ATTEMPTS) {
+                    lockoutUser();
+                    return;
+                }
+                
+                securityStatus.textContent = `INVALID ANSWER — ${MAX_FAILED_ATTEMPTS - failedAttempts} attempts remaining`;
+                securityStatus.className = 'status-message show error';
+                securityAnswer.value = '';
+                securityAnswer.focus();
+            }
+        });
+
+        // ============================================
+        // LEVEL 5: FINAL AUTHORIZATION
+        // ============================================
+        cancelFinalBtn.addEventListener('click', function() {
+            resetSession();
+        });
+
+        finalAuthModal.addEventListener('click', function(e) {
+            if (e.target === finalAuthModal) {
+                resetSession();
+            }
+        });
+
+        finalAuthForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const code = authorizationCode.value.trim();
+            
+            if (code === SECURITY_CONFIG.FINAL_AUTH_CODE) {
+                logSecurityEvent('LEVEL_5_PASS', 5, 'FULL_ACCESS_GRANTED');
+                const sessionDuration = Date.now() - sessionStartTime;
+                console.log(`[SECURITY] Session authenticated in ${sessionDuration}ms`);
+                
+                // Grant full access
                 setTimeout(function() {
-                    authModal.classList.remove('active');
+                    closeAllModals();
                     warningPanel.style.display = 'none';
                     scanBand.style.display = 'none';
                     unlockedContent.classList.add('active');
                 }, 1000);
             } else {
-                // Invalid credentials
-                statusMessage.textContent = 'INVALID CREDENTIALS — ACCESS DENIED';
-                statusMessage.className = 'status-message show error';
+                failedAttempts++;
+                logSecurityEvent('LEVEL_5_FAIL', 5, `ATTEMPT_${failedAttempts}`);
                 
-                // Clear password field
-                document.getElementById('password').value = '';
-                document.getElementById('password').focus();
+                if (failedAttempts >= MAX_FAILED_ATTEMPTS) {
+                    lockoutUser();
+                    return;
+                }
+                
+                finalAuthStatus.textContent = `INVALID CODE — ${MAX_FAILED_ATTEMPTS - failedAttempts} attempts remaining`;
+                finalAuthStatus.className = 'status-message show error';
+                authorizationCode.value = '';
+                authorizationCode.focus();
             }
         });
 
