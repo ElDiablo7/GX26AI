@@ -475,29 +475,81 @@
         © 2026 Copyright Zach Crockett · Grace X AI Limited™ · Security Division
     </div>
 
-    <!-- Auth Modal -->
+    <!-- Multi-Level Security Step Indicator (Visual Only) -->
+    <div id="stepIndicator" style="display:none; position:fixed; top: 20px; right: 20px; color: #00ff88; font-family: monospace; font-size: 0.8rem; z-index: 200; text-align: right;">
+        SECURITY CLEARANCE: <span id="clearanceLevel">LEVEL 0</span><br>
+        STATUS: <span id="systemStatus">MONITORING</span><br>
+        ENCRYPTION: <span id="encryptionStatus">256-BIT AES</span>
+    </div>
+
+    <!-- Auth Modal (Multi-Level) -->
     <div class="modal-overlay" id="authModal">
-        <div class="modal-content">
-            <h2>Authorise Access</h2>
-            <form id="authForm">
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" name="username" required autocomplete="username">
+        <div class="modal-content" style="max-width: 500px;">
+            <div id="modalHeader" style="border-bottom: 1px solid rgba(200, 220, 255, 0.2); margin-bottom: 1.5rem; padding-bottom: 0.5rem;">
+                <h2 id="modalTitle" style="margin-bottom: 0; text-align: left; font-size: 1rem; letter-spacing: 0.1em; color: #00ff88;">LEVEL 1: IDENTITY VERIFICATION</h2>
+            </div>
+            
+            <!-- Step 1: Credentials -->
+            <div id="step1" class="auth-step">
+                <form id="authForm">
+                    <div class="form-group">
+                        <label for="username">OPERATOR ID</label>
+                        <input type="text" id="username" name="username" required autocomplete="username" placeholder="Enter identification...">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">ACCESS KEY</label>
+                        <input type="password" id="password" name="password" required autocomplete="current-password" placeholder="••••••••">
+                    </div>
+                    <div class="status-message" id="statusMessage">
+                        AUTH PLACEHOLDER — NOT CONFIGURED
+                    </div>
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-secondary" id="cancelBtn">ABORT</button>
+                        <button type="submit" class="btn-secondary">PROCEED</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Step 2: 2FA -->
+            <div id="step2" class="auth-step" style="display:none;">
+                <p style="font-size: 0.9rem; margin-bottom: 1.5rem; color: #d0d8e8; text-align: center;">
+                    TWO-FACTOR AUTHENTICATION REQUIRED.<br>
+                    <span style="color: #ffd8a0;">ENTER GENERATED SECURITY TOKEN.</span>
+                </p>
+                <form id="2faForm">
+                    <div class="form-group">
+                        <label for="token">SECURE TOKEN (6 DIGITS)</label>
+                        <input type="text" id="token" name="token" required pattern="[0-9]{6}" maxlength="6" placeholder="000000" style="text-align: center; font-size: 2rem; letter-spacing: 0.5rem;">
+                    </div>
+                    <div class="status-message" id="2faStatusMessage">
+                        TOKEN VERIFICATION PENDING...
+                    </div>
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-secondary" id="backTo1">BACK</button>
+                        <button type="submit" class="btn-secondary" style="border-color: #00ff88; color: #00ff88;">VERIFY TOKEN</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Step 3: Biometric / Processing -->
+            <div id="step3" class="auth-step" style="display:none; text-align: center;">
+                <div id="biometricScan" style="height: 100px; border: 1px solid #00ff88; margin-bottom: 1.5rem; position: relative; background: rgba(0, 255, 136, 0.05); overflow: hidden;">
+                    <div style="position: absolute; width: 100%; height: 2px; background: #00ff88; top: 0; left: 0; box-shadow: 0 0 10px #00ff88; animation: bioScan 2s linear infinite;"></div>
+                    <p style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 0.7rem; color: #00ff88; letter-spacing: 0.2em; width: 100%;">SCANNING BIOMETRICS...</p>
                 </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required autocomplete="current-password">
+                <div id="finalStatus" style="font-family: monospace; font-size: 0.8rem; color: #d0d8e8; text-align: left; padding: 10px; background: #000; height: 120px; overflow: hidden; border: 1px solid rgba(200, 220, 255, 0.2);">
+                    <div id="logContent">> INITIALISING HANDSHAKE...<br>> ENCRYPTION SYNC...</div>
                 </div>
-                <div class="status-message" id="statusMessage">
-                    AUTH PLACEHOLDER — NOT CONFIGURED
-                </div>
-                <div class="modal-buttons">
-                    <button type="button" class="btn-secondary" id="cancelBtn">Cancel</button>
-                    <button type="submit" class="btn-secondary">Authorise</button>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
+
+    <style>
+        @keyframes bioScan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+    </style>
 
     <!-- Session Terminated Screen -->
     <div class="terminated-screen" id="terminatedScreen">
@@ -517,22 +569,41 @@
         const authBtn = document.getElementById('authBtn');
         const authModal = document.getElementById('authModal');
         const authForm = document.getElementById('authForm');
+        const 2faForm = document.getElementById('2faForm');
         const cancelBtn = document.getElementById('cancelBtn');
+        const backTo1 = document.getElementById('backTo1');
         const statusMessage = document.getElementById('statusMessage');
+        const 2faStatusMessage = document.getElementById('2faStatusMessage');
         const terminatedScreen = document.getElementById('terminatedScreen');
         const unlockedContent = document.getElementById('unlockedContent');
         const warningPanel = document.querySelector('.warning-panel');
         const scanBand = document.querySelector('.scan-band');
+        const stepIndicator = document.getElementById('stepIndicator');
+        const clearanceLevel = document.getElementById('clearanceLevel');
+        const systemStatus = document.getElementById('systemStatus');
+        
+        const step1 = document.getElementById('step1');
+        const step2 = document.getElementById('step2');
+        const step3 = document.getElementById('step3');
+        const modalTitle = document.getElementById('modalTitle');
+        const logContent = document.getElementById('logContent');
 
         // Authorised credentials
         const AUTHORISED_PASSWORD = 'BIG_ZAC A0251AH';
+        const AUTHORISED_TOKEN = '025126'; // Placeholder 2FA token
+
+        let currentStep = 1;
+
+        function updateLog(message) {
+            const line = document.createElement('div');
+            line.textContent = '> ' + message;
+            logContent.appendChild(line);
+            logContent.scrollTop = logContent.scrollHeight;
+        }
 
         // Exit System button
         exitBtn.addEventListener('click', function() {
-            // Try to close the window/tab
             window.close();
-            
-            // If window.close() is blocked, redirect to terminated screen
             setTimeout(function() {
                 document.body.style.display = 'none';
                 terminatedScreen.classList.add('active');
@@ -542,54 +613,108 @@
         // Authorise Access button
         authBtn.addEventListener('click', function() {
             authModal.classList.add('active');
+            stepIndicator.style.display = 'block';
             document.getElementById('username').focus();
         });
 
-        // Cancel button
+        // Cancel / Abort button
         cancelBtn.addEventListener('click', function() {
             authModal.classList.remove('active');
+            stepIndicator.style.display = 'none';
             statusMessage.classList.remove('show');
             authForm.reset();
         });
 
-        // Close modal on overlay click
-        authModal.addEventListener('click', function(e) {
-            if (e.target === authModal) {
-                authModal.classList.remove('active');
-                statusMessage.classList.remove('show');
-                authForm.reset();
-            }
+        backTo1.addEventListener('click', function() {
+            step2.style.display = 'none';
+            step1.style.display = 'block';
+            modalTitle.textContent = 'LEVEL 1: IDENTITY VERIFICATION';
+            clearanceLevel.textContent = 'LEVEL 0';
         });
 
-        // Form submission
+        // Step 1 Form submission
         authForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value.trim();
 
-            // Check credentials
             if (password === AUTHORISED_PASSWORD) {
-                // Success - unlock system
-                statusMessage.textContent = 'ACCESS AUTHORISED';
+                statusMessage.textContent = 'CREDENTIALS VERIFIED. INITIALISING 2FA...';
                 statusMessage.className = 'status-message show success';
                 
-                // Hide lock screen and show unlocked content
                 setTimeout(function() {
-                    authModal.classList.remove('active');
-                    warningPanel.style.display = 'none';
-                    scanBand.style.display = 'none';
-                    unlockedContent.classList.add('active');
-                }, 1000);
+                    step1.style.display = 'none';
+                    step2.style.display = 'block';
+                    modalTitle.textContent = 'LEVEL 2: SECONDARY AUTHENTICATION';
+                    clearanceLevel.textContent = 'LEVEL 1';
+                    systemStatus.textContent = 'CHALLENGED';
+                    document.getElementById('token').focus();
+                }, 1200);
             } else {
-                // Invalid credentials
-                statusMessage.textContent = 'INVALID CREDENTIALS — ACCESS DENIED';
+                statusMessage.textContent = 'INVALID ACCESS KEY — INCIDENT LOGGED';
                 statusMessage.className = 'status-message show error';
-                
-                // Clear password field
                 document.getElementById('password').value = '';
                 document.getElementById('password').focus();
             }
         });
+
+        // Step 2 Form submission
+        2faForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const token = document.getElementById('token').value.trim();
+
+            if (token === AUTHORISED_TOKEN) {
+                2faStatusMessage.textContent = 'TOKEN ACCEPTED. FINALISING AUTHORISATION...';
+                2faStatusMessage.className = 'status-message show success';
+                
+                setTimeout(function() {
+                    step2.style.display = 'none';
+                    step3.style.display = 'block';
+                    modalTitle.textContent = 'LEVEL 3: FINAL CLEARANCE';
+                    clearanceLevel.textContent = 'LEVEL 2';
+                    systemStatus.textContent = 'HANDSHAKING';
+                    runFinalSequence();
+                }, 1000);
+            } else {
+                2faStatusMessage.textContent = 'INVALID TOKEN — SECURITY PROTOCOL ENGAGED';
+                2faStatusMessage.className = 'status-message show error';
+                document.getElementById('token').value = '';
+                document.getElementById('token').focus();
+            }
+        });
+
+        function runFinalSequence() {
+            const logs = [
+                "REQUESTING SYSTEM PRIVILEGES...",
+                "BIOMETRIC DATA ACQUIRED.",
+                "VERIFYING RETINAL PATTERN...",
+                "MATCH CONFIRMED.",
+                "BYPASSING KERNEL LOCKS...",
+                "ESTABLISHING SECURE TUNNEL...",
+                "AUTHORISATION GRANTED.",
+                "OPENING SECURITY GATE..."
+            ];
+
+            let i = 0;
+            const interval = setInterval(() => {
+                if (i < logs.length) {
+                    updateLog(logs[i]);
+                    i++;
+                } else {
+                    clearInterval(interval);
+                    clearanceLevel.textContent = 'LEVEL 3';
+                    systemStatus.textContent = 'AUTHORISED';
+                    setTimeout(unlockSystem, 1000);
+                }
+            }, 600);
+        }
+
+        function unlockSystem() {
+            authModal.classList.remove('active');
+            warningPanel.style.display = 'none';
+            scanBand.style.display = 'none';
+            stepIndicator.style.display = 'none';
+            unlockedContent.classList.add('active');
+        }
 
         // Ensure EXIT SYSTEM button has focus on load
         window.addEventListener('load', function() {
