@@ -1,0 +1,92 @@
+/**
+ * GRX26AI — Police/MOD official theme. Muted palette, minimal glow, professional.
+ * Apply with body.grx26-police
+ */
+body.grx26-police,
+.grx26-police {
+  --grx26-bg: #1c1e24;
+  --grx26-surface: #25282e;
+  --grx26-border: #3d4149;
+  --grx26-text: #e8eaed;
+  --grx26-text-muted: #9ca3af;
+  --grx26-accent: #4b5563;
+  --grx26-heading: #f3f4f6;
+  --grx26-status-ok: #6b7280;
+  --grx26-status-warn: #9ca3af;
+  --grx26-status-bad: #6b7280;
+}
+
+body.grx26-police {
+  background: var(--grx26-bg);
+  color: var(--grx26-text);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+body.grx26-police .aside,
+body.grx26-police aside {
+  background: var(--grx26-surface);
+  border-right: 1px solid var(--grx26-border);
+}
+
+body.grx26-police .module-btn {
+  background: var(--grx26-surface);
+  color: var(--grx26-text);
+  border: 1px solid var(--grx26-border);
+  box-shadow: none;
+}
+
+body.grx26-police .module-btn:hover {
+  background: #2d3139;
+  border-color: var(--grx26-accent);
+}
+
+body.grx26-police .module-btn.active {
+  background: #2d3139;
+  border-color: var(--grx26-text-muted);
+}
+
+body.grx26-police .brand h1,
+body.grx26-police .section-title {
+  color: var(--grx26-heading);
+}
+
+body.grx26-police .grx26-forge-map .grx26-forge-group-title {
+  color: var(--grx26-heading);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+
+body.grx26-police .grx26-forge-node {
+  background: var(--grx26-surface);
+  border: 1px solid var(--grx26-border);
+  padding: 8px 12px;
+  margin-bottom: 6px;
+  border-radius: 4px;
+}
+
+body.grx26-police .grx26-node-name { font-weight: 600; }
+body.grx26-police .grx26-node-status,
+body.grx26-police .grx26-node-policy {
+  font-size: 11px;
+  color: var(--grx26-text-muted);
+  margin-left: 8px;
+}
+
+body.grx26-police .grx26-header-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--grx26-heading);
+  letter-spacing: 0.02em;
+}
+
+/* Minimal animation — reduce or disable */
+body.grx26-police * {
+  animation-duration: 0.15s !important;
+}
+
+body.grx26-police .loading-spinner {
+  border-color: var(--grx26-border);
+  border-top-color: var(--grx26-text-muted);
+}

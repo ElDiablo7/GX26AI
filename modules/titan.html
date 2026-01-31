@@ -1,0 +1,41 @@
+<section class="module-section grx26-control-centre titan-container">
+  <div class="module-header grx26-cc-header">
+    <div class="module-logo-slot titan-logo-slot">
+      <span class="module-logo-text">T</span>
+    </div>
+    <div class="module-header-text">
+      <h1 class="module-title grx26-cc-title">Titan — Analysis</h1>
+      <p class="module-subtitle grx26-cc-subtitle">
+        On-demand analysis. Invoked only via Sentinel. Advisory outputs only; no commands, no outcome override.
+      </p>
+    </div>
+  </div>
+
+  <div class="builder-card grx26-panel" id="grx26-titan-role">
+    <h2 class="grx26-panel-heading">Role</h2>
+    <p class="grx26-cc-hint">Titan is invoked by Sentinel with a reason and trace id. It does not issue commands or override Sentinel decisions.</p>
+    <ul class="grx26-list">
+      <li>Assumptions and confidence</li>
+      <li>Weak points and alternative explanations</li>
+      <li>Risk weighting</li>
+      <li>Recommended follow-up questions</li>
+    </ul>
+  </div>
+
+  <div class="builder-card grx26-panel" id="grx26-titan-output-types">
+    <h2 class="grx26-panel-heading">Output types</h2>
+    <div class="grx26-status-grid">
+      <div class="grx26-status-item"><span class="grx26-status-label">Assumptions</span> What Titan assumes.</div>
+      <div class="grx26-status-item"><span class="grx26-status-label">Weak points</span> Gaps or uncertainties.</div>
+      <div class="grx26-status-item"><span class="grx26-status-label">Alternatives</span> Other explanations.</div>
+      <div class="grx26-status-item"><span class="grx26-status-label">Risk</span> Weighting and severity.</div>
+      <div class="grx26-status-item"><span class="grx26-status-label">Questions</span> Recommended questions.</div>
+    </div>
+  </div>
+
+  <div class="builder-card grx26-panel" id="grx26-titan-root">
+    <h2 class="grx26-panel-heading">Last invocation</h2>
+    <p class="grx26-cc-hint">Latest Titan advisory (when invoked via Sentinel).</p>
+    <div id="grx26-titan-last"></div>
+  </div>
+</section>

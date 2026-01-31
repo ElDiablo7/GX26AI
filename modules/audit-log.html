@@ -1,0 +1,22 @@
+<div class="grx26-panel" id="grx26-audit-log-root">
+  <h2>Audit Log (recent 20)</h2>
+  <table class="grx26-audit-table">
+    <thead><tr><th>Time</th><th>Event</th><th>Trace ID</th></tr></thead>
+    <tbody id="grx26-audit-tbody"></tbody>
+  </table>
+</div>
+<script>
+(function() {
+  function refresh() {
+    if (typeof Audit === 'undefined' || !Audit.getRecent) return;
+    var entries = Audit.getRecent(20);
+    var tbody = document.getElementById('grx26-audit-tbody');
+    if (!tbody) return;
+    if (!entries.length) { tbody.innerHTML = '<tr><td colspan="3">No entries.</td></tr>'; return; }
+    tbody.innerHTML = entries.map(function(e) {
+      return '<tr><td>' + (e.ts ? new Date(e.ts).toLocaleTimeString() : '') + '</td><td>' + (e.eventType || '') + '</td><td>' + (e.traceId || '') + '</td></tr>';
+    }).join('');
+  }
+  setTimeout(refresh, 100);
+})();
+</script>

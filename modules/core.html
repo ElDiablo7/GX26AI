@@ -1,22 +1,22 @@
-<section class="module-section core-container">
-  <!-- Module Header -->
-        <div class="module-header">
+<section class="module-section core-container grx26-control-centre">
+  <!-- MOD Control Centre Header -->
+        <div class="module-header grx26-cc-header">
         <div class="module-logo-slot">
           <span class="module-logo-text">GX</span>
         </div>
         <div class="module-header-text">
-          <h1 class="module-title">GRACE-X Core™</h1>
-          <p class="module-subtitle">
-        Central command hub – system status, module control, and AI assistant.
+          <h1 class="module-title grx26-cc-title">Control Centre</h1>
+          <p class="module-subtitle grx26-cc-subtitle">
+        Information centre — system status, module control, orchestration.
           </p>
         </div>
       </div>
 
-  <!-- GRACE-X Core AI Assistant (TOP PRIORITY) -->
-  <div class="builder-card" id="core-brain-card">
-    <h2>🧠 GRACE-X Core Assistant</h2>
-    <p class="hint">
-      Ask GRACE anything – general questions, ecosystem help, or just chat.
+  <!-- Core Assistant (routed via Sentinel) -->
+  <div class="builder-card grx26-panel" id="core-brain-card">
+    <h2 class="grx26-panel-heading">Assistant</h2>
+    <p class="hint grx26-cc-hint">
+      Requests are routed via Sentinel. Advisory only.
     </p>
 
     <div class="module-brain" id="core-brain-panel">
@@ -53,9 +53,9 @@
   <!-- CORE STATUS DASHBOARD -->
   <!-- ═══════════════════════════════════════════════════════════════════════ -->
   
-  <div class="builder-card" id="core-status-dashboard">
+  <div class="builder-card grx26-panel" id="core-status-dashboard">
     <div class="dashboard-header">
-      <h2>📊 Core Status & System Overview</h2>
+      <h2 class="grx26-panel-heading">Status & System Overview</h2>
       <div class="dashboard-controls">
         <button class="builder-btn dashboard-btn" id="dashboard-refresh" title="Refresh Now">
           🔄 Refresh
@@ -71,7 +71,7 @@
     <!-- SECTION 1: System Overview -->
     <div class="dashboard-section" id="section-system-overview">
       <div class="section-header" data-toggle="section-system-content">
-        <h3>⚡ System Overview</h3>
+        <h3>System Overview</h3>
         <span class="section-toggle">▼</span>
       </div>
       <div class="section-content" id="section-system-content">
@@ -125,7 +125,7 @@
     <!-- SECTION 2: Module Status Grid -->
     <div class="dashboard-section" id="section-modules">
       <div class="section-header" data-toggle="section-modules-content">
-        <h3>🧩 Module Status</h3>
+        <h3>Module Status</h3>
         <span class="section-toggle">▼</span>
       </div>
       <div class="section-content" id="section-modules-content">
@@ -138,7 +138,7 @@
     <!-- SECTION 3: Graphs & Charts -->
     <div class="dashboard-section" id="section-charts">
       <div class="section-header" data-toggle="section-charts-content">
-        <h3>📈 Activity & Analytics</h3>
+        <h3>Activity & Analytics</h3>
         <span class="section-toggle">▼</span>
       </div>
       <div class="section-content" id="section-charts-content">
@@ -219,7 +219,7 @@
     <!-- SECTION 5: Logs & Diagnostics -->
     <div class="dashboard-section" id="section-logs">
       <div class="section-header" data-toggle="section-logs-content">
-        <h3>🔧 Logs & Diagnostics</h3>
+        <h3>Logs & Diagnostics</h3>
         <span class="section-toggle">▼</span>
       </div>
       <div class="section-content" id="section-logs-content">
@@ -244,8 +244,8 @@
   <!-- ═══════════════════════════════════════════════════════════════════════ -->
 
   <!-- Quick Module Switcher -->
-  <div class="builder-card">
-    <h2 class="builder-card-title">🚀 Quick Module Switcher</h2>
+  <div class="builder-card grx26-panel">
+    <h2 class="builder-card-title grx26-panel-heading">Quick Module Switcher</h2>
     <div class="quick-module-grid" id="quick-module-grid">
       <button class="quick-module-btn" data-module="builder" style="--module-color: #f59e0b;">🏗️ Builder</button>
       <button class="quick-module-btn" data-module="siteops" style="--module-color: #ef4444;">🎬 SiteOps</button>
@@ -266,38 +266,21 @@
   </div>
 
   <!-- OVERVIEW CARD -->
-  <div class="builder-card core-overview-card">
-    <h2 class="builder-card-title">About GRACE-X AI™</h2>
+  <div class="builder-card grx26-panel core-overview-card">
+    <h2 class="builder-card-title grx26-panel-heading">System Summary</h2>
     <p>
-      GRACE-X AI™ is a modular AI assistant ecosystem engineered and copyrighted by <strong>Zac Crockett</strong>.
-      The platform runs on OpenAI model technology, configured and packaged into specialized modules for different use cases.
+      GRX26AI control centre. Orchestration, status, and module access. All requests route via Sentinel.
     </p>
     <ul>
-      <li><strong>AI-Powered:</strong> Level 5 Brain API connects to OpenAI, Anthropic, and other LLM providers.</li>
-      <li><strong>Modular Design:</strong> 15+ specialized modules including Sport, Fit, Chef, Gamer, Builder, and more.</li>
-      <li><strong>Voice Enabled:</strong> Talk to GRACE via microphone in any module.</li>
-      <li><strong>Local + Cloud:</strong> Level 1 local brain fallback when API is unavailable.</li>
+      <li><strong>Orchestrator:</strong> Core coordinates modules and status.</li>
+      <li><strong>Governance:</strong> Sentinel overlay; Titan on demand.</li>
+      <li><strong>Modules:</strong> Specialist modules available from sidebar or switcher below.</li>
     </ul>
   </div>
 
-  <!-- CREATOR INFO -->
-  <div class="builder-card">
-    <h2 class="builder-card-title">👨‍💻 Created By</h2>
-    <p>
-      <strong>GRACE-X AI™</strong> was engineered, configured, and copyrighted by <strong>Zac Crockett</strong>.
-    </p>
-    <p class="hint">
-      The underlying AI runs on OpenAI model technology (e.g., GPT-4o), but GRACE-X AI™ is not ChatGPT – 
-      it's a custom-built ecosystem with its own identity, voice, and specialized modules.
-    </p>
-    <p class="hint" style="margin-top: 8px;">
-      <strong>GRACE-X Sport™</strong> © Zac Crockett (51%) & Jason Treadaway (49%)
-    </p>
-  </div>
-
   <!-- TECH STACK -->
-  <div class="builder-card">
-    <h2 class="builder-card-title">🛠️ Technology Stack</h2>
+  <div class="builder-card grx26-panel">
+    <h2 class="builder-card-title grx26-panel-heading">Technology Stack</h2>
     <div class="builder-results">
       <div class="result-row">
         <span>Frontend</span>

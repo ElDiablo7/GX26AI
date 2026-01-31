@@ -18,7 +18,36 @@
         // DISABLED BY USER REQUEST - Jan 29, 2026
         // setupSidebarToggle();
         // setupThemeSystem();
+        setupGRX26ThemeButton();
         loadSavedPreferences();
+    }
+
+    // ============================================
+    // GRX26 THEME BUTTON (Venus / MOD) — left sidebar
+    // ============================================
+    function setupGRX26ThemeButton() {
+        const btn = document.getElementById('grx26-theme-btn');
+        if (!btn) return;
+        const body = document.body;
+        const MOD_CLASS = 'grx26-police';
+        const STORAGE_KEY = 'grx26-theme';
+
+        function isMOD() { return body.classList.contains(MOD_CLASS); }
+        function setMOD(on) {
+            if (on) body.classList.add(MOD_CLASS); else body.classList.remove(MOD_CLASS);
+            localStorage.setItem(STORAGE_KEY, on ? 'mod' : 'venus');
+            btn.setAttribute('title', on ? 'Theme: MOD (click for Venus)' : 'Theme: Venus (click for MOD)');
+            btn.textContent = on ? 'Theme: MOD' : 'Theme';
+        }
+
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved === 'venus') setMOD(false); else if (saved === 'mod') setMOD(true);
+        else setMOD(true); // default MOD
+
+        btn.addEventListener('click', function() {
+            setMOD(!isMOD());
+            if (window.GRACEX_TTS) GRACEX_TTS.speak(isMOD() ? 'MOD theme' : 'Venus theme');
+        });
     }
     
     // ============================================

@@ -23,26 +23,21 @@
     <link rel="stylesheet" href="assets/css/gracex-themes.css?v=TITAN">
     <!-- BOOT SCREEN - Enterprise Startup -->
     <link rel="stylesheet" href="assets/css/boot-screen.css?v=TITAN">
+    <!-- GRX26AI Police/MOD theme -->
+    <link rel="stylesheet" href="assets/css/grx26.theme.css?v=GRX26">
+    <link rel="stylesheet" href="assets/css/grx26.layout.css?v=GRX26">
+    <!-- Venus pack CSS -->
+    <link rel="stylesheet" href="assets/css/venus.css?v=VENUS">
 </head>
 
-<body>
+<body class="grx26-police">
   <!-- ENTERPRISE BOOT SCREEN (Loads first via boot-screen.js) -->
   <script src="assets/js/boot-screen.js?v=TITAN"></script>
   
   <!-- Build tag - ULTIMATE EDITION v6.6.0 -->
   <div style="position:fixed;bottom:8px;left:8px;font-size:11px;opacity:0.7;z-index:9999;font-weight:600;color:#10b981;">🦁 GRACE-X v6.6.0 ULTIMATE</div>
 
-    <!-- Boot overlay (Legacy - now handled by boot-screen.js) -->
-    <div id="boot" style="display:none;">
-        <video id="boot-video" class="boot-bg-video" src="assets/video/gracex_boot_intro.mp4" autoplay muted loop playsinline></video>
-        <!-- MP3 boot voice disabled - video will unmute on user click to play with sound -->
-        <div class="boot-card">
-            <div class="boot-title">GRACE-X AI™</div>
-            <div class="boot-sub">Initialising Core Systems…</div>
-            <div class="progress">ENGAGE!<div></div></div>
-            <p class="small" style="margin-top:10px">Tap or press any key to start &amp; enter Core.</p>
-        </div>
-    </div>
+    <!-- Boot: enterprise boot screen only (boot-screen.js). Legacy video overlay removed to avoid overlap. -->
 
     <!-- Main App Shell -->
     <div id="app" style="display:none;">
@@ -52,33 +47,42 @@
             <div class="brand">
                 <img src="assets/img/gracex_main_logo.png" alt="GRACE-X logo">
                 <div>
-                    <h1>GRACE-X AI™</h1>
-                    <div class="small">Anchored Workflow Build</div>
+                    <h1 class="grx26-header-title">GRX26AI — Restricted Deployment</h1>
+                    <div class="small">Core · Sentinel · Titan</div>
                 </div>
             </div>
 
-            <div class="section-title">Core &amp; Primary Modules</div>
+            <div class="section-title">Core &amp; Governance</div>
+            <div class="sidebar-theme-row">
+              <button type="button" id="grx26-theme-btn" class="module-btn grx26-theme-btn" title="Theme (Venus / MOD)">Theme</button>
+            </div>
 
             <!-- Module Buttons -->
             <nav class="module-nav">
-  <button class="module-btn" data-module="core">GRACE-X Core™</button>
-  <button class="module-btn" data-module="core2" style="background: linear-gradient(135deg, #00f0ff 0%, #ff00ff 50%, #8800ff 100%); box-shadow: 0 0 20px rgba(0,240,255,0.3);">🚀 GRACE-X CORE 2.0™</button>
-  <button class="module-btn" data-module="builder">GRACE-X Builder™</button>
-  <button class="module-btn" data-module="siteops">GRACE-X SiteOps™</button>
-  <button class="module-btn" data-module="tradelink">GRACE-X TradeLink™</button>
-  <button class="module-btn" data-module="beauty">GRACE-X Beauty™</button>
-  <button class="module-btn" data-module="fit">GRACE-X Fit™</button>
-  <button class="module-btn" data-module="yoga">GRACE-X Yoga™</button>
-  <button class="module-btn" data-module="uplift">GRACE-X Uplift™</button>
-  <button class="module-btn" data-module="chef">GRACE-X Chef™</button>
-  <button class="module-btn" data-module="artist">GRACE-X Artist™</button>
-  <button class="module-btn" data-module="family">GRACE-X Family™</button>
-  <button class="module-btn" data-module="gamer">GRACE-X Gamer Mode™</button>
-  <button class="module-btn" data-module="accounting">GRACE-X Accounting™</button>
-  <button class="module-btn" data-module="osint">GRACE-X OSINT™</button>
-  <button class="module-btn" data-module="sport" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">GRACE-X Sport™</button>
-  <button class="module-btn" data-module="guardian" style="background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);">🛡️ GRACE-X Guardian™</button>
-  <button class="module-btn" data-module="forge" style="background: linear-gradient(135deg, #00d4ff 0%, #0066aa 100%);">⚒️ GRACE-X Forge™</button>
+  <button class="module-btn" data-module="core">Core</button>
+  <button class="module-btn" data-module="sentinel">Sentinel</button>
+  <button class="module-btn" data-module="titan">Titan</button>
+  <button class="module-btn" data-module="venus">Venus</button>
+  <button class="module-btn" data-module="forge_map">Forge Map</button>
+  <button class="module-btn" data-module="system-status">System Status</button>
+  <button class="module-btn" data-module="audit-log">Audit Log</button>
+  <button class="module-btn" data-module="core2">Core 2.0</button>
+  <button class="module-btn" data-module="builder">Builder</button>
+  <button class="module-btn" data-module="siteops">SiteOps</button>
+  <button class="module-btn" data-module="tradelink">TradeLink</button>
+  <button class="module-btn" data-module="beauty">Beauty</button>
+  <button class="module-btn" data-module="fit">Fit</button>
+  <button class="module-btn" data-module="yoga">Yoga</button>
+  <button class="module-btn" data-module="uplift">Uplift</button>
+  <button class="module-btn" data-module="chef">Chef</button>
+  <button class="module-btn" data-module="artist">Artist</button>
+  <button class="module-btn" data-module="family">Family</button>
+  <button class="module-btn" data-module="gamer">Gamer</button>
+  <button class="module-btn" data-module="accounting">Accounting</button>
+  <button class="module-btn" data-module="osint">OSINT</button>
+  <button class="module-btn" data-module="sport">Sport</button>
+  <button class="module-btn" data-module="guardian">Guardian</button>
+  <button class="module-btn" data-module="forge">Forge</button>
 </nav>
 
             <!-- Voice Settings Button -->
@@ -188,6 +192,19 @@
     <script src="assets/js/brain/gracex.brain.js?v=TITAN"></script>
     <!-- MASTER CONTROL - Enterprise Orchestration -->
     <script src="assets/js/gracex-master-control.js?v=TITAN"></script>
+    <!-- GRX26AI — Police/MOD architecture (order matters) -->
+    <script src="assets/js/core/core.registry.js?v=GRX26"></script>
+    <script src="assets/js/forge/forge.model.js?v=GRX26"></script>
+    <script src="assets/js/core/core.audit.js?v=GRX26"></script>
+    <script src="assets/js/governance/sentinel.rules.js?v=GRX26"></script>
+    <script src="assets/js/governance/sentinel.overlay.js?v=GRX26"></script>
+    <script src="assets/js/governance/titan.invoke.js?v=GRX26"></script>
+    <script src="assets/js/governance/permissions.js?v=GRX26"></script>
+    <script src="assets/js/core/core.selftest.js?v=GRX26"></script>
+    <script src="assets/js/core/core.orchestrator.js?v=GRX26"></script>
+    <script src="assets/js/forge/forge.map.js?v=GRX26"></script>
+    <script src="assets/js/ui/sidebar.js?v=GRX26"></script>
+    <script src="assets/js/ui/panels.js?v=GRX26"></script>
     <!-- Enterprise Systems -->
     <script src="assets/js/callsheets.js?v=TITAN"></script>
     <script src="assets/js/risk-safety.js?v=TITAN"></script>
