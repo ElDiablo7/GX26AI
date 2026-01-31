@@ -30,8 +30,11 @@
       'UI CONTROLS'
     ],
     currentModuleIndex: 0,
-    bootDuration: 6000, // 6 seconds total boot time
+    bootDuration: 6000, // 6 seconds total boot time (fallback if video fails)
     skipRequested: false,
+    progressIntervalId: null,
+    videoUnmuted: false,
+    bootCompleted: false,
 
     init() {
       if (this.initialized) return;
@@ -69,9 +72,11 @@
           <div>STATUS: INITIALIZING</div>
         </div>
         
-        <!-- Main Logo -->
-        <div class="boot-logo-container">
-          <img src="assets/images/gracex-boot-logo.png" alt="GRACE-X AI PRO FILM PRODUCTION SUITE">
+        <!-- Main Boot Video -->
+        <div class="boot-video-container">
+          <video id="boot-video" autoplay playsinline muted>
+            <source src="assets/video/gracex_boot_intro.mp4" type="video/mp4">
+          </video>
         </div>
         
         <!-- Module Loading List -->
@@ -89,7 +94,7 @@
         
         <!-- Skip Hint -->
         <div class="boot-skip-hint">
-          Press any key to skip • ESC to skip always
+          Click to enable sound • Any key to skip • ESC to skip always
         </div>
         
         <!-- Copyright -->
@@ -102,6 +107,19 @@
       
       // Generate particles
       this.generateParticles();
+      
+      // When video ends, complete boot (and clear timer fallback)
+      const bootVideo = document.getElementById('boot-video');
+      if (bootVideo) {
+        bootVideo.addEventListener('ended', () => {
+          if (this.progressIntervalId) clearInterval(this.progressIntervalId);
+          this.progressIntervalId = null;
+          this.completeBoot();
+        });
+        bootVideo.addEventListener('error', () => {
+          console.warn('[GRACE-X BOOT] Video failed to load, using timer fallback');
+        });
+      }
     },
 
     generateParticles() {
@@ -129,14 +147,15 @@
       // Load modules progressively
       this.loadModulesSequentially();
       
-      // Update progress bar smoothly
-      const progressInterval = setInterval(() => {
+      // Update progress bar smoothly (fallback if video doesn't end)
+      this.progressIntervalId = setInterval(() => {
         const elapsed = Date.now() - this.startTime;
         const progress = Math.min((elapsed / this.bootDuration) * 100, 100);
         progressBar.style.width = progress + '%';
         
         if (progress >= 100 || this.skipRequested) {
-          clearInterval(progressInterval);
+          if (this.progressIntervalId) clearInterval(this.progressIntervalId);
+          this.progressIntervalId = null;
           this.completeBoot();
         }
       }, 50);
@@ -186,6 +205,13 @@
     },
 
     completeBoot() {
+      if (this.bootCompleted) return;
+      this.bootCompleted = true;
+      if (this.progressIntervalId) {
+        clearInterval(this.progressIntervalId);
+        this.progressIntervalId = null;
+      }
+      
       const statusText = document.getElementById('boot-status-text');
       const progressBar = document.getElementById('boot-progress-bar');
       const systemInfo = document.querySelector('.boot-system-info');
@@ -247,27 +273,48 @@
     },
 
     setupEventListeners() {
-      // Press any key to skip
+      const bootVideo = document.getElementById('boot-video');
+      
+      // Unmute video on first user interaction (browsers require this for sound)
+      const unmuteOnInteraction = () => {
+        if (this.videoUnmuted || !bootVideo) return;
+        this.videoUnmuted = true;
+        bootVideo.muted = false;
+        bootVideo.play().catch(() => {});
+        console.log('[GRACE-X BOOT] Video unmuted – sound enabled');
+      };
+      
+      // Press any key: first key (except ESC) unmutes video; ESC or second key skips
       const skipHandler = (e) => {
-        if (this.skipRequested) return;
-        
-        this.skipRequested = true;
-        
-        // ESC = skip always
         if (e.key === 'Escape') {
-          localStorage.setItem('gracex_skip_boot', 'true');
-          console.log('🔇 Boot screen disabled for future sessions');
+          if (!this.skipRequested) {
+            this.skipRequested = true;
+            localStorage.setItem('gracex_skip_boot', 'true');
+            console.log('🔇 Boot screen disabled for future sessions');
+            this.completeBoot();
+          }
+          document.removeEventListener('keydown', skipHandler);
+          return;
         }
-        
+        if (!this.videoUnmuted) {
+          unmuteOnInteraction();
+          return;
+        }
+        if (this.skipRequested) return;
+        this.skipRequested = true;
         this.completeBoot();
         document.removeEventListener('keydown', skipHandler);
       };
       
       document.addEventListener('keydown', skipHandler);
       
-      // Click to skip
+      // Click: first click unmutes video, second click skips
       const bootScreen = document.getElementById('gracex-boot-screen');
       bootScreen.addEventListener('click', () => {
+        if (!this.videoUnmuted) {
+          unmuteOnInteraction();
+          return;
+        }
         if (!this.skipRequested) {
           this.skipRequested = true;
           this.completeBoot();
