@@ -1,0 +1,15 @@
+{
+  "name": "gx26ai",
+  "version": "7.0.0",
+  "description": "GRACE-X Galvanized Edition - AI Assistant System",
+  "scripts": {
+    "start": "cd server && node server.js",
+    "install:server": "cd server && npm install",
+    "build": "cd server && npm install",
+    "postinstall": "cd server && npm install"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "license": "MIT"
+}
