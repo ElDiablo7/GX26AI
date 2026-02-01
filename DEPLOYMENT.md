@@ -52,8 +52,16 @@ http://localhost:3000
 
 This will load the main GRACE-X Boot Interface.
 
-## 6. Troubleshooting
+## 6. Deploying on Render
+
+- **Root Directory**: Leave empty. The repo root runs `npm run start` (which runs the server and serves the frontend).
+- **Health Check Path**: Use `/health` or `/healthz` (both are supported).
+- **Environment variables**: Set in Render **Environment** (not in a `.env` file). No `.env` is deployed. Add at least:
+  - `OPENAI_API_KEY` (or `API_KEY`) for the Brain
+  - Any Sport/API keys if you use those modules (e.g. `FOOTBALL_API_KEY`, `RACING_*`).
+
+## 7. Troubleshooting
 
 - **"Module not found"**: Ensure you ran `npm install` in the `server` directory.
-- **"API Error"**: Check your `.env` file for correct API keys.
+- **"API Error"**: Check your `.env` file (local) or Render Environment (production) for correct API keys.
 - **"Port in use"**: Change the `PORT` in `.env` if 3000 is taken.

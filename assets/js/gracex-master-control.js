@@ -354,7 +354,7 @@
 
       // Check backend
       try {
-        const response = await fetch('http://localhost:3000/health', {
+        const response = await fetch((window.GRACEX_API_BASE || 'http://localhost:3000') + '/health', {
           method: 'GET',
           timeout: 5000
         });

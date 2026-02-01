@@ -11,8 +11,8 @@
     // Network configuration
     const NetworkConfig = {
         // API Base URLs
-        brainAPI: window.GRACEX_BRAIN_API || 'http://localhost:3000/api/brain',
-        sportAPI: window.GRACEX_SPORT_API || 'http://localhost:3000/api/sport',
+        brainAPI: window.GRACEX_BRAIN_API || (window.GRACEX_API_BASE || 'http://localhost:3000') + '/api/brain',
+        sportAPI: window.GRACEX_SPORT_API || (window.GRACEX_API_BASE || 'http://localhost:3000') + '/api/sport',
         
         // Timeouts
         defaultTimeout: 30000,

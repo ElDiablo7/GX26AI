@@ -147,10 +147,12 @@
     <script src="assets/js/galvanized-recovery.js?v=GALVANIZED"></script>
     <!-- Level 5 API Configuration - ENABLED -->
     <script>
-      // Level 5 Brain API - PRODUCTION READY
-      // FIXED: Point to backend server on port 3000
-      window.GRACEX_BRAIN_API = 'http://localhost:3000/api/brain';
-      window.GRACEX_SPORT_API = 'http://localhost:3000/api/sport';
+      // API base: same origin on Render/production, localhost:3000 when developing locally
+      window.GRACEX_API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+        ? 'http://localhost:3000'
+        : window.location.origin;
+      window.GRACEX_BRAIN_API = window.GRACEX_API_BASE + '/api/brain';
+      window.GRACEX_SPORT_API = window.GRACEX_API_BASE + '/api/sport';
       // Version tracking for cache-busting
       window.GRACEX_VERSION = 'ULTIMATE_v6.6.0';
       // Enable dev tools on localhost
@@ -162,6 +164,7 @@
       console.log('%c   AI PRO FILM PRODUCTION SUITE', 'color: #00d4ff; font-weight: bold;');
       console.log('%c   £47M MOD/Cabinet Office Tender Ready', 'color: #10b981; font-weight: bold;');
       console.log('%c═══════════════════════════════════════════════════════════', 'color: #10b981');
+      console.log('   API Base:', window.GRACEX_API_BASE);
       console.log('   Backend API:', window.GRACEX_BRAIN_API);
       console.log('   Sport API:', window.GRACEX_SPORT_API);
       console.log('   Version:', window.GRACEX_VERSION);

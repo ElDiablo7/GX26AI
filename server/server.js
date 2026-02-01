@@ -467,20 +467,22 @@ function validateMessages(messages) {
 // API ENDPOINTS
 // ============================================
 
-// Health check endpoint
-app.get('/health', (req, res) => {
+// Health check endpoint (Render and others)
+const healthPayload = (req, res) => {
   res.json({
     status: 'ok',
     service: 'GRACE-X Brain API',
     version: API_VERSION,
     timestamp: new Date().toISOString(),
     provider: process.env.LLM_PROVIDER || 'openai',
-    model: process.env.LLM_PROVIDER === 'anthropic' 
+    model: process.env.LLM_PROVIDER === 'anthropic'
       ? (process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514')
       : (process.env.OPENAI_MODEL || 'gpt-4o-mini'),
     uptime: Math.floor(process.uptime())
   });
-});
+};
+app.get('/health', healthPayload);
+app.get('/healthz', healthPayload);
 
 app.get('/net/status', async (req, res) => {
   const result = {
@@ -1872,7 +1874,7 @@ const server = app.listen(PORT, () => {
 ╠═══════════════════════════════════════════════════════════╣
 ║                                                           ║
 ║   🔑  Provider:  ${(process.env.LLM_PROVIDER || 'openai').padEnd(39)}║
-║   🔒  API Key:   ${process.env.API_KEY ? '✓ Configured'.padEnd(39) : '✗ NOT SET - Add to .env!'.padEnd(39)}║
+║   🔒  API Key:   ${(process.env.OPENAI_API_KEY || process.env.API_KEY) ? '✓ Configured'.padEnd(39) : '✗ NOT SET - Set in Render Env'.padEnd(39)}║
 ║                                                           ║
 ╚═══════════════════════════════════════════════════════════╝
 `);
