@@ -3,16 +3,79 @@
     <div class="module-logo-slot sentinel-logo-slot"><span class="module-logo-text">S</span></div>
     <div class="module-header-text">
       <h1 class="module-title grx26-cc-title">Sentinel — Oversight</h1>
-      <p class="module-subtitle grx26-cc-subtitle">Information centre — policy enforcement, Titan routing, MOD-facing oversight.</p>
+      <p class="module-subtitle grx26-cc-subtitle">Policy enforcement, Titan routing, MOD-facing oversight. All responses route through Sentinel.</p>
     </div>
   </div>
+
   <div class="builder-card grx26-panel" id="grx26-sentinel-flow">
     <h2 class="grx26-panel-heading">Control flow</h2>
-    <p class="grx26-cc-hint">All responses route: User → Core → Sentinel → (optional Titan) → Sentinel → Core → User.</p>
+    <p class="grx26-cc-hint">User → Core → Sentinel → (optional Titan) → Sentinel → Core → User.</p>
     <p class="grx26-cc-hint">Sentinel cannot be bypassed. Policy rules and Titan invocation are applied here.</p>
+    <ul style="margin-top:12px;font-size:13px;color:var(--grx26-text-muted,#9ca3af);">
+      <li><strong>SentinelOverlay.process</strong> — Classifies request (high-risk / operational / informational), runs SentinelRules, sets riskFlags, uncertaintyLabel, recommendedNextSteps.</li>
+      <li><strong>Titan</strong> — Invoked only when sentinel sets <code>invokeTitan</code> (e.g. high-risk or uncertainty requested). Advisory only.</li>
+      <li><strong>Audit</strong> — Every request logs: request_received, sentinel_processed, titan_invoked (when applicable), response_sent.</li>
+    </ul>
   </div>
+
+  <div class="builder-card grx26-panel" id="grx26-sentinel-policy">
+    <h2 class="grx26-panel-heading">Policy (SentinelRules)</h2>
+    <p class="grx26-cc-hint">Outputs are advisory, not commanding. Uncertainty explicitly labeled.</p>
+    <table class="grx26-audit-table" style="margin-top:8px;">
+      <thead><tr><th>Rule</th><th>Behaviour</th></tr></thead>
+      <tbody>
+        <tr><td>Illegal / harmful</td><td>Blocked; warnings logged.</td></tr>
+        <tr><td>Autonomy / commands</td><td>requiresHuman; responseFrame = advisory_only; no autonomous execution.</td></tr>
+        <tr><td>Certainty claims</td><td>Confidence labeled; no guarantees without evidence.</td></tr>
+        <tr><td>Response frame</td><td>Advisory only; outcomes require human approval.</td></tr>
+        <tr><td>Uncertainty</td><td>riskFlags, uncertaintyLabel (high/medium/low), recommendedNextSteps.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
   <div class="builder-card grx26-panel" id="grx26-sentinel-status">
     <h2 class="grx26-panel-heading">Status &amp; recent activity</h2>
-    <div id="grx26-sentinel-last"></div>
+    <p class="grx26-cc-hint">Sentinel-related audit events: sentinel_input, sentinel_processed, titan_invoked.</p>
+    <p id="grx26-sentinel-last-summary" style="font-size:12px;color:var(--grx26-text-muted,#9ca3af);margin-bottom:8px;">—</p>
+    <table class="grx26-audit-table" style="margin-top:8px;">
+      <thead><tr><th>Time</th><th>Event</th><th>Trace ID</th><th>Detail</th></tr></thead>
+      <tbody id="grx26-sentinel-last"></tbody>
+    </table>
   </div>
 </section>
+<script>
+(function() {
+  var SENTINEL_EVENTS = ['sentinel_input', 'sentinel_processed', 'titan_invoked', 'request_received', 'response_sent'];
+  function refresh() {
+    if (typeof Audit === 'undefined' || !Audit.getRecent) return;
+    var entries = Audit.getRecent(50);
+    var sentinelEntries = entries.filter(function(e) { return SENTINEL_EVENTS.indexOf(e.eventType) !== -1; }).slice(0, 25);
+    var tbody = document.getElementById('grx26-sentinel-last');
+    var summaryEl = document.getElementById('grx26-sentinel-last-summary');
+    if (!tbody) return;
+    if (summaryEl) {
+      var lastProcessed = sentinelEntries.find(function(e) { return e.eventType === 'sentinel_processed'; });
+      summaryEl.textContent = lastProcessed
+        ? 'Last processed: ' + (lastProcessed.traceId || '') + ' — uncertainty: ' + (lastProcessed.payload && lastProcessed.payload.uncertaintyLabel || '—')
+        : 'No sentinel activity yet. Use System Status → Submit via Core to generate traffic.';
+    }
+    if (!sentinelEntries.length) {
+      tbody.innerHTML = '<tr><td colspan="4">No sentinel events yet.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = sentinelEntries.map(function(e) {
+      var detail = '';
+      if (e.payload) {
+        if (e.eventType === 'sentinel_processed' && e.payload.invokeTitan) detail = 'Titan invoked';
+        else if (e.payload.uncertaintyLabel) detail = e.payload.uncertaintyLabel;
+        else if (e.payload.requestType) detail = e.payload.requestType;
+      }
+      return '<tr><td>' + (e.ts ? new Date(e.ts).toLocaleTimeString() : '') + '</td><td>' + (e.eventType || '') + '</td><td>' + (e.traceId || '') + '</td><td>' + detail + '</td></tr>';
+    }).join('');
+  }
+  setTimeout(refresh, 100);
+  document.addEventListener('gracex:module:loaded', function(ev) {
+    if (ev.detail && ev.detail.module === 'sentinel') setTimeout(refresh, 50);
+  });
+})();
+</script>
