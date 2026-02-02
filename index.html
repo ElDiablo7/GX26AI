@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>GRACE-X Security Division</title>
+    <title>GRACE-X AI™ ELIL SECURITY SUITE™ — © Zac Crockett 2026</title>
 
     <!-- FAVICON -->
     <link rel="icon" type="image/svg+xml" href="assets/img/logo.svg">
@@ -31,11 +31,22 @@
 </head>
 
 <body class="grx26-police">
+  <!-- SECURITY WALL: Verify user every login (session-only; no persistent bypass) -->
+  <script>
+    (function() {
+      try {
+        if (!sessionStorage.getItem('securityWallVerified')) {
+          window.location.replace('secure_warning_lock.html');
+          return;
+        }
+      } catch (e) {}
+    })();
+  </script>
   <!-- ENTERPRISE BOOT SCREEN (Loads first via boot-screen.js) -->
   <script src="assets/js/boot-screen.js?v=SEC7"></script>
   
   <!-- Build tag - ULTIMATE EDITION v6.6.0 -->
-  <div style="position:fixed;bottom:8px;left:8px;font-size:11px;opacity:0.7;z-index:9999;font-weight:600;color:#10b981;">🛡️ GRACE-X Security v7.0</div>
+  <div style="position:fixed;bottom:8px;left:8px;font-size:11px;opacity:0.7;z-index:9999;font-weight:600;color:#10b981;">🛡️ GRACE-X AI™ ELIL SECURITY SUITE™ v7.0 · © Zac Crockett 2026</div>
 
     <!-- Boot: enterprise boot screen only (boot-screen.js). Legacy video overlay removed to avoid overlap. -->
 
@@ -47,7 +58,7 @@
             <div class="brand">
                 <img src="assets/img/gracex_main_logo.png" alt="GRACE-X logo">
                 <div>
-                    <h1 class="grx26-header-title">GRX26AI — Restricted Deployment</h1>
+                    <h1 class="grx26-header-title">GRACE-X AI™ ELIL SECURITY SUITE™ · © Zac Crockett 2026</h1>
                     <div class="small">Core · Sentinel · Titan</div>
                 </div>
             </div>
@@ -168,7 +179,7 @@
       console.log('   Backend API:', window.GRACEX_BRAIN_API);
       console.log('   Sport API:', window.GRACEX_SPORT_API);
       console.log('   Version:', window.GRACEX_VERSION);
-      console.log('   🦁 ULTIMATE PACK ACTIVE');
+      console.log('   🛡️ ELIL SECURITY SUITE ACTIVE');
     </script>
     <!-- CORE NETWORK MANAGER - Internet access through Core -->
     <script src="assets/js/core-network.js?v=SEC7"></script>
