@@ -296,9 +296,9 @@
 
             <div id="step2" class="auth-step" style="display:none;">
                 <p style="font-size: 0.9rem; margin-bottom: 1.5rem; color: #d0d8e8; text-align: center;">TWO-FACTOR AUTHENTICATION REQUIRED.<br><span style="color: #ffd8a0;">ENTER GENERATED SECURITY TOKEN.</span></p>
-                <form id="2faForm">
+                <form id="twoFaForm">
                     <div class="form-group"><label for="token">SECURE TOKEN (6 DIGITS)</label><input type="text" id="token" name="token" required pattern="[0-9]{6}" maxlength="6" placeholder="000000" style="text-align: center; font-size: 2rem; letter-spacing: 0.5rem;"></div>
-                    <div class="status-message" id="2faStatusMessage"></div>
+                    <div class="status-message" id="twoFaStatusMessage"></div>
                     <div class="modal-buttons"><button type="button" class="btn-secondary" id="backTo1">BACK</button><button type="submit" class="btn-secondary" style="border-color: #00ff88; color: #00ff88;">VERIFY TOKEN</button></div>
                 </form>
             </div>
@@ -321,11 +321,11 @@
         const authBtn = document.getElementById('authBtn');
         const authModal = document.getElementById('authModal');
         const authForm = document.getElementById('authForm');
-        const 2faForm = document.getElementById('2faForm');
+        const twoFaForm = document.getElementById('twoFaForm');
         const cancelBtn = document.getElementById('cancelBtn');
         const backTo1 = document.getElementById('backTo1');
         const statusMessage = document.getElementById('statusMessage');
-        const 2faStatusMessage = document.getElementById('2faStatusMessage');
+        const twoFaStatusMessage = document.getElementById('twoFaStatusMessage');
         const terminatedScreen = document.getElementById('terminatedScreen');
         const unlockedContent = document.getElementById('unlockedContent');
         const warningPanel = document.querySelector('.warning-panel');
@@ -368,15 +368,15 @@
             }
         });
 
-        2faForm.addEventListener('submit', (e) => {
+        twoFaForm.addEventListener('submit', (e) => {
             e.preventDefault();
             if (document.getElementById('token').value.trim() === AUTHORISED_TOKEN) {
-                2faStatusMessage.textContent = 'TOKEN ACCEPTED. FINALISING AUTHORISATION...';
-                2faStatusMessage.className = 'status-message show success';
+                twoFaStatusMessage.textContent = 'TOKEN ACCEPTED. FINALISING AUTHORISATION...';
+                twoFaStatusMessage.className = 'status-message show success';
                 setTimeout(() => { step2.style.display = 'none'; step3.style.display = 'block'; modalTitle.textContent = 'LEVEL 3: FINAL CLEARANCE'; clearanceLevel.textContent = 'LEVEL 2'; systemStatus.textContent = 'HANDSHAKING'; runFinalSequence(); }, 1000);
             } else {
-                2faStatusMessage.textContent = 'INVALID TOKEN — SECURITY PROTOCOL ENGAGED';
-                2faStatusMessage.className = 'status-message show error';
+                twoFaStatusMessage.textContent = 'INVALID TOKEN — SECURITY PROTOCOL ENGAGED';
+                twoFaStatusMessage.className = 'status-message show error';
                 document.getElementById('token').value = '';
                 document.getElementById('token').focus();
             }
