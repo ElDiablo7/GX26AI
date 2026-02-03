@@ -1,0 +1,622 @@
+/**
+ * TITAN + SENTINEL — Sci-Fi UI Theme
+ * Steel, blue glow, silver lines, subtle grid, animated scanline, faint starfield
+ */
+
+:root {
+  --titan-steel: #2a2d3a;
+  --titan-dark: #1a1d26;
+  --titan-blue: #00d4ff;
+  --titan-blue-glow: rgba(0, 212, 255, 0.3);
+  --titan-silver: #c0c0c0;
+  --titan-silver-light: #e8e8e8;
+  --titan-grid: rgba(0, 212, 255, 0.1);
+  --titan-text: #e0e0e0;
+  --titan-text-muted: #888;
+  --titan-border: rgba(192, 192, 192, 0.3);
+  --titan-posture-green: #00ff00;
+  --titan-posture-amber: #ffaa00;
+  --titan-posture-red: #ff0000;
+  --titan-posture-black: #000000;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Courier New', monospace;
+  background: var(--titan-dark);
+  color: var(--titan-text);
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Starfield background */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(2px 2px at 20% 30%, var(--titan-silver), transparent),
+    radial-gradient(2px 2px at 60% 70%, var(--titan-silver), transparent),
+    radial-gradient(1px 1px at 50% 50%, var(--titan-silver), transparent),
+    radial-gradient(1px 1px at 80% 10%, var(--titan-silver), transparent),
+    radial-gradient(2px 2px at 90% 40%, var(--titan-silver), transparent),
+    radial-gradient(1px 1px at 33% 60%, var(--titan-silver), transparent),
+    radial-gradient(1px 1px at 10% 80%, var(--titan-silver), transparent);
+  background-size: 200% 200%;
+  animation: starfield 20s linear infinite;
+  opacity: 0.3;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes starfield {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(-50%, -50%); }
+}
+
+/* Scanline overlay */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    transparent 50%,
+    rgba(0, 212, 255, 0.03) 50%
+  );
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 1000;
+  animation: scanline 8s linear infinite;
+}
+
+@keyframes scanline {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(4px); }
+}
+
+/* Main container */
+.titan-container {
+  display: flex;
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+/* Left Panel - Router */
+.titan-left-panel {
+  width: 280px;
+  background: var(--titan-steel);
+  border-right: 1px solid var(--titan-border);
+  padding: 20px;
+  overflow-y: auto;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.titan-mode-toggle {
+  margin-bottom: 20px;
+  padding: 10px;
+  background: var(--titan-dark);
+  border: 1px solid var(--titan-border);
+  border-radius: 4px;
+}
+
+.titan-mode-toggle label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 12px;
+  color: var(--titan-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.titan-mode-toggle .mode-display {
+  display: flex;
+  gap: 10px;
+}
+
+.titan-mode-toggle button {
+  flex: 1;
+  padding: 8px;
+  background: var(--titan-dark);
+  border: 1px solid var(--titan-border);
+  color: var(--titan-text);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 11px;
+  text-transform: uppercase;
+  transition: all 0.2s;
+}
+
+.titan-mode-toggle button.active {
+  background: var(--titan-blue);
+  color: var(--titan-dark);
+  box-shadow: 0 0 10px var(--titan-blue-glow);
+}
+
+.titan-mode-toggle button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.titan-tabs {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.titan-tabs li {
+  margin-bottom: 4px;
+}
+
+.titan-tabs button {
+  width: 100%;
+  padding: 12px 16px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--titan-text);
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px;
+  transition: all 0.2s;
+  border-left: 3px solid transparent;
+}
+
+.titan-tabs button:hover {
+  background: rgba(0, 212, 255, 0.1);
+  border-left-color: var(--titan-blue);
+}
+
+.titan-tabs button.active {
+  background: rgba(0, 212, 255, 0.15);
+  border-left-color: var(--titan-blue);
+  color: var(--titan-blue);
+  box-shadow: 0 0 5px var(--titan-blue-glow);
+}
+
+/* Center Panel - Console */
+.titan-center-panel {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  background: var(--titan-dark);
+  position: relative;
+}
+
+.titan-grid-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    linear-gradient(var(--titan-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--titan-grid) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none;
+  opacity: 0.3;
+}
+
+.titan-console {
+  position: relative;
+  z-index: 1;
+}
+
+.titan-command-box {
+  margin-bottom: 20px;
+}
+
+.titan-command-box input {
+  width: 100%;
+  padding: 12px;
+  background: var(--titan-steel);
+  border: 1px solid var(--titan-border);
+  color: var(--titan-text);
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+.titan-command-box input:focus {
+  border-color: var(--titan-blue);
+  box-shadow: 0 0 10px var(--titan-blue-glow);
+}
+
+.titan-actions {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.titan-btn {
+  padding: 12px 24px;
+  background: var(--titan-steel);
+  border: 1px solid var(--titan-border);
+  color: var(--titan-text);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.2s;
+}
+
+.titan-btn:hover {
+  background: var(--titan-blue);
+  color: var(--titan-dark);
+  box-shadow: 0 0 10px var(--titan-blue-glow);
+}
+
+.titan-btn.primary {
+  background: var(--titan-blue);
+  color: var(--titan-dark);
+  border-color: var(--titan-blue);
+}
+
+.titan-btn.primary:hover {
+  box-shadow: 0 0 15px var(--titan-blue-glow);
+}
+
+.titan-btn.danger {
+  background: var(--titan-posture-red);
+  color: white;
+  border-color: var(--titan-posture-red);
+}
+
+.titan-btn.danger:hover {
+  box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+}
+
+.titan-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.titan-lockdown-switch {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px;
+  background: var(--titan-steel);
+  border: 2px solid var(--titan-posture-red);
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.titan-lockdown-switch input[type="checkbox"] {
+  width: 50px;
+  height: 25px;
+  appearance: none;
+  background: var(--titan-dark);
+  border: 2px solid var(--titan-posture-red);
+  border-radius: 25px;
+  position: relative;
+  cursor: pointer;
+}
+
+.titan-lockdown-switch input[type="checkbox"]:checked {
+  background: var(--titan-posture-red);
+}
+
+.titan-lockdown-switch input[type="checkbox"]::after {
+  content: '';
+  position: absolute;
+  width: 19px;
+  height: 19px;
+  background: white;
+  border-radius: 50%;
+  top: 1px;
+  left: 1px;
+  transition: transform 0.2s;
+}
+
+.titan-lockdown-switch input[type="checkbox"]:checked::after {
+  transform: translateX(25px);
+}
+
+.titan-output {
+  min-height: 300px;
+  padding: 20px;
+  background: var(--titan-steel);
+  border: 1px solid var(--titan-border);
+  border-radius: 4px;
+}
+
+.titan-card {
+  margin-bottom: 15px;
+  padding: 15px;
+  background: var(--titan-dark);
+  border-left: 3px solid var(--titan-blue);
+  border-radius: 2px;
+}
+
+.titan-card h3 {
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  color: var(--titan-blue);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.titan-card p {
+  margin: 5px 0;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.titan-card .finding {
+  padding: 8px;
+  margin: 5px 0;
+  background: rgba(0, 212, 255, 0.05);
+  border-left: 2px solid var(--titan-blue);
+  font-size: 12px;
+}
+
+.titan-card .finding.severity-critical {
+  border-left-color: var(--titan-posture-red);
+  background: rgba(255, 0, 0, 0.1);
+}
+
+.titan-card .finding.severity-high {
+  border-left-color: var(--titan-posture-amber);
+  background: rgba(255, 170, 0, 0.1);
+}
+
+/* Right Panel - Status */
+.titan-right-panel {
+  width: 300px;
+  background: var(--titan-steel);
+  border-left: 1px solid var(--titan-border);
+  padding: 20px;
+  overflow-y: auto;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.titan-presence-banner {
+  padding: 15px;
+  background: var(--titan-dark);
+  border: 2px solid var(--titan-blue);
+  border-radius: 4px;
+  margin-bottom: 20px;
+  text-align: center;
+  box-shadow: 0 0 15px var(--titan-blue-glow);
+}
+
+.titan-presence-banner h2 {
+  margin: 0;
+  font-size: 16px;
+  color: var(--titan-blue);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.titan-posture {
+  padding: 15px;
+  background: var(--titan-dark);
+  border-radius: 4px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.titan-posture .posture-indicator {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin-right: 10px;
+  vertical-align: middle;
+  box-shadow: 0 0 10px currentColor;
+}
+
+.titan-posture.green .posture-indicator {
+  background: var(--titan-posture-green);
+  color: var(--titan-posture-green);
+}
+
+.titan-posture.amber .posture-indicator {
+  background: var(--titan-posture-amber);
+  color: var(--titan-posture-amber);
+}
+
+.titan-posture.red .posture-indicator {
+  background: var(--titan-posture-red);
+  color: var(--titan-posture-red);
+}
+
+.titan-posture.black .posture-indicator {
+  background: var(--titan-posture-black);
+  color: var(--titan-posture-red);
+  border: 2px solid var(--titan-posture-red);
+}
+
+.titan-status-section {
+  margin-bottom: 20px;
+  padding: 15px;
+  background: var(--titan-dark);
+  border: 1px solid var(--titan-border);
+  border-radius: 4px;
+}
+
+.titan-status-section h3 {
+  margin: 0 0 10px 0;
+  font-size: 12px;
+  color: var(--titan-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.titan-status-section p {
+  margin: 5px 0;
+  font-size: 13px;
+}
+
+.titan-events {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.titan-events li {
+  padding: 8px;
+  margin-bottom: 5px;
+  background: rgba(0, 212, 255, 0.05);
+  border-left: 2px solid var(--titan-blue);
+  font-size: 11px;
+  font-family: 'Courier New', monospace;
+}
+
+.titan-events li .time {
+  color: var(--titan-text-muted);
+  margin-right: 10px;
+}
+
+.titan-integrity-flags {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.titan-integrity-flags li {
+  padding: 8px;
+  margin-bottom: 5px;
+  background: rgba(255, 0, 0, 0.1);
+  border-left: 2px solid var(--titan-posture-red);
+  font-size: 11px;
+}
+
+.titan-integrity-flags li.clear {
+  background: rgba(0, 255, 0, 0.1);
+  border-left-color: var(--titan-posture-green);
+}
+
+/* Security Warning Modal */
+.titan-security-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+.titan-security-modal-content {
+  max-width: 500px;
+  padding: 40px;
+  background: var(--titan-steel);
+  border: 2px solid var(--titan-blue);
+  border-radius: 4px;
+  box-shadow: 0 0 30px var(--titan-blue-glow);
+  text-align: center;
+}
+
+.titan-security-modal-content h1 {
+  margin: 0 0 20px 0;
+  font-size: 24px;
+  color: var(--titan-blue);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.titan-security-modal-content p {
+  margin: 15px 0;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.titan-security-modal-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.titan-security-modal-actions button {
+  padding: 12px 30px;
+  font-family: inherit;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  border: 1px solid var(--titan-border);
+  transition: all 0.2s;
+}
+
+.titan-security-modal-actions .btn-acknowledge {
+  background: var(--titan-blue);
+  color: var(--titan-dark);
+  border-color: var(--titan-blue);
+}
+
+.titan-security-modal-actions .btn-acknowledge:hover {
+  box-shadow: 0 0 15px var(--titan-blue-glow);
+}
+
+.titan-security-modal-actions .btn-exit {
+  background: transparent;
+  color: var(--titan-text);
+  border-color: var(--titan-border);
+}
+
+.titan-security-modal-actions .btn-exit:hover {
+  background: var(--titan-posture-red);
+  color: white;
+  border-color: var(--titan-posture-red);
+}
+
+/* Demo commands */
+.titan-demo-commands {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.titan-demo-commands button {
+  padding: 8px 12px;
+  background: var(--titan-steel);
+  border: 1px solid var(--titan-border);
+  color: var(--titan-text);
+  font-family: inherit;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.titan-demo-commands button:hover {
+  background: rgba(0, 212, 255, 0.2);
+  border-color: var(--titan-blue);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--titan-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--titan-steel);
+  border: 1px solid var(--titan-border);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--titan-blue);
+}
