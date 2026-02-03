@@ -364,12 +364,18 @@
                 if (window.speechSynthesis) {
                     window.speechSynthesis.cancel();
                     var u = new SpeechSynthesisUtterance(text);
-                    u.rate = 0.9;
-                    u.pitch = 1;
+                    u.rate = 1.15;
+                    u.pitch = 1.15;
                     u.volume = 1;
                     var voices = window.speechSynthesis.getVoices();
-                    var en = voices.filter(function(v) { return v.lang.startsWith('en'); })[0];
-                    if (en) u.voice = en;
+                    var preferred = voices.filter(function(v) {
+                        var lang = (v.lang || '').toLowerCase();
+                        var name = (v.name || '').toLowerCase();
+                        return (lang === 'en-gb' || lang.startsWith('en_gb')) && (name.indexOf('google') !== -1 && name.indexOf('female') !== -1);
+                    })[0];
+                    if (!preferred) preferred = voices.filter(function(v) { var l = (v.lang || '').toLowerCase(); return l === 'en-gb' || l.startsWith('en_gb'); })[0];
+                    if (!preferred) preferred = voices.filter(function(v) { return (v.lang || '').toLowerCase().startsWith('en'); })[0];
+                    if (preferred) u.voice = preferred;
                     window.speechSynthesis.speak(u);
                 }
             } catch (e) {}
