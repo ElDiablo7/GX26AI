@@ -243,6 +243,9 @@
         .terminated-content { text-align: center; font-size: 1.5rem; letter-spacing: 0.1em; color: #d0d0d0; }
 
         .security-signature { position: absolute; bottom: 1.5rem; left: 50%; transform: translateX(-50%); font-size: 0.7rem; color: rgba(200, 220, 255, 0.4); letter-spacing: 0.05em; text-align: center; z-index: 10; }
+        .voice-repeat-btn { position: absolute; bottom: 3.5rem; left: 50%; transform: translateX(-50%); font-size: 0.75rem; padding: 0.4rem 0.8rem; background: rgba(200, 220, 255, 0.1); border: 1px solid rgba(200, 220, 255, 0.3); color: #d0d8e8; cursor: pointer; z-index: 10; border-radius: 2px; }
+        .voice-repeat-btn:hover { background: rgba(200, 220, 255, 0.2); }
+        .voice-repeat-btn.muted { opacity: 0.5; }
 
         #stepIndicator { position: fixed; top: 20px; right: 20px; color: #00ff88; font-family: monospace; font-size: 0.8rem; z-index: 200; text-align: right; }
 
@@ -274,6 +277,10 @@
     </div>
 
     <div class="security-signature">© Zac Crockett 2026 · GRACE-X AI™ ELIL SECURITY SUITE™</div>
+    <span style="position:absolute;bottom:3.5rem;left:50%;transform:translateX(-50%);z-index:10;display:flex;gap:8px;align-items:center;">
+        <button type="button" class="voice-repeat-btn" id="voiceRepeatBtn" title="Repeat instructions">🔊 Repeat instructions</button>
+        <button type="button" class="voice-repeat-btn" id="voiceMuteBtn" title="Mute voice">Mute voice</button>
+      </span>
 
     <div id="stepIndicator" style="display:none;">
         SECURITY CLEARANCE: <span id="clearanceLevel">LEVEL 0</span><br>
@@ -342,6 +349,33 @@
         const AUTHORISED_PASSWORD = 'BIG_ZAC A0251AH';
         const AUTHORISED_TOKEN = '025126';
 
+        var voiceMuted = false;
+        var currentStep = 'main';
+        var voiceInstructions = {
+            main: 'Secure system. Authorised access only. Your presence has been detected. Click Exit System to leave, or Authorise Access to sign in. Proceed only if you are explicitly authorised.',
+            level1: 'Level 1: Identity verification. Enter your Operator ID and Access Key in the fields, then click Proceed.',
+            level2: 'Level 2: Two factor authentication. Enter your six digit security token, then click Verify Token. Use Back to return to Level 1.',
+            level3: 'Level 3: Final clearance. Biometric scan in progress. Please wait.',
+            unlocked: 'Access authorised. Verification complete. Redirecting to the main system.'
+        };
+        function speak(text) {
+            if (voiceMuted || !text) return;
+            try {
+                if (window.speechSynthesis) {
+                    window.speechSynthesis.cancel();
+                    var u = new SpeechSynthesisUtterance(text);
+                    u.rate = 0.9;
+                    u.pitch = 1;
+                    u.volume = 1;
+                    var voices = window.speechSynthesis.getVoices();
+                    var en = voices.filter(function(v) { return v.lang.startsWith('en'); })[0];
+                    if (en) u.voice = en;
+                    window.speechSynthesis.speak(u);
+                }
+            } catch (e) {}
+        }
+        function speakCurrentStep() { speak(voiceInstructions[currentStep] || voiceInstructions.main); }
+
         function updateLog(message) {
             const line = document.createElement('div');
             line.textContent = '> ' + message;
@@ -349,10 +383,29 @@
             logContent.scrollTop = logContent.scrollHeight;
         }
 
-        exitBtn.addEventListener('click', () => { window.close(); setTimeout(() => { document.body.style.display = 'none'; terminatedScreen.classList.add('active'); }, 100); });
-        authBtn.addEventListener('click', () => { authModal.classList.add('active'); stepIndicator.style.display = 'block'; document.getElementById('username').focus(); });
-        cancelBtn.addEventListener('click', () => { authModal.classList.remove('active'); stepIndicator.style.display = 'none'; statusMessage.classList.remove('show'); authForm.reset(); });
-        backTo1.addEventListener('click', () => { step2.style.display = 'none'; step1.style.display = 'block'; modalTitle.textContent = 'LEVEL 1: IDENTITY VERIFICATION'; clearanceLevel.textContent = 'LEVEL 0'; });
+        exitBtn.addEventListener('click', () => { try { window.speechSynthesis && window.speechSynthesis.cancel(); } catch (e) {} try { window.close(); } catch (e) {} setTimeout(() => { document.body.style.display = 'none'; terminatedScreen.classList.add('active'); }, 100); });
+        authBtn.addEventListener('click', () => {
+            currentStep = 'level1';
+            authModal.classList.add('active');
+            stepIndicator.style.display = 'block';
+            document.getElementById('username').focus();
+            setTimeout(function() { speak(voiceInstructions.level1); }, 300);
+        });
+        cancelBtn.addEventListener('click', () => {
+            currentStep = 'main';
+            authModal.classList.remove('active');
+            stepIndicator.style.display = 'none';
+            statusMessage.classList.remove('show');
+            authForm.reset();
+        });
+        backTo1.addEventListener('click', () => {
+            currentStep = 'level1';
+            step2.style.display = 'none';
+            step1.style.display = 'block';
+            modalTitle.textContent = 'LEVEL 1: IDENTITY VERIFICATION';
+            clearanceLevel.textContent = 'LEVEL 0';
+            setTimeout(function() { speak(voiceInstructions.level1); }, 200);
+        });
 
         authForm.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -373,7 +426,16 @@
             if (document.getElementById('token').value.trim() === AUTHORISED_TOKEN) {
                 twoFaStatusMessage.textContent = 'TOKEN ACCEPTED. FINALISING AUTHORISATION...';
                 twoFaStatusMessage.className = 'status-message show success';
-                setTimeout(() => { step2.style.display = 'none'; step3.style.display = 'block'; modalTitle.textContent = 'LEVEL 3: FINAL CLEARANCE'; clearanceLevel.textContent = 'LEVEL 2'; systemStatus.textContent = 'HANDSHAKING'; runFinalSequence(); }, 1000);
+                setTimeout(() => {
+                step2.style.display = 'none';
+                step3.style.display = 'block';
+                modalTitle.textContent = 'LEVEL 3: FINAL CLEARANCE';
+                clearanceLevel.textContent = 'LEVEL 2';
+                systemStatus.textContent = 'HANDSHAKING';
+                currentStep = 'level3';
+                speak(voiceInstructions.level3);
+                runFinalSequence();
+            }, 1000);
             } else {
                 twoFaStatusMessage.textContent = 'INVALID TOKEN — SECURITY PROTOCOL ENGAGED';
                 twoFaStatusMessage.className = 'status-message show error';
@@ -392,6 +454,8 @@
         }
 
         function unlockSystem() {
+            currentStep = 'unlocked';
+            speak(voiceInstructions.unlocked);
             authModal.classList.remove('active');
             warningPanel.style.display = 'none';
             scanBand.style.display = 'none';
@@ -400,7 +464,31 @@
             try { sessionStorage.setItem('securityWallVerified', '1'); } catch (e) {}
             setTimeout(function() { window.location.href = 'index.html'; }, 2000);
         }
-        window.addEventListener('load', () => { exitBtn.focus(); });
+        window.addEventListener('load', function() {
+            exitBtn.focus();
+            currentStep = 'main';
+            setTimeout(function() { speak(voiceInstructions.main); }, 800);
+        });
+        if (window.speechSynthesis) {
+            window.speechSynthesis.getVoices();
+            window.addEventListener('voiceschanged', function() { window.speechSynthesis.getVoices(); });
+        }
+        var voiceRepeatBtn = document.getElementById('voiceRepeatBtn');
+        if (voiceRepeatBtn) {
+            voiceRepeatBtn.addEventListener('click', function() {
+                if (voiceMuted) return;
+                speakCurrentStep();
+            });
+        }
+        var voiceMuteBtn = document.getElementById('voiceMuteBtn');
+        if (voiceMuteBtn) {
+            voiceMuteBtn.addEventListener('click', function() {
+                voiceMuted = !voiceMuted;
+                if (window.speechSynthesis) window.speechSynthesis.cancel();
+                voiceMuteBtn.textContent = voiceMuted ? 'Unmute voice' : 'Mute voice';
+                voiceMuteBtn.classList.toggle('muted', voiceMuted);
+            });
+        }
     </script>
 </body>
 </html>
