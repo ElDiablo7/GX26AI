@@ -1,81 +1,282 @@
 <section class="module-section grx26-control-centre sentinel-container">
+  <!-- Load Sentinel Core Scripts -->
+  <script src="assets/js/governance/titan-sentinel-utils.js"></script>
+  <script src="assets/js/governance/titan-sentinel-logs.js"></script>
+  <script src="assets/js/governance/titan-sentinel-policy.js"></script>
+  <script src="assets/js/governance/titan-sentinel-core.js"></script>
+  <link rel="stylesheet" href="assets/css/titan.css?v=SENTINEL_UPGRADE">
+
   <div class="module-header grx26-cc-header">
     <div class="module-logo-slot sentinel-logo-slot"><span class="module-logo-text">S</span></div>
     <div class="module-header-text">
-      <h1 class="module-title grx26-cc-title">Sentinel — Oversight</h1>
-      <p class="module-subtitle grx26-cc-subtitle">Policy enforcement, Titan routing, MOD-facing oversight. All responses route through Sentinel.</p>
+      <h1 class="module-title grx26-cc-title">Sentinel — Complete Control Interface</h1>
+      <p class="module-subtitle grx26-cc-subtitle">Full governance control: Authentication, Authorization, Policy Enforcement, TITAN Routing, Audit & Monitoring</p>
     </div>
   </div>
 
-  <div class="builder-card grx26-panel" id="grx26-sentinel-flow">
-    <h2 class="grx26-panel-heading">Control flow</h2>
-    <p class="grx26-cc-hint">User → Core → Sentinel → (optional Titan) → Sentinel → Core → User.</p>
-    <p class="grx26-cc-hint">Sentinel cannot be bypassed. Policy rules and Titan invocation are applied here.</p>
-    <ul style="margin-top:12px;font-size:13px;color:var(--grx26-text-muted,#9ca3af);">
-      <li><strong>SentinelOverlay.process</strong> — Classifies request (high-risk / operational / informational), runs SentinelRules, sets riskFlags, uncertaintyLabel, recommendedNextSteps.</li>
-      <li><strong>Titan</strong> — Invoked only when sentinel sets <code>invokeTitan</code> (e.g. high-risk or uncertainty requested). Advisory only.</li>
-      <li><strong>Audit</strong> — Every request logs: request_received, sentinel_processed, titan_invoked (when applicable), response_sent.</li>
-    </ul>
+  <!-- Main Control Dashboard -->
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+    
+    <!-- Left Column: Authentication & Session Control -->
+    <div class="builder-card grx26-panel">
+      <h2 class="grx26-panel-heading">🔐 Authentication & Session</h2>
+      
+      <div id="sentinel-auth-status" style="padding: 15px; background: rgba(220, 38, 38, 0.1); border-left: 3px solid #dc2626; margin-bottom: 15px;">
+        <strong>Status:</strong> <span id="sentinel-auth-status-text">Not Authenticated</span>
+      </div>
+
+      <div style="margin-bottom: 15px;">
+        <label style="display: block; margin-bottom: 5px; font-weight: 600;">PIN / Key:</label>
+        <input type="password" id="sentinel-auth-input" placeholder="Enter PIN (SENTINEL or 1234)" 
+               style="width: 100%; padding: 8px; border: 1px solid var(--grx26-border, #374151); border-radius: 4px; background: var(--grx26-bg-secondary, #1f2937); color: var(--grx26-text, #e5e7eb);">
+      </div>
+
+      <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+        <button id="sentinel-auth-btn" class="builder-btn" style="flex: 1;">Authenticate</button>
+        <button id="sentinel-logout-btn" class="builder-btn" style="flex: 1; opacity: 0.5;" disabled>Logout</button>
+      </div>
+
+      <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid var(--grx26-border, #374151);">
+        <label style="display: block; margin-bottom: 5px; font-weight: 600;">Role:</label>
+        <select id="sentinel-role-select" style="width: 100%; padding: 8px; border: 1px solid var(--grx26-border, #374151); border-radius: 4px; background: var(--grx26-bg-secondary, #1f2937); color: var(--grx26-text, #e5e7eb);" disabled>
+          <option value="Viewer">Viewer</option>
+          <option value="Operator">Operator</option>
+          <option value="Admin">Admin</option>
+          <option value="Auditor">Auditor</option>
+        </select>
+      </div>
+
+      <div style="margin-top: 15px;">
+        <label style="display: block; margin-bottom: 5px; font-weight: 600;">Session Status:</label>
+        <div id="sentinel-session-status" style="padding: 10px; background: rgba(34, 197, 94, 0.1); border-left: 3px solid #22c55e; font-size: 13px;">
+          Session: <span id="sentinel-session-active">Inactive</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: System Posture & Lockdown -->
+    <div class="builder-card grx26-panel">
+      <h2 class="grx26-panel-heading">🛡️ System Posture & Control</h2>
+      
+      <div style="margin-bottom: 20px;">
+        <label style="display: block; margin-bottom: 10px; font-weight: 600;">Current Posture:</label>
+        <div id="sentinel-posture-display" style="display: flex; align-items: center; gap: 15px; padding: 15px; background: rgba(34, 197, 94, 0.1); border-left: 4px solid #22c55e; border-radius: 4px;">
+          <div id="sentinel-posture-indicator" style="width: 20px; height: 20px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 10px #22c55e;"></div>
+          <div>
+            <div style="font-size: 18px; font-weight: bold;" id="sentinel-posture-text">GREEN</div>
+            <div style="font-size: 12px; opacity: 0.8;" id="sentinel-posture-desc">Normal operations</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 15px;">
+        <label style="display: block; margin-bottom: 10px; font-weight: 600;">Set Posture:</label>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
+          <button class="sentinel-posture-btn" data-posture="GREEN" style="background: rgba(34, 197, 94, 0.2); border: 2px solid #22c55e;">GREEN</button>
+          <button class="sentinel-posture-btn" data-posture="AMBER" style="background: rgba(251, 191, 36, 0.2); border: 2px solid #fbbf24;">AMBER</button>
+          <button class="sentinel-posture-btn" data-posture="RED" style="background: rgba(239, 68, 68, 0.2); border: 2px solid #ef4444;">RED</button>
+          <button class="sentinel-posture-btn" data-posture="BLACK" style="background: rgba(0, 0, 0, 0.5); border: 2px solid #dc2626;">BLACK</button>
+        </div>
+      </div>
+
+      <div style="margin-top: 20px; padding: 15px; background: rgba(220, 38, 38, 0.1); border: 2px solid #dc2626; border-radius: 4px;">
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+          <input type="checkbox" id="sentinel-lockdown-switch" style="width: 40px; height: 20px;">
+          <label for="sentinel-lockdown-switch" style="font-weight: bold; color: #dc2626; cursor: pointer;">
+            EMERGENCY LOCKDOWN
+          </label>
+        </div>
+        <div id="sentinel-lockdown-status" style="font-size: 12px; opacity: 0.8;">
+          System operational
+        </div>
+        <input type="text" id="sentinel-lockdown-reason" placeholder="Lockdown reason (optional)" 
+               style="width: 100%; padding: 6px; margin-top: 10px; border: 1px solid #dc2626; border-radius: 4px; background: rgba(0,0,0,0.3); color: var(--grx26-text, #e5e7eb); display: none;">
+      </div>
+    </div>
   </div>
 
-  <div class="builder-card grx26-panel" id="grx26-sentinel-policy">
-    <h2 class="grx26-panel-heading">Policy (SentinelRules)</h2>
-    <p class="grx26-cc-hint">Outputs are advisory, not commanding. Uncertainty explicitly labeled.</p>
-    <table class="grx26-audit-table" style="margin-top:8px;">
-      <thead><tr><th>Rule</th><th>Behaviour</th></tr></thead>
-      <tbody>
-        <tr><td>Illegal / harmful</td><td>Blocked; warnings logged.</td></tr>
-        <tr><td>Autonomy / commands</td><td>requiresHuman; responseFrame = advisory_only; no autonomous execution.</td></tr>
-        <tr><td>Certainty claims</td><td>Confidence labeled; no guarantees without evidence.</td></tr>
-        <tr><td>Response frame</td><td>Advisory only; outcomes require human approval.</td></tr>
-        <tr><td>Uncertainty</td><td>riskFlags, uncertaintyLabel (high/medium/low), recommendedNextSteps.</td></tr>
-      </tbody>
-    </table>
+  <!-- Policy Management -->
+  <div class="builder-card grx26-panel" style="margin-bottom: 20px;">
+    <h2 class="grx26-panel-heading">📋 Policy Pack Management</h2>
+    
+    <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 20px;">
+      <div>
+        <label style="display: block; margin-bottom: 10px; font-weight: 600;">Active Policy Pack:</label>
+        <select id="sentinel-policy-select" style="width: 100%; padding: 10px; border: 1px solid var(--grx26-border, #374151); border-radius: 4px; background: var(--grx26-bg-secondary, #1f2937); color: var(--grx26-text, #e5e7eb); font-size: 14px;">
+          <option value="baseline_internal">Baseline Internal</option>
+          <option value="gov_secure">Government Secure</option>
+          <option value="kids_guardian_overlay">Kids Guardian Overlay (Locked)</option>
+        </select>
+        <div id="sentinel-policy-info" style="margin-top: 15px; padding: 12px; background: rgba(59, 130, 246, 0.1); border-left: 3px solid #3b82f6; font-size: 13px; line-height: 1.6;">
+          <div><strong>Name:</strong> <span id="policy-name">-</span></div>
+          <div><strong>Description:</strong> <span id="policy-desc">-</span></div>
+        </div>
+      </div>
+
+      <div>
+        <label style="display: block; margin-bottom: 10px; font-weight: 600;">Policy Rules Preview:</label>
+        <div id="sentinel-policy-rules" style="max-height: 200px; overflow-y: auto; padding: 12px; background: var(--grx26-bg-secondary, #1f2937); border: 1px solid var(--grx26-border, #374151); border-radius: 4px; font-size: 12px; font-family: monospace;">
+          <div>Loading policy rules...</div>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div class="builder-card grx26-panel" id="grx26-sentinel-status">
-    <h2 class="grx26-panel-heading">Status &amp; recent activity</h2>
-    <p class="grx26-cc-hint">Sentinel-related audit events: sentinel_input, sentinel_processed, titan_invoked.</p>
-    <p id="grx26-sentinel-last-summary" style="font-size:12px;color:var(--grx26-text-muted,#9ca3af);margin-bottom:8px;">—</p>
-    <table class="grx26-audit-table" style="margin-top:8px;">
-      <thead><tr><th>Time</th><th>Event</th><th>Trace ID</th><th>Detail</th></tr></thead>
-      <tbody id="grx26-sentinel-last"></tbody>
-    </table>
+  <!-- Command Routing Interface -->
+  <div class="builder-card grx26-panel" style="margin-bottom: 20px;">
+    <h2 class="grx26-panel-heading">⚡ Command Routing & Processing</h2>
+    
+    <div style="margin-bottom: 15px;">
+      <label style="display: block; margin-bottom: 8px; font-weight: 600;">Route Command via Sentinel:</label>
+      <div style="display: flex; gap: 10px;">
+        <input type="text" id="sentinel-command-input" placeholder="Enter command to route through Sentinel..." 
+               style="flex: 1; padding: 10px; border: 1px solid var(--grx26-border, #374151); border-radius: 4px; background: var(--grx26-bg-secondary, #1f2937); color: var(--grx26-text, #e5e7eb);">
+        <button id="sentinel-route-btn" class="builder-btn" style="padding: 10px 20px;">Route via Sentinel</button>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+      <div>
+        <label style="display: block; margin-bottom: 8px; font-weight: 600; font-size: 12px;">Quick Commands:</label>
+        <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+          <button class="sentinel-quick-cmd" data-cmd="System Integrity Check" style="padding: 6px 12px; font-size: 11px; background: rgba(59, 130, 246, 0.2); border: 1px solid #3b82f6;">Integrity Check</button>
+          <button class="sentinel-quick-cmd" data-cmd="Threat Scan: prompt injection" style="padding: 6px 12px; font-size: 11px; background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444;">Threat Scan</button>
+          <button class="sentinel-quick-cmd" data-cmd="Compliance Check: data handling" style="padding: 6px 12px; font-size: 11px; background: rgba(251, 191, 36, 0.2); border: 1px solid #fbbf24;">Compliance</button>
+          <button class="sentinel-quick-cmd" data-cmd="Health Check" style="padding: 6px 12px; font-size: 11px; background: rgba(34, 197, 94, 0.2); border: 1px solid #22c55e;">Health</button>
+        </div>
+      </div>
+
+      <div>
+        <label style="display: block; margin-bottom: 8px; font-weight: 600; font-size: 12px;">TITAN Controls:</label>
+        <div style="display: flex; gap: 6px;">
+          <button id="sentinel-force-titan" class="builder-btn" style="padding: 6px 12px; font-size: 11px; opacity: 0.5;" disabled>Force TITAN</button>
+          <button id="sentinel-titan-status" class="builder-btn" style="padding: 6px 12px; font-size: 11px;">TITAN Status</button>
+        </div>
+        <div id="sentinel-titan-info" style="margin-top: 8px; font-size: 11px; opacity: 0.7;">
+          TITAN invoked automatically when risk ≥ 0.7
+        </div>
+      </div>
+    </div>
+
+    <!-- Command Result Display -->
+    <div id="sentinel-command-result" style="margin-top: 20px; padding: 15px; background: var(--grx26-bg-secondary, #1f2937); border: 1px solid var(--grx26-border, #374151); border-radius: 4px; max-height: 300px; overflow-y: auto; display: none;">
+      <div style="font-weight: 600; margin-bottom: 10px;">Last Command Result:</div>
+      <div id="sentinel-result-content" style="font-size: 13px; font-family: monospace; line-height: 1.6;"></div>
+    </div>
+  </div>
+
+  <!-- Monitoring Dashboard -->
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px;">
+    
+    <!-- Risk Score Monitor -->
+    <div class="builder-card grx26-panel">
+      <h3 class="grx26-panel-heading" style="font-size: 14px;">📊 Risk Score</h3>
+      <div id="sentinel-risk-display" style="text-align: center; padding: 20px;">
+        <div style="font-size: 32px; font-weight: bold; color: #22c55e;" id="sentinel-risk-value">0.0</div>
+        <div style="font-size: 12px; opacity: 0.8; margin-top: 5px;">Last Command</div>
+        <div style="margin-top: 15px; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden;">
+          <div id="sentinel-risk-bar" style="height: 100%; background: linear-gradient(90deg, #22c55e 0%, #fbbf24 50%, #ef4444 100%); width: 0%; transition: width 0.3s;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rate Limiting Status -->
+    <div class="builder-card grx26-panel">
+      <h3 class="grx26-panel-heading" style="font-size: 14px;">⏱️ Rate Limiting</h3>
+      <div style="padding: 15px;">
+        <div style="margin-bottom: 10px;">
+          <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 5px;">
+            <span>Requests/Minute:</span>
+            <span id="sentinel-rate-count">0 / 10</span>
+          </div>
+          <div style="height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden;">
+            <div id="sentinel-rate-bar" style="height: 100%; background: #3b82f6; width: 0%; transition: width 0.3s;"></div>
+          </div>
+        </div>
+        <div style="font-size: 11px; opacity: 0.7; margin-top: 10px;">
+          Window: <span id="sentinel-rate-window">60s</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Health Status -->
+    <div class="builder-card grx26-panel">
+      <h3 class="grx26-panel-heading" style="font-size: 14px;">💚 System Health</h3>
+      <div id="sentinel-health-display" style="padding: 15px;">
+        <div style="margin-bottom: 8px; font-size: 12px;">
+          <span>Initialized:</span>
+          <span id="health-initialized" style="float: right; color: #22c55e;">✓</span>
+        </div>
+        <div style="margin-bottom: 8px; font-size: 12px;">
+          <span>Log Chain:</span>
+          <span id="health-logchain" style="float: right; color: #22c55e;">✓</span>
+        </div>
+        <div style="margin-bottom: 8px; font-size: 12px;">
+          <span>Policy Pack:</span>
+          <span id="health-policy" style="float: right; color: #22c55e;">✓</span>
+        </div>
+        <button id="sentinel-health-check-btn" class="builder-btn" style="width: 100%; margin-top: 10px; padding: 6px; font-size: 11px;">Run Health Check</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Two-Person Rule Management -->
+  <div class="builder-card grx26-panel" style="margin-bottom: 20px;">
+    <h2 class="grx26-panel-heading">👥 Two-Person Rule Management</h2>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+      <div>
+        <label style="display: block; margin-bottom: 10px; font-weight: 600;">Require Two-Person Rule:</label>
+        <input type="text" id="sentinel-twoperson-action" placeholder="Enter action requiring two-person approval" 
+               style="width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid var(--grx26-border, #374151); border-radius: 4px; background: var(--grx26-bg-secondary, #1f2937); color: var(--grx26-text, #e5e7eb);">
+        <button id="sentinel-twoperson-create-btn" class="builder-btn" style="width: 100%;">Create Two-Person Rule</button>
+      </div>
+
+      <div>
+        <label style="display: block; margin-bottom: 10px; font-weight: 600;">Pending Approvals:</label>
+        <div id="sentinel-twoperson-pending" style="min-height: 100px; padding: 12px; background: var(--grx26-bg-secondary, #1f2937); border: 1px solid var(--grx26-border, #374151); border-radius: 4px; font-size: 12px;">
+          <div style="opacity: 0.5;">No pending two-person approvals</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audit Logs & Export -->
+  <div class="builder-card grx26-panel">
+    <h2 class="grx26-panel-heading">📜 Audit Logs & Export</h2>
+    
+    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+      <button id="sentinel-refresh-logs-btn" class="builder-btn">Refresh Logs</button>
+      <button id="sentinel-export-logs-btn" class="builder-btn">Export Audit Log</button>
+      <button id="sentinel-verify-logs-btn" class="builder-btn">Verify Log Chain</button>
+      <div style="flex: 1;"></div>
+      <input type="number" id="sentinel-logs-limit" value="50" min="10" max="500" 
+             style="width: 80px; padding: 6px; border: 1px solid var(--grx26-border, #374151); border-radius: 4px; background: var(--grx26-bg-secondary, #1f2937); color: var(--grx26-text, #e5e7eb);">
+      <span style="line-height: 32px; font-size: 12px; opacity: 0.7;">entries</span>
+    </div>
+
+    <div id="sentinel-log-verification" style="padding: 10px; margin-bottom: 15px; background: rgba(34, 197, 94, 0.1); border-left: 3px solid #22c55e; border-radius: 4px; font-size: 12px; display: none;">
+      <strong>Log Chain Status:</strong> <span id="log-verify-status">Verified</span>
+    </div>
+
+    <div style="max-height: 400px; overflow-y: auto; border: 1px solid var(--grx26-border, #374151); border-radius: 4px;">
+      <table class="grx26-audit-table" style="margin: 0;">
+        <thead style="position: sticky; top: 0; background: var(--grx26-bg-secondary, #1f2937); z-index: 10;">
+          <tr>
+            <th>Time</th>
+            <th>Role</th>
+            <th>Action</th>
+            <th>Posture</th>
+            <th>Trace ID</th>
+            <th>Details</th>
+          </tr>
+        </thead>
+        <tbody id="sentinel-audit-logs">
+          <tr><td colspan="6" style="text-align: center; padding: 20px; opacity: 0.5;">Loading audit logs...</td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </section>
-<script>
-(function() {
-  var SENTINEL_EVENTS = ['sentinel_input', 'sentinel_processed', 'titan_invoked', 'request_received', 'response_sent'];
-  function refresh() {
-    if (typeof Audit === 'undefined' || !Audit.getRecent) return;
-    var entries = Audit.getRecent(50);
-    var sentinelEntries = entries.filter(function(e) { return SENTINEL_EVENTS.indexOf(e.eventType) !== -1; }).slice(0, 25);
-    var tbody = document.getElementById('grx26-sentinel-last');
-    var summaryEl = document.getElementById('grx26-sentinel-last-summary');
-    if (!tbody) return;
-    if (summaryEl) {
-      var lastProcessed = sentinelEntries.find(function(e) { return e.eventType === 'sentinel_processed'; });
-      summaryEl.textContent = lastProcessed
-        ? 'Last processed: ' + (lastProcessed.traceId || '') + ' — uncertainty: ' + (lastProcessed.payload && lastProcessed.payload.uncertaintyLabel || '—')
-        : 'No sentinel activity yet. Use System Status → Submit via Core to generate traffic.';
-    }
-    if (!sentinelEntries.length) {
-      tbody.innerHTML = '<tr><td colspan="4">No sentinel events yet.</td></tr>';
-      return;
-    }
-    tbody.innerHTML = sentinelEntries.map(function(e) {
-      var detail = '';
-      if (e.payload) {
-        if (e.eventType === 'sentinel_processed' && e.payload.invokeTitan) detail = 'Titan invoked';
-        else if (e.payload.uncertaintyLabel) detail = e.payload.uncertaintyLabel;
-        else if (e.payload.requestType) detail = e.payload.requestType;
-      }
-      return '<tr><td>' + (e.ts ? new Date(e.ts).toLocaleTimeString() : '') + '</td><td>' + (e.eventType || '') + '</td><td>' + (e.traceId || '') + '</td><td>' + detail + '</td></tr>';
-    }).join('');
-  }
-  setTimeout(refresh, 100);
-  document.addEventListener('gracex:module:loaded', function(ev) {
-    if (ev.detail && ev.detail.module === 'sentinel') setTimeout(refresh, 50);
-  });
-})();
-</script>
+
+<script src="assets/js/governance/sentinel-ui.js"></script>
