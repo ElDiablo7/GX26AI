@@ -1,6 +1,12 @@
 /**
  * GRX26AI — Layout. Clear headings, panels structured.
  */
+.brand .sidebar-logo-img {
+  max-height: 48px;
+  width: auto;
+  object-fit: contain;
+}
+
 .grx26-panel {
   background: var(--grx26-surface, #25282e);
   border: 1px solid var(--grx26-border, #3d4149);

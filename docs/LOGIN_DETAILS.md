@@ -37,6 +37,12 @@ Edit those constants to change the accepted values. For production, consider mov
 
 ---
 
+## ENLIL logo
+
+Place your ENLIL logo image at **`assets/img/enlil-logo.png`** so it appears on the splash screen, security wall, and main app sidebar. If the file is missing, the app falls back to the GRACE-X logo.
+
+---
+
 ## Keeping this file private
 
 If you do not want this file in version control, add to `.gitignore`:

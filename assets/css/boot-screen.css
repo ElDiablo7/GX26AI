@@ -58,31 +58,39 @@
   100% { transform: translate(50px, 50px); }
 }
 
-/* Boot logo container */
+/* Boot logo container — ENLIL logo, understated */
 .boot-logo-container {
-  position: relative;
-  z-index: 2;
+  position: absolute;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
   text-align: center;
   animation: logoFadeIn 1.5s ease-out;
+}
+
+.boot-logo-container .boot-logo-img {
+  max-width: 140px;
+  width: auto;
+  height: auto;
+  max-height: 72px;
+  object-fit: contain;
+  opacity: 0.9;
 }
 
 @keyframes logoFadeIn {
   0% {
     opacity: 0;
-    transform: scale(0.8) translateY(20px);
+    transform: translateX(-50%) scale(0.9);
   }
   100% {
     opacity: 1;
-    transform: scale(1) translateY(0);
+    transform: translateX(-50%) scale(1);
   }
 }
 
 .boot-logo-container img {
-  max-width: 600px;
-  width: 90vw;
-  height: auto;
-  filter: drop-shadow(0 0 30px rgba(0, 212, 255, 0.5));
-  animation: logoPulse 3s ease-in-out infinite;
+  filter: drop-shadow(0 0 12px rgba(0, 212, 255, 0.25));
 }
 
 @keyframes logoPulse {
@@ -276,8 +284,9 @@
 
 /* Responsive */
 @media (max-width: 768px) {
-  .boot-logo-container img {
-    max-width: 400px;
+  .boot-logo-container .boot-logo-img {
+    max-width: 100px;
+    max-height: 52px;
   }
   
   .boot-status-text {

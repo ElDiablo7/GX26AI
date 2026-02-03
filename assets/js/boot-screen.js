@@ -64,6 +64,11 @@
         <!-- Floating Particles -->
         <div class="boot-particles" id="boot-particles"></div>
         
+        <!-- ENLIL Logo (splash) -->
+        <div class="boot-logo-container">
+          <img src="assets/img/enlil-logo.png" alt="ENLIL" class="boot-logo-img" onerror="this.onerror=null;this.src='assets/img/gracex_main_logo.png';">
+        </div>
+        
         <!-- System Info (Top Right) -->
         <div class="boot-system-info">
           <div>GRACE-X AI™ ELIL SECURITY SUITE™</div>

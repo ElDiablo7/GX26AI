@@ -256,6 +256,9 @@
     <div class="scan-band"></div>
 
     <div class="warning-panel">
+        <div class="security-logo-wrap" style="text-align:center;margin-bottom:1rem;">
+          <img src="assets/img/enlil-logo.png" alt="ENLIL" class="security-logo" style="max-width:100px;height:auto;opacity:0.9;" onerror="this.onerror=null;this.src='assets/img/gracex_main_logo.png';">
+        </div>
         <h1>SECURE SYSTEM — AUTHORISED ACCESS ONLY<span class="exclamation">!</span></h1>
         <div class="body-text">
             <p>This system is designated for <strong>restricted operational use</strong>.</p>
@@ -290,6 +293,7 @@
 
     <div class="modal-overlay" id="authModal">
         <div class="modal-content">
+            <div style="text-align:center;margin-bottom:1rem;"><img src="assets/img/enlil-logo.png" alt="ENLIL" style="max-width:72px;height:auto;opacity:0.85;" onerror="this.onerror=null;this.src='assets/img/gracex_main_logo.png';"></div>
             <h2 id="modalTitle">LEVEL 1: IDENTITY VERIFICATION</h2>
             
             <div id="step1" class="auth-step">
@@ -321,7 +325,7 @@
     </div>
 
     <div class="terminated-screen" id="terminatedScreen"><div class="terminated-content">SESSION TERMINATED</div></div>
-    <div class="unlocked-content" id="unlockedContent"><h2>ACCESS AUTHORISED</h2><p>Verification complete. Redirecting to main system...</p><p style="font-size:0.85rem;color:rgba(200,220,255,0.6);margin-top:1rem;">You must verify again on every new session (every login).</p></div>
+    <div class="unlocked-content" id="unlockedContent"><div style="text-align:center;margin-bottom:1rem;"><img src="assets/img/enlil-logo.png" alt="ENLIL" style="max-width:80px;height:auto;opacity:0.9;" onerror="this.onerror=null;this.src='assets/img/gracex_main_logo.png';"></div><h2>ACCESS AUTHORISED</h2><p>Verification complete. Redirecting to main system...</p><p style="font-size:0.85rem;color:rgba(200,220,255,0.6);margin-top:1rem;">You must verify again on every new session (every login).</p></div>
 
     <script>
         const exitBtn = document.getElementById('exitBtn');
@@ -358,6 +362,19 @@
             level3: 'Level 3: Final clearance. Biometric scan in progress. Please wait.',
             unlocked: 'Access authorised. Verification complete. Redirecting to the main system.'
         };
+        function pickVoice() {
+            if (!window.speechSynthesis) return null;
+            var voices = window.speechSynthesis.getVoices();
+            if (!voices.length) return null;
+            var preferred = voices.filter(function(v) {
+                var lang = (v.lang || '').toLowerCase();
+                var name = (v.name || '').toLowerCase();
+                return (lang === 'en-gb' || lang.startsWith('en_gb')) && (name.indexOf('google') !== -1 && name.indexOf('female') !== -1);
+            })[0];
+            if (!preferred) preferred = voices.filter(function(v) { var l = (v.lang || '').toLowerCase(); return l === 'en-gb' || l.startsWith('en_gb'); })[0];
+            if (!preferred) preferred = voices.filter(function(v) { return (v.lang || '').toLowerCase().startsWith('en'); })[0];
+            return preferred || voices[0];
+        }
         function speak(text) {
             if (voiceMuted || !text) return;
             try {
@@ -367,15 +384,8 @@
                     u.rate = 1.15;
                     u.pitch = 1.15;
                     u.volume = 1;
-                    var voices = window.speechSynthesis.getVoices();
-                    var preferred = voices.filter(function(v) {
-                        var lang = (v.lang || '').toLowerCase();
-                        var name = (v.name || '').toLowerCase();
-                        return (lang === 'en-gb' || lang.startsWith('en_gb')) && (name.indexOf('google') !== -1 && name.indexOf('female') !== -1);
-                    })[0];
-                    if (!preferred) preferred = voices.filter(function(v) { var l = (v.lang || '').toLowerCase(); return l === 'en-gb' || l.startsWith('en_gb'); })[0];
-                    if (!preferred) preferred = voices.filter(function(v) { return (v.lang || '').toLowerCase().startsWith('en'); })[0];
-                    if (preferred) u.voice = preferred;
+                    var voice = pickVoice();
+                    if (voice) u.voice = voice;
                     window.speechSynthesis.speak(u);
                 }
             } catch (e) {}
@@ -470,10 +480,18 @@
             try { sessionStorage.setItem('securityWallVerified', '1'); } catch (e) {}
             setTimeout(function() { window.location.href = 'index.html'; }, 2000);
         }
+        function speakMainOnce() {
+            if (currentStep !== 'main') return;
+            speak(voiceInstructions.main);
+        }
         window.addEventListener('load', function() {
             exitBtn.focus();
             currentStep = 'main';
-            setTimeout(function() { speak(voiceInstructions.main); }, 800);
+            if (window.speechSynthesis) {
+                window.speechSynthesis.getVoices();
+                if (pickVoice()) setTimeout(speakMainOnce, 600);
+                else window.addEventListener('voiceschanged', function() { setTimeout(speakMainOnce, 200); }, { once: true });
+            }
         });
         if (window.speechSynthesis) {
             window.speechSynthesis.getVoices();
