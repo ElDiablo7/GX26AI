@@ -135,6 +135,18 @@ Backend Server (Port 3000)
 
 ---
 
+## 🔒 SECURITY (ENLIL_GOV)
+
+This build can run with **government-grade hardening** when `window.GRX26_BUILD_FLAVOR === 'ENLIL_GOV'`:
+
+- **Session-only authentication** — No persistent bypass; session state is not stored across browser close.
+- **Content-Security-Policy (CSP)** — A CSP meta tag is set in `index.html`. For production, use equivalent HTTP headers and **do not allow remote script sources** (`script-src` should be `'self'` only, or `'self' 'unsafe-inline'` only if inline scripts are required; avoid CDN script URLs).
+- **READ-ONLY DEMO MODE** — Toggle in the sidebar disables tasking, targeting, and audit export when enabled.
+- **LOCKDOWN / SAFE MODE** — Disables all module actions and clears laser targets; re-enable via Sentinel unlockdown.
+- **Tamper-evident audit log** — UTU LOG entries are hash-chained (`prevHash` → `hash`). Export bundles include: `timestamp`, `actorId`, `moduleId`, `action`, `target`, `outcome`, `hash`.
+
+---
+
 ## 📖 DOCUMENTATION
 
 - **`FIRST_TIME_SETUP.md`** - Complete setup guide (START HERE!)

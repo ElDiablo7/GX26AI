@@ -258,7 +258,13 @@
 
       var exportLogsBtn = document.getElementById('sentinel-export-logs-btn');
       if (exportLogsBtn) {
+        exportLogsBtn.setAttribute('data-grx26-demo-disabled', 'export');
+        exportLogsBtn.disabled = !!window.GRX26_DEMO_MODE;
+        window.addEventListener('grx26-demo-mode-changed', function() {
+          if (exportLogsBtn) exportLogsBtn.disabled = !!window.GRX26_DEMO_MODE;
+        });
         exportLogsBtn.addEventListener('click', function() {
+          if (window.GRX26_DEMO_MODE) return;
           if (typeof Sentinel !== 'undefined' && Sentinel.auditExport) {
             Sentinel.auditExport();
           } else if (typeof LogManager !== 'undefined' && LogManager.export) {

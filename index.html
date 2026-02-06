@@ -3,6 +3,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- CSP: no remote script sources (government-grade) -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' http://localhost:* https://localhost:*; frame-ancestors 'none';">
 
     <title>GRACE-X AI™ ELIL SECURITY SUITE™ — © Zac Crockett 2026</title>
 
@@ -71,36 +73,62 @@
               <button type="button" id="grx26-theme-btn" class="module-btn grx26-theme-btn" title="Theme (Venus / MOD)">Theme</button>
             </div>
 
+            <!-- READ-ONLY DEMO MODE: disables tasking/targeting/export -->
+            <div class="section-title">Governance</div>
+            <div class="sidebar-demo-row">
+              <label class="grx26-demo-toggle">
+                <input type="checkbox" id="grx26-readonly-demo" title="When on, tasking/targeting/export buttons are disabled">
+                <span>READ-ONLY DEMO</span>
+              </label>
+            </div>
+
             <!-- Module Buttons -->
             <nav class="module-nav">
-  <button class="module-btn" data-module="core">Core</button>
-  <button class="module-btn" data-module="sentinel">Sentinel</button>
-  <button class="module-btn" data-module="guardian">Guardian</button>
-  <button class="module-btn titan-btn" data-module="titan" title="TITAN — Tactical Internal Threat Assessment Nucleus">
-    <img src="assets/img/titan-button-icon.png" alt="TITAN" class="module-btn-icon" style="width: 20px; height: 20px; margin-right: 8px; object-fit: contain; vertical-align: middle;" onerror="this.style.display='none';">
-    <span>Titan</span>
+  <button class="module-btn" data-module="core">CORE</button>
+  <button class="module-btn" data-module="sentinel" title="ENLIL (Command &amp; Governance) — formerly Sentinel">ENLIL</button>
+  <button class="module-btn" data-module="guardian" title="NANSHE (Protection &amp; Safeguarding) — formerly Guardian">NANSHE</button>
+  <button class="module-btn titan-btn" data-module="titan" title="NINURTA (Tactical Threat Analysis / TITAN nucleus) — formerly TITAN">
+    <img src="assets/img/titan-button-icon.png" alt="NINURTA" class="module-btn-icon" style="width: 20px; height: 20px; margin-right: 8px; object-fit: contain; vertical-align: middle;" onerror="this.style.display='none';">
+    <span>NINURTA</span>
   </button>
-  <button class="module-btn" data-module="venus">Venus</button>
-  <button class="module-btn" data-module="forge_map">Forge Map</button>
-  <button class="module-btn" data-module="system-status">System Status</button>
-  <button class="module-btn" data-module="audit-log">Audit Log</button>
-  <button class="module-btn" data-module="core2">Core 2.0</button>
-  <button class="module-btn" data-module="builder">Builder</button>
-  <button class="module-btn" data-module="siteops">SiteOps</button>
-  <button class="module-btn" data-module="tradelink">TradeLink</button>
-  <button class="module-btn" data-module="beauty">Beauty</button>
-  <button class="module-btn" data-module="fit">Fit</button>
-  <button class="module-btn" data-module="yoga">Yoga</button>
-  <button class="module-btn" data-module="uplift">Uplift</button>
-  <button class="module-btn" data-module="chef">Chef</button>
-  <button class="module-btn" data-module="artist">Artist</button>
-  <button class="module-btn" data-module="family">Family</button>
-  <button class="module-btn" data-module="gamer">Gamer</button>
-  <button class="module-btn" data-module="accounting">Accounting</button>
-  <button class="module-btn" data-module="osint">OSINT</button>
-  <button class="module-btn" data-module="sport">Sport</button>
-  <button class="module-btn" data-module="forge">Forge</button>
+  <button class="module-btn" data-module="venus" title="ENKI (Sandbox / Flytrap) — formerly Venus">ENKI</button>
+  <button class="module-btn" data-module="forge_map" title="GIBIL MAP — formerly Forge Map">GIBIL MAP</button>
+  <button class="module-btn" data-module="system-status" title="NISABA (System Status / Records) — formerly System Status">NISABA</button>
+  <button class="module-btn" data-module="audit-log" title="UTU LOG (Oversight / Audit) — formerly Audit Log">UTU LOG</button>
+  <button class="module-btn" data-module="core2">CORE 2.0</button>
+  <button class="module-btn" data-module="builder" title="AGENT-01 — Builder (speciality preserved)">AGENT-01</button>
+  <button class="module-btn" data-module="siteops" title="AGENT-02 — SiteOps (speciality preserved)">AGENT-02</button>
+  <button class="module-btn" data-module="tradelink" title="AGENT-03 — TradeLink (speciality preserved)">AGENT-03</button>
+  <button class="module-btn" data-module="beauty" title="AGENT-04 — Beauty (speciality preserved)">AGENT-04</button>
+  <button class="module-btn" data-module="fit" title="AGENT-05 — Fit (speciality preserved)">AGENT-05</button>
+  <button class="module-btn" data-module="yoga" title="AGENT-06 — Yoga (speciality preserved)">AGENT-06</button>
+  <button class="module-btn" data-module="uplift" title="AGENT-07 — Uplift (speciality preserved)">AGENT-07</button>
+  <button class="module-btn" data-module="chef" title="AGENT-08 — Chef (speciality preserved)">AGENT-08</button>
+  <button class="module-btn" data-module="artist" title="AGENT-09 — Artist (speciality preserved)">AGENT-09</button>
+  <button class="module-btn" data-module="family" title="AGENT-10 — Family (speciality preserved)">AGENT-10</button>
+  <button class="module-btn" data-module="gamer" title="AGENT-11 — Gamer (speciality preserved)">AGENT-11</button>
+  <button class="module-btn" data-module="accounting" title="AGENT-12 — Accounting (speciality preserved)">AGENT-12</button>
+  <button class="module-btn" data-module="osint" title="AGENT-13 — OSINT (speciality preserved)">AGENT-13</button>
+  <button class="module-btn" data-module="sport" title="AGENT-14 — Sport (speciality preserved)">AGENT-14</button>
+  <button class="module-btn" data-module="forge" title="GIBIL (Forge / Systems) — formerly Forge">GIBIL</button>
 </nav>
+
+            <script>
+              (function() {
+                var cb = document.getElementById('grx26-readonly-demo');
+                if (cb) {
+                  cb.checked = sessionStorage.getItem('grx26_readonly_demo') === '1';
+                  cb.addEventListener('change', function() {
+                    sessionStorage.setItem('grx26_readonly_demo', this.checked ? '1' : '0');
+                    window.GRX26_DEMO_MODE = this.checked;
+                    window.dispatchEvent(new CustomEvent('grx26-demo-mode-changed', { detail: { demoMode: this.checked } }));
+                  });
+                }
+                window.addEventListener('grx26-lockdown-changed', function(ev) {
+                  if (document.body) document.body.dataset.grx26Lockdown = (ev.detail && ev.detail.active) ? '1' : '';
+                });
+              })();
+            </script>
 
             <!-- Voice Settings Button -->
             <button id="gracex-voice-toggle" style="position: fixed; bottom: 20px; right: 20px; width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; color: white; font-size: 24px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 9998; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Click: Toggle Voice | Right-click: Settings">🔊</button>
@@ -172,8 +200,12 @@
       window.GRACEX_SPORT_API = window.GRACEX_API_BASE + '/api/sport';
       // Version tracking for cache-busting
       window.GRACEX_VERSION = 'ULTIMATE_v6.6.0';
+      // Government-grade build: ENLIL schema, session-only auth, tamper-evident audit
+      window.GRX26_BUILD_FLAVOR = 'ENLIL_GOV';
       // Enable dev tools on localhost
       window.GRACEX_DEV_MODE = window.location.hostname === 'localhost';
+      // READ-ONLY DEMO MODE: set by sidebar toggle; disables tasking/targeting/export when true
+      window.GRX26_DEMO_MODE = sessionStorage.getItem('grx26_readonly_demo') === '1';
       
       // Log configuration for debugging
       console.log('%c═══════════════════════════════════════════════════════════', 'color: #10b981');

@@ -1,7 +1,7 @@
 <div class="grx26-panel" id="grx26-audit-log-root">
-  <h2>Audit Log (recent 20)</h2>
+  <h2>UTU LOG <span class="sub">Oversight / Audit — formerly Audit Log (recent 20)</span></h2>
   <table class="grx26-audit-table">
-    <thead><tr><th>Time</th><th>Event</th><th>Trace ID</th></tr></thead>
+    <thead><tr><th>Time</th><th>Event</th><th>Trace ID</th><th>prevHash</th><th>hash</th></tr></thead>
     <tbody id="grx26-audit-tbody"></tbody>
   </table>
 </div>
@@ -12,9 +12,9 @@
     var entries = Audit.getRecent(20);
     var tbody = document.getElementById('grx26-audit-tbody');
     if (!tbody) return;
-    if (!entries.length) { tbody.innerHTML = '<tr><td colspan="3">No entries.</td></tr>'; return; }
+    if (!entries.length) { tbody.innerHTML = '<tr><td colspan="5">No entries.</td></tr>'; return; }
     tbody.innerHTML = entries.map(function(e) {
-      return '<tr><td>' + (e.ts ? new Date(e.ts).toLocaleTimeString() : '') + '</td><td>' + (e.eventType || '') + '</td><td>' + (e.traceId || '') + '</td></tr>';
+      return '<tr><td>' + (e.ts ? new Date(e.ts).toLocaleTimeString() : '') + '</td><td>' + (e.eventType || '') + '</td><td>' + (e.traceId || '') + '</td><td>' + (e.prevHash ? e.prevHash.substring(0, 8) + '...' : '—') + '</td><td>' + (e.hash ? e.hash.substring(0, 8) + '...' : '—') + '</td></tr>';
     }).join('');
   }
   setTimeout(refresh, 100);

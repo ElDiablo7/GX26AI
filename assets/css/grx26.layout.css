@@ -63,6 +63,32 @@
 .grx26-self-test-result.pass { color: var(--grx26-status-ok, #6b7280); }
 .grx26-self-test-result.fail { color: var(--grx26-status-warn, #9ca3af); }
 
+/* ENLIL_GOV: READ-ONLY DEMO toggle row */
+.sidebar-demo-row {
+  margin: 8px 0;
+  padding: 6px 0;
+}
+.grx26-demo-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--grx26-text-muted, #9ca3af);
+  cursor: pointer;
+}
+.grx26-demo-toggle input { margin: 0; }
+/* Subtitles for ENLIL headings */
+.grx26-panel h2 .sub,
+.sub {
+  display: block;
+  font-size: 11px;
+  font-weight: normal;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--grx26-text-muted, #9ca3af);
+  margin-top: 2px;
+}
+
 .grx26-list {
   margin: 0;
   padding-left: 20px;

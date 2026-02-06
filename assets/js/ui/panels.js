@@ -7,7 +7,7 @@
   function renderSystemStatus(el) {
     if (!el) return;
     var status = global.CoreOrchestrator && global.CoreOrchestrator.getSystemStatus ? global.CoreOrchestrator.getSystemStatus() : {};
-    var html = '<div class="grx26-panel"><h2>System Status</h2>';
+    var html = '<div class="grx26-panel"><h2>NISABA — System Status</h2><p class="sub">(Internal records & live health)</p>';
     html += '<p>Build: ' + (status.buildFlavor || '—') + '</p>';
     html += '<p>Missing: ' + (status.missingModules && status.missingModules.length ? status.missingModules.join(', ') : 'None') + '</p>';
     html += '<p>Forge nodes: Governance ' + (status.forgeNodes && status.forgeNodes.governance) + ', Analysis ' + (status.forgeNodes && status.forgeNodes.analysis) + ', Ops ' + (status.forgeNodes && status.forgeNodes.ops) + '</p>';
@@ -33,11 +33,11 @@
     if (!el) return;
     n = n || 20;
     var entries = global.Audit && global.Audit.getRecent ? global.Audit.getRecent(n) : [];
-    var html = '<div class="grx26-panel"><h2>Audit Log (recent ' + n + ')</h2><table class="grx26-audit-table"><thead><tr><th>Time</th><th>Event</th><th>Trace ID</th></tr></thead><tbody>';
+    var html = '<div class="grx26-panel"><h2>UTU LOG</h2><p class="sub">Oversight / Audit — formerly Audit Log (recent ' + n + ')</p><table class="grx26-audit-table"><thead><tr><th>Time</th><th>Event</th><th>Trace ID</th><th>prevHash</th><th>hash</th></tr></thead><tbody>';
     entries.forEach(function(e) {
-      html += '<tr><td>' + (e.ts ? new Date(e.ts).toLocaleTimeString() : '') + '</td><td>' + (e.eventType || '') + '</td><td>' + (e.traceId || '') + '</td></tr>';
+      html += '<tr><td>' + (e.ts ? new Date(e.ts).toLocaleTimeString() : '') + '</td><td>' + (e.eventType || '') + '</td><td>' + (e.traceId || '') + '</td><td>' + (e.prevHash ? e.prevHash.substring(0, 8) + '...' : '—') + '</td><td>' + (e.hash ? e.hash.substring(0, 8) + '...' : '—') + '</td></tr>';
     });
-    if (entries.length === 0) html += '<tr><td colspan="3">No entries.</td></tr>';
+    if (entries.length === 0) html += '<tr><td colspan="5">No entries.</td></tr>';
     html += '</tbody></table></div>';
     el.innerHTML = html;
   }
