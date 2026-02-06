@@ -5,6 +5,14 @@
 
 ---
 
+## 🌐 LIVE DEPLOYMENT
+
+**🛡️ ENLIL Security Suite (Live):** [https://gx26ai-1.onrender.com](https://gx26ai-1.onrender.com)
+
+The ENLIL refactored version is deployed and live on Render. Access the full ENLIL_GOV build with government-grade hardening, ENLIL schema naming, and all security features.
+
+---
+
 ## ⚡ QUICK START - 3 STEPS
 
 ### **✅ CONNECTION FIXED!** Backend now talks to frontend!
