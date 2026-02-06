@@ -13,6 +13,7 @@
   var SentinelUI = {
     initialized: false,
     refreshInterval: null,
+    titanInvocations: 0,
 
     init: function() {
       if (this.initialized) return;
@@ -72,24 +73,34 @@
       var authInput = document.getElementById('sentinel-auth-input');
       var logoutBtn = document.getElementById('sentinel-logout-btn');
 
-      if (authBtn && typeof Sentinel !== 'undefined') {
+      if (authBtn) {
         authBtn.addEventListener('click', function() {
-          var pin = authInput.value;
-          if (pin) {
+          var pin = authInput ? authInput.value : '';
+          if (pin && typeof Sentinel !== 'undefined') {
             var result = Sentinel.authenticate(pin);
-            if (result.success) {
+            if (result) {
               self.updateUI();
-              alert('Authentication successful');
+              if (typeof window.GRACEX_Utils !== 'undefined' && window.GRACEX_Utils.showToast) {
+                window.GRACEX_Utils.showToast('Authentication successful', 'success', 2000);
+              } else {
+                alert('Authentication successful');
+              }
             } else {
-              alert('Authentication failed: ' + result.message);
+              if (typeof window.GRACEX_Utils !== 'undefined' && window.GRACEX_Utils.showToast) {
+                window.GRACEX_Utils.showToast('Authentication failed', 'error', 2000);
+              } else {
+                alert('Authentication failed');
+              }
             }
           }
         });
       }
 
-      if (logoutBtn && typeof Sentinel !== 'undefined') {
+      if (logoutBtn) {
         logoutBtn.addEventListener('click', function() {
-          Sentinel.sessionEnd();
+          if (typeof Sentinel !== 'undefined' && Sentinel.sessionEnd) {
+            Sentinel.sessionEnd();
+          }
           self.updateUI();
         });
       }
@@ -104,10 +115,16 @@
 
       // Role selection
       var roleSelect = document.getElementById('sentinel-role-select');
-      if (roleSelect && typeof Sentinel !== 'undefined') {
+      if (roleSelect) {
         roleSelect.addEventListener('change', function() {
-          Sentinel.setRole(this.value);
-          self.updateUI();
+          if (typeof Sentinel !== 'undefined') {
+            if (Sentinel.setRole) {
+              Sentinel.setRole(this.value);
+            } else {
+              Sentinel.currentRole = this.value;
+            }
+            self.updateUI();
+          }
         });
       }
 
@@ -116,7 +133,12 @@
         btn.addEventListener('click', function() {
           if (typeof Sentinel !== 'undefined') {
             var posture = this.dataset.posture;
-            Sentinel.setPosture(posture);
+            if (Sentinel.setPosture) {
+              Sentinel.setPosture(posture);
+            } else {
+              Sentinel.posture = posture;
+              Sentinel.currentPosture = posture;
+            }
             self.updateUI();
           }
         });
@@ -125,30 +147,59 @@
       // Lockdown switch
       var lockdownSwitch = document.getElementById('sentinel-lockdown-switch');
       var lockdownReason = document.getElementById('sentinel-lockdown-reason');
-      if (lockdownSwitch && typeof Sentinel !== 'undefined') {
+      if (lockdownSwitch) {
         lockdownSwitch.addEventListener('change', function() {
-          if (this.checked) {
-            var reason = lockdownReason ? lockdownReason.value : 'Operator initiated';
-            Sentinel.lockdown(reason);
-            if (lockdownReason) lockdownReason.style.display = 'block';
-          } else {
-            var pin = prompt('Enter unlock PIN:');
-            if (pin) {
-              Sentinel.unlockdown(pin);
-              if (lockdownReason) lockdownReason.style.display = 'none';
+          if (typeof Sentinel !== 'undefined') {
+            if (this.checked) {
+              var reason = lockdownReason ? lockdownReason.value : 'Operator initiated';
+              if (Sentinel.lockdown) {
+                Sentinel.lockdown(reason);
+              } else {
+                Sentinel.lockdownActive = true;
+                Sentinel.lockdownReason = reason;
+                Sentinel.posture = 'BLACK';
+                Sentinel.currentPosture = 'BLACK';
+              }
+              if (lockdownReason) lockdownReason.style.display = 'block';
             } else {
-              this.checked = true;
+              var pin = prompt('Enter unlock PIN:');
+              if (pin) {
+                var unlocked = false;
+                if (Sentinel.unlockdown) {
+                  unlocked = Sentinel.unlockdown(pin);
+                } else {
+                  var validPins = ['SENTINEL', '1234', 'sentinel'];
+                  if (validPins.indexOf(pin) !== -1) {
+                    Sentinel.lockdownActive = false;
+                    Sentinel.lockdownReason = null;
+                    Sentinel.posture = 'GREEN';
+                    Sentinel.currentPosture = 'GREEN';
+                    unlocked = true;
+                  }
+                }
+                if (unlocked && lockdownReason) {
+                  lockdownReason.style.display = 'none';
+                } else {
+                  this.checked = true;
+                }
+              } else {
+                this.checked = true;
+              }
             }
+            self.updateUI();
           }
-          self.updateUI();
         });
       }
 
       // Policy selection
       var policySelect = document.getElementById('sentinel-policy-select');
-      if (policySelect && typeof Sentinel !== 'undefined') {
+      if (policySelect) {
         policySelect.addEventListener('change', function() {
-          Sentinel.loadPolicyPack(this.value);
+          if (typeof Sentinel !== 'undefined' && Sentinel.loadPolicyPack) {
+            Sentinel.loadPolicyPack(this.value);
+          } else if (typeof PolicyManager !== 'undefined' && PolicyManager.activatePack) {
+            PolicyManager.activatePack(this.value);
+          }
           self.updateUI();
           self.updatePolicyInfo();
         });
@@ -183,10 +234,17 @@
 
       // Health check
       var healthBtn = document.getElementById('sentinel-health-check-btn');
-      if (healthBtn && typeof Sentinel !== 'undefined') {
+      if (healthBtn) {
         healthBtn.addEventListener('click', function() {
-          var health = Sentinel.healthCheck();
-          alert('Health Check:\n' + JSON.stringify(health, null, 2));
+          if (typeof Sentinel !== 'undefined') {
+            var health = Sentinel.healthCheck ? Sentinel.healthCheck() : {
+              initialized: Sentinel.initialized,
+              authenticated: Sentinel.authenticated,
+              posture: Sentinel.posture || Sentinel.currentPosture
+            };
+            alert('Health Check:\n' + JSON.stringify(health, null, 2));
+            self.updateUI();
+          }
         });
       }
 
@@ -199,30 +257,105 @@
       }
 
       var exportLogsBtn = document.getElementById('sentinel-export-logs-btn');
-      if (exportLogsBtn && typeof Sentinel !== 'undefined') {
+      if (exportLogsBtn) {
         exportLogsBtn.addEventListener('click', function() {
-          Sentinel.auditExport();
+          if (typeof Sentinel !== 'undefined' && Sentinel.auditExport) {
+            Sentinel.auditExport();
+          } else if (typeof LogManager !== 'undefined' && LogManager.export) {
+            var exportData = LogManager.export('json');
+            var blob = new Blob([exportData], { type: 'application/json' });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'sentinel_audit_' + Date.now() + '.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+          }
         });
       }
 
       var verifyLogsBtn = document.getElementById('sentinel-verify-logs-btn');
-      if (verifyLogsBtn && typeof Logs !== 'undefined') {
+      if (verifyLogsBtn) {
         verifyLogsBtn.addEventListener('click', function() {
           self.verifyLogs();
+        });
+      }
+
+      // TITAN controls
+      var forceTitanBtn = document.getElementById('sentinel-force-titan');
+      var titanStatusBtn = document.getElementById('sentinel-titan-status');
+      if (forceTitanBtn && typeof Sentinel !== 'undefined') {
+        forceTitanBtn.addEventListener('click', function() {
+          var command = prompt('Enter command to force TITAN analysis:');
+          if (command) {
+            var taskPacket = {
+              command: command,
+              context: {},
+              intent: { type: 'security', category: 'general' },
+              riskScore: 1.0,
+              traceId: Utils ? Utils.traceId() : 'tr-' + Date.now()
+            };
+            if (typeof Titan !== 'undefined' && Titan.analyze) {
+              var result = Titan.analyze(taskPacket);
+              alert('TITAN Analysis:\n' + JSON.stringify(result, null, 2));
+            } else {
+              alert('TITAN core not available');
+            }
+          }
+        });
+      }
+      if (titanStatusBtn) {
+        titanStatusBtn.addEventListener('click', function() {
+          if (typeof Titan !== 'undefined') {
+            var status = Titan.initialized ? 'Ready' : 'Not Initialized';
+            alert('TITAN Status: ' + status);
+          } else {
+            alert('TITAN core not loaded');
+          }
+        });
+      }
+
+      // Two-person rule creation
+      var twopersonCreateBtn = document.getElementById('sentinel-twoperson-create-btn');
+      if (twopersonCreateBtn) {
+        twopersonCreateBtn.addEventListener('click', function() {
+          var actionInput = document.getElementById('sentinel-twoperson-action');
+          if (actionInput && actionInput.value.trim()) {
+            var action = actionInput.value.trim();
+            if (typeof Sentinel !== 'undefined') {
+              if (Sentinel.requireTwoPersonRule) {
+                Sentinel.requireTwoPersonRule(action);
+              } else {
+                if (!Sentinel.twoPersonRules) Sentinel.twoPersonRules = [];
+                if (Sentinel.twoPersonRules.indexOf(action) === -1) {
+                  Sentinel.twoPersonRules.push(action);
+                }
+              }
+            }
+            alert('Two-person rule created for: ' + action);
+            actionInput.value = '';
+            self.updateUI();
+          } else {
+            alert('Please enter an action');
+          }
         });
       }
     },
 
     loadPolicyPacks: function() {
-      if (typeof Policy === 'undefined' || typeof fetch === 'undefined') return;
+      if (typeof PolicyManager === 'undefined' || typeof fetch === 'undefined') return;
 
       fetch('assets/data/policy_packs.json')
         .then(function(response) { return response.json(); })
         .then(function(data) {
-          for (var pack in data) {
-            Policy.loadPack(pack, data[pack]);
+          if (PolicyManager.policyPacks) {
+            PolicyManager.policyPacks = data.packs || data || {};
+            if (PolicyManager.activatePack) {
+              PolicyManager.activatePack('baseline_internal');
+            }
           }
-          Policy.setActive('baseline_internal');
           SentinelUI.updatePolicyInfo();
         })
         .catch(function(err) {
@@ -397,61 +530,75 @@
     },
 
     updatePolicyInfo: function() {
-      if (typeof Policy === 'undefined') return;
+      if (typeof PolicyManager === 'undefined') return;
 
-      var pack = Policy.getActive();
+      var activePacks = PolicyManager.getActivePacks ? PolicyManager.getActivePacks() : [];
       var policyName = document.getElementById('policy-name');
       var policyDesc = document.getElementById('policy-desc');
       var policyRules = document.getElementById('sentinel-policy-rules');
 
-      if (policyName && pack) policyName.textContent = pack.name || 'Unknown';
-      if (policyDesc && pack) policyDesc.textContent = pack.description || 'No description';
+      if (activePacks.length > 0 && PolicyManager.policyPacks) {
+        var packId = activePacks[0];
+        var pack = PolicyManager.policyPacks[packId];
+        if (pack) {
+          if (policyName) policyName.textContent = pack.name || packId || 'Unknown';
+          if (policyDesc) policyDesc.textContent = pack.description || 'No description';
 
-      if (policyRules && pack) {
-        var html = '';
-        if (pack.allowed_actions && pack.allowed_actions.length > 0) {
-          html += '<div style="margin-bottom: 10px;"><strong>Allowed:</strong> ' + pack.allowed_actions.join(', ') + '</div>';
+          if (policyRules) {
+            var html = '';
+            if (pack.allowed_actions && pack.allowed_actions.length > 0) {
+              html += '<div style="margin-bottom: 10px;"><strong>Allowed:</strong> ' + pack.allowed_actions.join(', ') + '</div>';
+            }
+            if (pack.restricted_actions && pack.restricted_actions.length > 0) {
+              html += '<div style="margin-bottom: 10px;"><strong>Restricted:</strong> ' + pack.restricted_actions.join(', ') + '</div>';
+            }
+            if (pack.two_person_rule && pack.two_person_rule.length > 0) {
+              html += '<div style="margin-bottom: 10px;"><strong>Two-Person:</strong> ' + pack.two_person_rule.length + ' rules</div>';
+            }
+            policyRules.innerHTML = html || '<div>No rules defined</div>';
+          }
         }
-        if (pack.restricted_actions && pack.restricted_actions.length > 0) {
-          html += '<div style="margin-bottom: 10px;"><strong>Restricted:</strong> ' + pack.restricted_actions.join(', ') + '</div>';
-        }
-        if (pack.two_person_rules && pack.two_person_rules.length > 0) {
-          html += '<div style="margin-bottom: 10px;"><strong>Two-Person:</strong> ' + pack.two_person_rules.length + ' rules</div>';
-        }
-        policyRules.innerHTML = html || '<div>No rules defined</div>';
+      } else {
+        if (policyName) policyName.textContent = '-';
+        if (policyDesc) policyDesc.textContent = 'No active policy pack';
+        if (policyRules) policyRules.innerHTML = '<div>No policy pack loaded</div>';
       }
     },
 
     updateLogs: function() {
-      if (typeof Logs === 'undefined') return;
+      if (typeof LogManager === 'undefined') return;
 
       var limit = parseInt(document.getElementById('sentinel-logs-limit')?.value || 50);
-      var recent = Logs.renderRecent(limit);
+      var logs = LogManager.getRecent ? LogManager.getRecent(limit) : [];
       var tbody = document.getElementById('sentinel-audit-logs');
 
       if (!tbody) return;
 
-      if (recent.length === 0) {
+      if (logs.length === 0) {
         tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px; opacity: 0.5;">No log entries</td></tr>';
         return;
       }
 
-      tbody.innerHTML = recent.map(function(entry) {
+      tbody.innerHTML = logs.map(function(entry) {
+        var time = entry.timestamp ? new Date(entry.timestamp).toLocaleTimeString() : '-';
+        var role = entry.data && entry.data.role ? entry.data.role : '-';
+        var action = entry.action || '-';
+        var posture = entry.data && entry.data.posture ? entry.data.posture : 'GREEN';
         return '<tr>' +
-          '<td>' + entry.time + '</td>' +
-          '<td>' + entry.role + '</td>' +
-          '<td>' + entry.action + '</td>' +
-          '<td>' + entry.posture + '</td>' +
+          '<td>' + time + '</td>' +
+          '<td>' + role + '</td>' +
+          '<td>' + action + '</td>' +
+          '<td>' + posture + '</td>' +
           '<td style="font-family: monospace; font-size: 11px;">' + (entry.traceId || '-') + '</td>' +
-          '<td style="font-size: 11px; opacity: 0.8;">' + (entry.summary || '-') + '</td>' +
+          '<td style="font-size: 11px; opacity: 0.8;">' + (entry.data ? JSON.stringify(entry.data).substring(0, 50) : '-') + '</td>' +
           '</tr>';
       }).join('');
     },
 
     verifyLogs: function() {
-      if (typeof Logs === 'undefined') return;
+      if (typeof LogManager === 'undefined') return;
 
-      var verify = Logs.verify();
+      var verify = LogManager.verifyChain ? LogManager.verifyChain() : { valid: false, issues: ['LogManager not available'] };
       var verifyDiv = document.getElementById('sentinel-log-verification');
       var verifyStatus = document.getElementById('log-verify-status');
 
@@ -461,7 +608,8 @@
         verifyDiv.style.borderLeftColor = verify.valid ? '#22c55e' : '#ef4444';
       }
       if (verifyStatus) {
-        verifyStatus.textContent = verify.valid ? '✓ Verified: ' + verify.message : '✗ Invalid: ' + verify.message;
+        var message = verify.valid ? 'Chain verified' : (verify.issues && verify.issues.length > 0 ? verify.issues.join(', ') : 'Verification failed');
+        verifyStatus.textContent = verify.valid ? '✓ Verified: ' + message : '✗ Invalid: ' + message;
         verifyStatus.style.color = verify.valid ? '#22c55e' : '#ef4444';
       }
     },

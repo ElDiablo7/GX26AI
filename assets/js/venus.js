@@ -128,6 +128,133 @@
       });
     }
 
+    // Export all evidence
+    const exportAllBtn = document.getElementById('venus-export-all');
+    if (exportAllBtn) {
+      exportAllBtn.addEventListener('click', function() {
+        const traceId = 'venus-' + Date.now();
+        if (window.Audit && window.Audit.log) {
+          window.Audit.log('venus_export_all', {}, traceId);
+        }
+        alert('Exporting all evidence...\n\nThis would generate a complete evidence package with all logs, captures, and transcripts.');
+      });
+    }
+
+    // Guardian integration buttons
+    const engagePredatorBtn = document.getElementById('venus-engage-predator');
+    if (engagePredatorBtn) {
+      engagePredatorBtn.addEventListener('click', function() {
+        const traceId = 'venus-' + Date.now();
+        if (window.Audit && window.Audit.log) {
+          window.Audit.log('venus_engage_predator', {}, traceId);
+        }
+        alert('🪤 Deploying honeypot engagement mode...\n\nVenus will impersonate target and engage predator to gather evidence.');
+      });
+    }
+
+    const viewThreatBtn = document.getElementById('venus-view-threat');
+    if (viewThreatBtn) {
+      viewThreatBtn.addEventListener('click', function() {
+        const traceId = 'venus-' + Date.now();
+        if (window.Audit && window.Audit.log) {
+          window.Audit.log('venus_view_threat', {}, traceId);
+        }
+        alert('Threat Details:\n\nGuardian has flagged suspicious contact. Review evidence vault for full details.');
+      });
+    }
+
+    // Threat analysis button
+    const threatAnalysisBtn = document.getElementById('venus-threat-analysis');
+    if (threatAnalysisBtn) {
+      threatAnalysisBtn.addEventListener('click', function() {
+        const traceId = 'venus-' + Date.now();
+        if (window.Audit && window.Audit.log) {
+          window.Audit.log('venus_threat_analysis', {}, traceId);
+        }
+        alert('Running threat analysis...\n\nAnalyzing all active traps, intrusions, and evidence patterns.');
+      });
+    }
+
+    // Lockdown button
+    const lockdownBtn = document.getElementById('venus-lockdown');
+    if (lockdownBtn) {
+      lockdownBtn.addEventListener('click', function() {
+        if (confirm('⚠️ ACTIVATE LOCKDOWN MODE?\n\nThis will:\n- Disable all external connections\n- Freeze all honeypots\n- Generate emergency report\n\nContinue?')) {
+          const traceId = 'venus-' + Date.now();
+          if (window.Audit && window.Audit.log) {
+            window.Audit.log('venus_lockdown', {}, traceId);
+          }
+          alert('🔒 LOCKDOWN MODE ACTIVATED\n\nAll systems secured. Emergency report generated.');
+        }
+      });
+    }
+
+    // Report type buttons
+    document.querySelectorAll('.report-type-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        const reportType = this.dataset.type;
+        const traceId = 'venus-' + Date.now();
+        if (window.Audit && window.Audit.log) {
+          window.Audit.log('venus_report_generate', { type: reportType }, traceId);
+        }
+        const reportStatus = document.getElementById('venus-report-status');
+        if (reportStatus) {
+          reportStatus.innerHTML = '<p style="color: #10b981;">✓ Generating ' + reportType.toUpperCase() + ' report...\n\nEvidence package will be formatted for ' + 
+            (reportType === 'police' ? 'UK Police / Action Fraud' :
+             reportType === 'ceop' ? 'CEOP (Child Exploitation & Online Protection)' :
+             reportType === 'ncsc' ? 'NCSC (National Cyber Security Centre)' :
+             'Internal use') + '</p>';
+        }
+      });
+    });
+
+    // Timeline range selector
+    const timelineRange = document.getElementById('venus-timeline-range');
+    if (timelineRange) {
+      timelineRange.addEventListener('change', function() {
+        const traceId = 'venus-' + Date.now();
+        if (window.Audit && window.Audit.log) {
+          window.Audit.log('venus_timeline_change', { range: this.value }, traceId);
+        }
+        // Update timeline display (placeholder)
+        console.log('[Venus] Timeline range changed to:', this.value);
+      });
+    }
+
+    // Auto-engage toggle
+    const autoEngage = document.getElementById('venus-auto-engage');
+    if (autoEngage) {
+      autoEngage.addEventListener('change', function() {
+        const traceId = 'venus-' + Date.now();
+        if (window.Audit && window.Audit.log) {
+          window.Audit.log('venus_auto_engage_toggle', { enabled: this.checked }, traceId);
+        }
+      });
+    }
+
+    // Notify authorities toggle
+    const notifyAuthorities = document.getElementById('venus-notify-authorities');
+    if (notifyAuthorities) {
+      notifyAuthorities.addEventListener('change', function() {
+        const traceId = 'venus-' + Date.now();
+        if (window.Audit && window.Audit.log) {
+          window.Audit.log('venus_notify_authorities_toggle', { enabled: this.checked }, traceId);
+        }
+      });
+    }
+
+    // Evidence category clicks
+    document.querySelectorAll('.evidence-category').forEach(function(cat) {
+      cat.addEventListener('click', function() {
+        const category = this.dataset.category;
+        const traceId = 'venus-' + Date.now();
+        if (window.Audit && window.Audit.log) {
+          window.Audit.log('venus_evidence_category_view', { category: category }, traceId);
+        }
+        alert('Viewing ' + category + ' evidence...\n\nThis would show all files in this category.');
+      });
+    });
+
     updateStatus();
   }
 

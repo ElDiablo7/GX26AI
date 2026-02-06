@@ -16,7 +16,15 @@
     currentRole: null,
     sessionId: null,
     posture: 'GREEN',
+    currentPosture: 'GREEN',
     riskScore: 0,
+    sessionActive: false,
+    lockdownActive: false,
+    lockdownReason: null,
+    twoPersonRules: [],
+    rateLimitCount: 0,
+    rateLimitWindow: 60000,
+    rateLimitMax: 10,
 
     init: function() {
       if (this.initialized) return;
@@ -70,6 +78,7 @@
     },
 
     sessionStart: function() {
+      this.sessionActive = true;
       LogManager.log('sentinel_session_start', { role: this.currentRole }, this.sessionId);
     },
 
@@ -78,7 +87,93 @@
       this.authenticated = false;
       this.currentRole = null;
       this.sessionId = null;
+      this.sessionActive = false;
       this.saveSession();
+    },
+
+    setRole: function(role) {
+      if (this.authenticated) {
+        this.currentRole = role;
+        LogManager.log('sentinel_role_set', { role: role }, this.sessionId);
+        this.saveSession();
+      }
+    },
+
+    setPosture: function(posture) {
+      if (this.authenticated) {
+        this.posture = posture;
+        this.currentPosture = posture;
+        LogManager.log('sentinel_posture_set', { posture: posture }, this.sessionId);
+        this.updatePosture(this.riskScore);
+      }
+    },
+
+    lockdown: function(reason) {
+      if (this.authenticated) {
+        this.lockdownActive = true;
+        this.lockdownReason = reason || 'Operator initiated';
+        this.posture = 'BLACK';
+        this.currentPosture = 'BLACK';
+        LogManager.log('sentinel_lockdown', { reason: this.lockdownReason }, this.sessionId);
+      }
+    },
+
+    unlockdown: function(pin) {
+      if (this.authenticated && pin) {
+        var validPins = ['SENTINEL', '1234', 'sentinel'];
+        if (validPins.indexOf(pin) !== -1) {
+          this.lockdownActive = false;
+          this.lockdownReason = null;
+          this.posture = 'GREEN';
+          this.currentPosture = 'GREEN';
+          LogManager.log('sentinel_unlockdown', {}, this.sessionId);
+          return true;
+        }
+      }
+      return false;
+    },
+
+    requireTwoPersonRule: function(action) {
+      if (this.authenticated) {
+        if (this.twoPersonRules.indexOf(action) === -1) {
+          this.twoPersonRules.push(action);
+          LogManager.log('sentinel_twoperson_rule_created', { action: action }, this.sessionId);
+        }
+      }
+    },
+
+    loadPolicyPack: function(packId) {
+      if (PolicyManager && PolicyManager.activatePack) {
+        PolicyManager.activatePack(packId);
+        LogManager.log('sentinel_policy_pack_loaded', { pack: packId }, this.sessionId);
+      }
+    },
+
+    healthCheck: function() {
+      return {
+        initialized: this.initialized,
+        authenticated: this.authenticated,
+        logChainValid: LogManager && LogManager.verifyChain ? LogManager.verifyChain().valid : false,
+        policyPack: PolicyManager && PolicyManager.getActivePacks ? PolicyManager.getActivePacks().length > 0 : false,
+        posture: this.posture,
+        lockdownActive: this.lockdownActive
+      };
+    },
+
+    auditExport: function() {
+      if (LogManager && LogManager.export) {
+        var exportData = LogManager.export('json');
+        var blob = new Blob([exportData], { type: 'application/json' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'sentinel_audit_' + Date.now() + '.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        LogManager.log('sentinel_audit_export', {}, this.sessionId);
+      }
     },
 
     authorize: function(action, context) {
@@ -205,17 +300,26 @@
     },
 
     updatePosture: function(riskScore) {
-      var thresholds = PolicyManager.getPostureThresholds();
+      var thresholds = PolicyManager && PolicyManager.getPostureThresholds ? PolicyManager.getPostureThresholds() : {
+        green: 0.3,
+        amber: 0.6,
+        red: 0.8,
+        black: 0.95
+      };
       this.riskScore = riskScore;
 
       if (riskScore >= thresholds.black) {
         this.posture = 'BLACK';
+        this.currentPosture = 'BLACK';
       } else if (riskScore >= thresholds.red) {
         this.posture = 'RED';
+        this.currentPosture = 'RED';
       } else if (riskScore >= thresholds.amber) {
         this.posture = 'AMBER';
+        this.currentPosture = 'AMBER';
       } else {
         this.posture = 'GREEN';
+        this.currentPosture = 'GREEN';
       }
 
       return this.posture;
