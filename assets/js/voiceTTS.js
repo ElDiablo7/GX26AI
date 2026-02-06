@@ -460,6 +460,13 @@
    * CRITICAL: Always waits for intro voices to finish before speaking
    */
   async function speak(text, options = {}) {
+    // ENLIL_GOV: Global voice intro kill switch
+    if (window.GRX26_FLAGS && window.GRX26_FLAGS.VOICE_INTROS === false && options.intro !== false) {
+      // Only allow manual voice (when explicitly requested, not auto-intros)
+      if (!options.manual && !options.force) {
+        return Promise.resolve();
+      }
+    }
     if (!isSupported || !isEnabled || !text) {
       return Promise.resolve();
     }
@@ -494,6 +501,12 @@
    * Direct speech (bypasses queue - use with caution)
    */
   function speakDirect(text, options = {}) {
+    // ENLIL_GOV: Global voice intro kill switch
+    if (window.GRX26_FLAGS && window.GRX26_FLAGS.VOICE_INTROS === false && options.intro !== false) {
+      if (!options.manual && !options.force) {
+        return Promise.resolve();
+      }
+    }
     if (!isSupported || !isEnabled || !text) {
       return Promise.resolve();
     }

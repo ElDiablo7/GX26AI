@@ -90,3 +90,6 @@ body.grx26-police .loading-spinner {
   border-color: var(--grx26-border);
   border-top-color: var(--grx26-text-muted);
 }
+
+
+.grx26-panel .sub{opacity:.8;font-size:12px;margin:-6px 0 10px 0;}

@@ -31,6 +31,8 @@
     <link rel="stylesheet" href="assets/css/venus.css?v=VENUS">
     <!-- TITAN + SENTINEL CSS -->
     <link rel="stylesheet" href="assets/css/titan.css?v=TITAN_SENTINEL">
+    <!-- ENLIL_GOV: AI Control Strip -->
+    <link rel="stylesheet" href="assets/css/enlil-control-strip.css?v=ENLIL">
 </head>
 
 <body class="grx26-police">
@@ -71,35 +73,44 @@
               <button type="button" id="grx26-theme-btn" class="module-btn grx26-theme-btn" title="Theme (Venus / MOD)">Theme</button>
             </div>
 
+            <!-- READ-ONLY DEMO MODE: disables tasking/targeting/export -->
+            <div class="section-title">Governance</div>
+            <div class="sidebar-demo-row">
+              <label class="grx26-demo-toggle">
+                <input type="checkbox" id="grx26-readonly-demo" title="When on, tasking/targeting/export buttons are disabled">
+                <span>READ-ONLY DEMO</span>
+              </label>
+            </div>
+
             <!-- Module Buttons -->
             <nav class="module-nav">
-  <button class="module-btn" data-module="core">Core</button>
-  <button class="module-btn" data-module="sentinel">Sentinel</button>
-  <button class="module-btn" data-module="guardian">Guardian</button>
+  <button class="module-btn" data-module="core">CORE</button>
+  <button class="module-btn" data-module="sentinel">ENLIL</button>
+  <button class="module-btn" data-module="guardian">NANSHE</button>
   <button class="module-btn titan-btn" data-module="titan" title="TITAN — Tactical Internal Threat Assessment Nucleus">
     <img src="assets/img/titan-button-icon.png" alt="TITAN" class="module-btn-icon" style="width: 20px; height: 20px; margin-right: 8px; object-fit: contain; vertical-align: middle;" onerror="this.style.display='none';">
-    <span>Titan</span>
+    <span>NINURTA</span>
   </button>
-  <button class="module-btn" data-module="venus">Venus</button>
-  <button class="module-btn" data-module="forge_map">Forge Map</button>
+  <button class="module-btn" data-module="venus">ENKI</button>
+  <button class="module-btn" data-module="forge_map">GIBIL MAP</button>
   <button class="module-btn" data-module="system-status">System Status</button>
   <button class="module-btn" data-module="audit-log">Audit Log</button>
-  <button class="module-btn" data-module="core2">Core 2.0</button>
-  <button class="module-btn" data-module="builder">Builder</button>
-  <button class="module-btn" data-module="siteops">SiteOps</button>
-  <button class="module-btn" data-module="tradelink">TradeLink</button>
-  <button class="module-btn" data-module="beauty">Beauty</button>
-  <button class="module-btn" data-module="fit">Fit</button>
-  <button class="module-btn" data-module="yoga">Yoga</button>
-  <button class="module-btn" data-module="uplift">Uplift</button>
-  <button class="module-btn" data-module="chef">Chef</button>
-  <button class="module-btn" data-module="artist">Artist</button>
-  <button class="module-btn" data-module="family">Family</button>
-  <button class="module-btn" data-module="gamer">Gamer</button>
-  <button class="module-btn" data-module="accounting">Accounting</button>
-  <button class="module-btn" data-module="osint">OSINT</button>
-  <button class="module-btn" data-module="sport">Sport</button>
-  <button class="module-btn" data-module="forge">Forge</button>
+  <button class="module-btn" data-module="core2">CORE 2.0</button>
+  <button class="module-btn" data-module="builder">AGENT-01</button>
+  <button class="module-btn" data-module="siteops">AGENT-02</button>
+  <button class="module-btn" data-module="tradelink">AGENT-03</button>
+  <button class="module-btn" data-module="beauty">AGENT-04</button>
+  <button class="module-btn" data-module="fit">AGENT-05</button>
+  <button class="module-btn" data-module="yoga">AGENT-06</button>
+  <button class="module-btn" data-module="uplift">AGENT-07</button>
+  <button class="module-btn" data-module="chef">AGENT-08</button>
+  <button class="module-btn" data-module="artist">AGENT-09</button>
+  <button class="module-btn" data-module="family">AGENT-10</button>
+  <button class="module-btn" data-module="gamer">AGENT-11</button>
+  <button class="module-btn" data-module="accounting">AGENT-12</button>
+  <button class="module-btn" data-module="osint">AGENT-13</button>
+  <button class="module-btn" data-module="sport">AGENT-14</button>
+  <button class="module-btn" data-module="forge">GIBIL</button>
 </nav>
 
             <!-- Voice Settings Button -->
@@ -150,6 +161,36 @@
                 }
               });
             </script>
+            
+            <script>
+              (function() {
+                var cb = document.getElementById('grx26-readonly-demo');
+                if (cb) {
+                  cb.checked = sessionStorage.getItem('grx26_readonly_demo') === '1';
+                  cb.addEventListener('change', function() {
+                    sessionStorage.setItem('grx26_readonly_demo', this.checked ? '1' : '0');
+                    window.GRX26_DEMO_MODE = this.checked;
+                    window.dispatchEvent(new CustomEvent('grx26-demo-mode-changed', { detail: { demoMode: this.checked } }));
+                  });
+                }
+                window.addEventListener('grx26-lockdown-changed', function(ev) {
+                  if (document.body) document.body.dataset.grx26Lockdown = (ev.detail && ev.detail.active) ? '1' : '';
+                  // Update SAFE_MODE flag
+                  if (window.GRX26_FLAGS) {
+                    window.GRX26_FLAGS.SAFE_MODE = (ev.detail && ev.detail.active) || false;
+                  }
+                  // Update all control strips
+                  if (window.ENLIL && window.ENLIL.ControlStrip) {
+                    document.querySelectorAll('.enlil-ai-control-strip').forEach(function(strip) {
+                      const moduleId = strip.getAttribute('data-module');
+                      if (moduleId && window.ENLIL.ControlStrip.init) {
+                        window.ENLIL.ControlStrip.init(moduleId);
+                      }
+                    });
+                  }
+                });
+              })();
+            </script>
         </aside>
 
         <!-- Main Content Window -->
@@ -174,6 +215,14 @@
       window.GRACEX_VERSION = 'ULTIMATE_v6.6.0';
       // Enable dev tools on localhost
       window.GRACEX_DEV_MODE = window.location.hostname === 'localhost';
+      // Government-grade build: ENLIL schema, session-only auth, tamper-evident audit
+      window.GRX26_BUILD_FLAVOR = 'ENLIL_GOV';
+      // READ-ONLY DEMO MODE: set by sidebar toggle; disables tasking/targeting/export when true
+      window.GRX26_DEMO_MODE = sessionStorage.getItem('grx26_readonly_demo') === '1';
+      // ENLIL_GOV: Global flags for feature control
+      window.GRX26_FLAGS = window.GRX26_FLAGS || {};
+      window.GRX26_FLAGS.VOICE_INTROS = false; // Disable all automatic voice intros globally
+      window.GRX26_FLAGS.SAFE_MODE = false; // Global safe mode (lockdown disables actions)
       
       // Log configuration for debugging
       console.log('%c═══════════════════════════════════════════════════════════', 'color: #10b981');
@@ -225,6 +274,35 @@
     <script src="assets/js/forge/forge.map.js?v=GRX26"></script>
     <script src="assets/js/ui/sidebar.js?v=GRX26"></script>
     <script src="assets/js/ui/panels.js?v=GRX26"></script>
+    <!-- ENLIL_GOV: AI Control Strip + Task Bus -->
+    <script src="assets/js/components/enlil-task-bus.js?v=ENLIL"></script>
+    <script src="assets/js/components/ai-control-strip.js?v=ENLIL"></script>
+    <!-- Wire module buttons to router -->
+    <script>
+      (function() {
+        function wireModuleButtons() {
+          document.querySelectorAll('.module-btn[data-module]').forEach(function(btn) {
+            if (btn.dataset.wired) return;
+            btn.dataset.wired = '1';
+            btn.addEventListener('click', function() {
+              const moduleId = this.getAttribute('data-module');
+              if (moduleId && window.GRACEX_Router && window.GRACEX_Router.navigate) {
+                window.GRACEX_Router.navigate(moduleId);
+              } else if (moduleId) {
+                window.location.hash = '#/' + moduleId;
+              }
+            });
+          });
+        }
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', wireModuleButtons);
+        } else {
+          wireModuleButtons();
+        }
+        // Re-wire after dynamic content loads
+        setTimeout(wireModuleButtons, 1000);
+      })();
+    </script>
     <!-- Enterprise Systems -->
     <script src="assets/js/callsheets.js?v=SEC7"></script>
     <script src="assets/js/risk-safety.js?v=SEC7"></script>

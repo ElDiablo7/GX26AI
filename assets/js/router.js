@@ -65,6 +65,56 @@ const Router = (() => {
         html = await res.text();
         moduleCache[moduleId] = html; // Cache for future use
       }
+      
+      // ENLIL_GOV: Inject AI Control Strip at the top of module content
+      if (window.ENLIL && window.ENLIL.ControlStrip && window.ENLIL.ControlStrip.render) {
+        const moduleLabels = {
+          core: { name: 'CORE', specialty: 'Main Control Center' },
+          sentinel: { name: 'ENLIL', specialty: 'Command & Governance' },
+          titan: { name: 'NINURTA', specialty: 'Tactical Threat Analysis' },
+          venus: { name: 'ENKI', specialty: 'Sandbox / Flytrap' },
+          guardian: { name: 'NANSHE', specialty: 'Protection & Safeguarding' },
+          forge: { name: 'GIBIL', specialty: 'Forge / Systems' },
+          forge_map: { name: 'GIBIL MAP', specialty: 'Systems Map' },
+          system_status: { name: 'NISABA', specialty: 'System Status / Records' },
+          audit_log: { name: 'UTU LOG', specialty: 'Oversight / Audit' },
+          builder: { name: 'AGENT-01', specialty: 'Builder (speciality preserved)' },
+          siteops: { name: 'AGENT-02', specialty: 'SiteOps (speciality preserved)' },
+          tradelink: { name: 'AGENT-03', specialty: 'TradeLink (speciality preserved)' },
+          beauty: { name: 'AGENT-04', specialty: 'Beauty (speciality preserved)' },
+          fit: { name: 'AGENT-05', specialty: 'Fit (speciality preserved)' },
+          yoga: { name: 'AGENT-06', specialty: 'Yoga (speciality preserved)' },
+          uplift: { name: 'AGENT-07', specialty: 'Uplift (speciality preserved)' },
+          chef: { name: 'AGENT-08', specialty: 'Chef (speciality preserved)' },
+          artist: { name: 'AGENT-09', specialty: 'Artist (speciality preserved)' },
+          family: { name: 'AGENT-10', specialty: 'Family (speciality preserved)' },
+          gamer: { name: 'AGENT-11', specialty: 'Gamer (speciality preserved)' },
+          accounting: { name: 'AGENT-12', specialty: 'Accounting (speciality preserved)' },
+          osint: { name: 'AGENT-13', specialty: 'OSINT (speciality preserved)' },
+          sport: { name: 'AGENT-14', specialty: 'Sport (speciality preserved)' },
+          core2: { name: 'CORE 2.0', specialty: 'Advanced AI Interface' }
+        };
+        
+        const label = moduleLabels[moduleId] || { name: moduleId.toUpperCase(), specialty: 'AI Worker Node' };
+        const controlStripHtml = window.ENLIL.ControlStrip.render({
+          moduleId: moduleId,
+          moduleName: label.name,
+          specialty: label.specialty,
+          onRun: null // Handled by control strip internally
+        });
+        
+        // Wrap module HTML with control strip
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = html;
+        const firstChild = tempDiv.firstElementChild;
+        if (firstChild) {
+          tempDiv.insertBefore(document.createRange().createContextualFragment(controlStripHtml), firstChild);
+        } else {
+          tempDiv.insertAdjacentHTML('afterbegin', controlStripHtml);
+        }
+        html = tempDiv.innerHTML;
+      }
+      
       view.innerHTML = html;
 
       // Dynamically load module script on first use so its logic & buttons wire up
@@ -116,6 +166,13 @@ const Router = (() => {
       if (window.GraceX && window.GraceX.trackModuleVisit) {
         GraceX.trackModuleVisit(moduleId);
       }
+      
+      // ENLIL_GOV: Initialize control strip after module loads
+      setTimeout(() => {
+        if (window.ENLIL && window.ENLIL.ControlStrip && window.ENLIL.ControlStrip.init) {
+          window.ENLIL.ControlStrip.init(moduleId);
+        }
+      }, 100);
 
     } catch (err) {
       console.error('[Router] Failed to load module:', moduleId, err);
