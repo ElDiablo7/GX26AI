@@ -1,5 +1,5 @@
 <div class="grx26-panel" id="grx26-system-status-root">
-  <h2>System Status</h2>
+  <h2>NISABA <span class="sub">System Status / Records — formerly System Status</span></h2>
   <p id="grx26-status-build">—</p>
   <p id="grx26-status-missing">—</p>
   <p id="grx26-status-forge">—</p>
@@ -10,9 +10,9 @@
   <input type="text" id="grx26-request-input" placeholder="e.g. Run a self-system test and report ecosystem." style="width:100%;max-width:400px;padding:8px;margin:8px 0;background:var(--grx26-surface);border:1px solid var(--grx26-border);color:var(--grx26-text);">
   <button type="button" id="grx26-btn-submit">Submit via Core</button>
   <pre id="grx26-request-result" style="margin-top:12px;font-size:11px;white-space:pre-wrap;background:rgba(0,0,0,0.2);padding:12px;border-radius:4px;"></pre>
-  <h2 style="margin-top:24px;">Audit (recent 20)</h2>
-  <p style="font-size:12px;color:var(--grx26-text-muted,#9ca3af);">Operator view: request_received, sentinel_processed, titan_invoked, response_sent.</p>
-  <table class="grx26-audit-table" style="margin-top:8px;"><thead><tr><th>Time</th><th>Event</th><th>Trace ID</th></tr></thead><tbody id="grx26-status-audit-tbody"></tbody></table>
+  <h2 style="margin-top:24px;">UTU LOG (recent 20)</h2>
+  <p style="font-size:12px;color:var(--grx26-text-muted,#9ca3af);">Operator view: request_received, sentinel_processed, titan_invoked, response_sent. Hash chain: prevHash → hash.</p>
+  <table class="grx26-audit-table" style="margin-top:8px;"><thead><tr><th>Time</th><th>Event</th><th>Trace ID</th><th>prevHash</th><th>hash</th></tr></thead><tbody id="grx26-status-audit-tbody"></tbody></table>
 </div>
 <script>
 (function() {
@@ -55,9 +55,9 @@
     var entries = Audit.getRecent(20);
     var tbody = document.getElementById('grx26-status-audit-tbody');
     if (!tbody) return;
-    if (!entries.length) { tbody.innerHTML = '<tr><td colspan="3">No entries.</td></tr>'; return; }
+    if (!entries.length) { tbody.innerHTML = '<tr><td colspan="5">No entries.</td></tr>'; return; }
     tbody.innerHTML = entries.map(function(e) {
-      return '<tr><td>' + (e.ts ? new Date(e.ts).toLocaleTimeString() : '') + '</td><td>' + (e.eventType || '') + '</td><td>' + (e.traceId || '') + '</td></tr>';
+      return '<tr><td>' + (e.ts ? new Date(e.ts).toLocaleTimeString() : '') + '</td><td>' + (e.eventType || '') + '</td><td>' + (e.traceId || '') + '</td><td>' + (e.prevHash ? e.prevHash.substring(0, 8) + '...' : '—') + '</td><td>' + (e.hash ? e.hash.substring(0, 8) + '...' : '—') + '</td></tr>';
     }).join('');
   }
   setTimeout(refresh, 100);

@@ -60,6 +60,17 @@ This will load the main GRACE-X Boot Interface.
   - `OPENAI_API_KEY` (or `API_KEY`) for the Brain
   - Any Sport/API keys if you use those modules (e.g. `FOOTBALL_API_KEY`, `RACING_*`).
 
+### Live Deployment
+
+**🛡️ ENLIL Security Suite (Live):** [https://gx26ai-1.onrender.com](https://gx26ai-1.onrender.com)
+
+The ENLIL_GOV refactored version is currently deployed and live on Render. This deployment includes:
+- ENLIL schema naming (ENLIL, ENKI, NINURTA, NANSHE, GIBIL, NISABA, UTU LOG)
+- AGENT-01 through AGENT-14 module labels
+- Government-grade hardening (CSP, session-only auth, tamper-evident audit)
+- READ-ONLY DEMO MODE toggle
+- LOCKDOWN / SAFE MODE functionality
+
 ## 7. Troubleshooting
 
 - **"Module not found"**: Ensure you ran `npm install` in the `server` directory.

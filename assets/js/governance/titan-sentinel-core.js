@@ -115,6 +115,15 @@
         this.posture = 'BLACK';
         this.currentPosture = 'BLACK';
         LogManager.log('sentinel_lockdown', { reason: this.lockdownReason }, this.sessionId);
+        if (typeof window !== 'undefined') {
+          if (window.ForgeLaser) {
+            try { window.ForgeLaser.setTarget(''); window.ForgeLaser.setActive(false); } catch (e) {}
+          }
+          if (window.GraceXLaserUltra && window.GraceXLaserUltra.active) {
+            try { window.GraceXLaserUltra.toggle(); } catch (e) {}
+          }
+          window.dispatchEvent(new CustomEvent('grx26-lockdown-changed', { detail: { active: true } }));
+        }
       }
     },
 
@@ -127,6 +136,9 @@
           this.posture = 'GREEN';
           this.currentPosture = 'GREEN';
           LogManager.log('sentinel_unlockdown', {}, this.sessionId);
+          if (typeof window !== 'undefined') {
+            window.dispatchEvent(new CustomEvent('grx26-lockdown-changed', { detail: { active: false } }));
+          }
           return true;
         }
       }
@@ -161,19 +173,26 @@
     },
 
     auditExport: function() {
-      if (LogManager && LogManager.export) {
-        var exportData = LogManager.export('json');
-        var blob = new Blob([exportData], { type: 'application/json' });
-        var url = URL.createObjectURL(blob);
-        var a = document.createElement('a');
-        a.href = url;
-        a.download = 'sentinel_audit_' + Date.now() + '.json';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        LogManager.log('sentinel_audit_export', {}, this.sessionId);
+      if (typeof window !== 'undefined' && window.GRX26_DEMO_MODE) return;
+      var exportData;
+      if (typeof Audit !== 'undefined' && Audit.exportBundle) {
+        exportData = JSON.stringify(Audit.exportBundle(), null, 2);
+      } else if (LogManager && LogManager.export) {
+        exportData = LogManager.export('json');
+      } else {
+        return;
       }
+      var blob = new Blob([exportData], { type: 'application/json' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'sentinel_audit_' + Date.now() + '.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      if (LogManager && LogManager.log) LogManager.log('sentinel_audit_export', {}, this.sessionId);
+      if (typeof Audit !== 'undefined' && Audit.log) Audit.log('sentinel_audit_export', {}, null, { moduleId: 'sentinel', action: 'audit_export', outcome: 'ok' });
     },
 
     authorize: function(action, context) {

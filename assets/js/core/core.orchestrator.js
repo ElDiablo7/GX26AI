@@ -7,6 +7,9 @@
   var lastSelfTest = null;
 
   function handleUserRequest(input, context) {
+    if (global.Sentinel && global.Sentinel.lockdownActive) {
+      return { traceId: null, result: { summary: 'Lockdown active. No actions allowed.' }, notices: ['LOCKDOWN / SAFE MODE'], confidence: 'advisory', auditRef: null };
+    }
     var traceId = 'tr-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6);
     if (global.Audit) global.Audit.log('request_received', { input: (input || '').substring(0, 200) }, traceId);
     if (global.GRX26 && global.GRX26.updateAgentActivity) global.GRX26.updateAgentActivity('core');
