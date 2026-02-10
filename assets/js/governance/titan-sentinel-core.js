@@ -59,8 +59,8 @@
     },
 
     authenticate: function(pinOrKey) {
-      // Simple authentication (SENTINEL or 1234)
-      var validPins = ['SENTINEL', '1234', 'sentinel'];
+      // Simple authentication
+      var validPins = ['ENLIL_COMMAND', 'ENLIL', 'enlil', '3611'];
       var authenticated = validPins.indexOf(pinOrKey) !== -1;
 
       if (authenticated) {
@@ -120,7 +120,7 @@
 
     unlockdown: function(pin) {
       if (this.authenticated && pin) {
-        var validPins = ['SENTINEL', '1234', 'sentinel'];
+        var validPins = ['ENLIL_COMMAND', 'ENLIL', 'enlil', '3611'];
         if (validPins.indexOf(pin) !== -1) {
           this.lockdownActive = false;
           this.lockdownReason = null;

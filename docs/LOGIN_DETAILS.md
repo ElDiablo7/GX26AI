@@ -11,8 +11,8 @@ Use these credentials to pass the Security Wall. Verification is required on **e
 | Field | Value |
 |-------|--------|
 | **OPERATOR ID** | Any (field is optional; not validated) |
-| **ACCESS KEY** | `BIG_ZAC A0251AH` |
-| **2FA TOKEN** (6 digits) | `025126` |
+| **ACCESS KEY** | `ENLIL_COMMAND` |
+| **2FA TOKEN** (6 digits) | `361126` |
 
 ---
 
@@ -30,8 +30,8 @@ Use these credentials to pass the Security Wall. Verification is required on **e
 
 Credentials are defined in **secure_warning_lock.html**:
 
-- `AUTHORISED_PASSWORD` — ACCESS KEY
-- `AUTHORISED_TOKEN` — 2FA token
+- `AUTHORISED_PASSWORD` — ACCESS KEY (`ENLIL_COMMAND`)
+- `AUTHORISED_TOKEN` — 2FA token (`361126`)
 
 Edit those constants to change the accepted values. For production, consider moving credentials to environment variables or a server-side check.
 

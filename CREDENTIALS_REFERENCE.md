@@ -14,8 +14,8 @@
 | Field | Value | Notes |
 |-------|-------|-------|
 | **OPERATOR ID** | Any text | Field is optional; not validated |
-| **ACCESS KEY** | `BIG_ZAC A0251AH` | Case-sensitive |
-| **2FA TOKEN** (6 digits) | `025126` | Must be exactly 6 digits |
+| **ACCESS KEY** | `ENLIL_COMMAND` | Case-sensitive |
+| **2FA TOKEN** (6 digits) | `361126` | Must be exactly 6 digits |
 
 **Flow:**
 1. Open app → redirected to Security Wall if not verified this session
@@ -24,10 +24,10 @@
 4. Enter **2FA TOKEN** → **VERIFY TOKEN**
 5. Level 3 clearance → redirected to main system
 
-**Location in code:** `secure_warning_lock.html` lines 353-354
+**Location in code:** `secure_warning_lock.html`
 ```javascript
-const AUTHORISED_PASSWORD = 'BIG_ZAC A0251AH';
-const AUTHORISED_TOKEN = '025126';
+const AUTHORISED_PASSWORD = 'ENLIL_COMMAND';
+const AUTHORISED_TOKEN = '361126';
 ```
 
 ---
@@ -35,21 +35,22 @@ const AUTHORISED_TOKEN = '025126';
 ## 🛡️ Sentinel/ENLIL Authentication (Module Access)
 
 **File:** `assets/js/governance/titan-sentinel-core.js`  
-**Purpose:** Authenticate to Sentinel (ENLIL) module for governance operations
+**Purpose:** Authenticate to ENLIL module for governance operations
 
 | Credential | Value | Case Sensitive | Used For |
 |------------|-------|----------------|----------|
-| **PIN 1** | `SENTINEL` | Yes | Authentication & Unlockdown |
-| **PIN 2** | `1234` | No | Authentication & Unlockdown |
-| **PIN 3** | `sentinel` | Yes | Authentication & Unlockdown |
+| **PASSWORD** | `ENLIL_COMMAND` | Yes | Authentication & Unlockdown (primary) |
+| **PIN 1** | `ENLIL` | Yes | Authentication & Unlockdown |
+| **PIN 2** | `enlil` | Yes | Authentication & Unlockdown |
+| **PIN 3** | `3611` | No | Authentication & Unlockdown |
 
-**Location in code:** `titan-sentinel-core.js` lines 63, 132
+**Location in code:** `titan-sentinel-core.js`
 ```javascript
-var validPins = ['SENTINEL', '1234', 'sentinel'];
+var validPins = ['ENLIL_COMMAND', 'ENLIL', 'enlil', '3611'];
 ```
 
 **Usage:**
-- Enter in Sentinel module authentication field
+- Enter in ENLIL module authentication field
 - Also used to unlock system from LOCKDOWN/SAFE MODE
 
 ---
@@ -89,11 +90,12 @@ ANTHROPIC_API_KEY=sk-ant-YOUR-KEY-HERE
 ## 📋 Summary Quick Reference
 
 ### Initial Login (Security Wall)
-- **ACCESS KEY:** `BIG_ZAC A0251AH`
-- **2FA TOKEN:** `025126`
+- **ACCESS KEY:** `ENLIL_COMMAND`
+- **2FA TOKEN:** `361126`
 
-### Sentinel/ENLIL Module
-- **PIN:** `SENTINEL`, `1234`, or `sentinel`
+### ENLIL Module (Sentinel)
+- **PASSWORD:** `ENLIL_COMMAND` (primary)
+- **PIN:** `ENLIL`, `enlil`, or `3611`
 
 ### Standalone ELIL App
 - **PIN:** `0000` or `SENTINEL_OVERRIDE`
@@ -106,7 +108,7 @@ ANTHROPIC_API_KEY=sk-ant-YOUR-KEY-HERE
 ## 🔄 Session Management
 
 - **Security Wall:** Session-only (`sessionStorage`); must verify on every new browser session
-- **Sentinel Auth:** Session-only; stored in `sessionStorage` as `sentinel_session`
+- **ENLIL Auth:** Session-only; stored in `sessionStorage` as `sentinel_session`
 - **ENLIL_GOV Build:** No persistent bypass; all authentication is session-only
 
 ---
@@ -120,7 +122,7 @@ const AUTHORISED_PASSWORD = 'YOUR_NEW_PASSWORD';
 const AUTHORISED_TOKEN = 'YOUR_NEW_TOKEN';
 ```
 
-### Sentinel PINs
+### ENLIL PINs
 Edit `assets/js/governance/titan-sentinel-core.js`:
 ```javascript
 var validPins = ['YOUR_PIN_1', 'YOUR_PIN_2', 'YOUR_PIN_3'];
@@ -152,11 +154,11 @@ Edit `assets/data/config.default.json`:
 
 - All PINs/passwords are case-sensitive unless noted otherwise
 - Security Wall verification is required on every new browser session
-- Sentinel authentication persists for the browser session only
+- ENLIL authentication persists for the browser session only
 - Failed authentication attempts are logged in the audit system
-- LOCKDOWN mode requires Sentinel PIN to unlock
+- LOCKDOWN mode requires ENLIL PIN to unlock
 
 ---
 
-**Last Updated:** February 3, 2026  
+**Last Updated:** February 10, 2026  
 **Build:** ENLIL_GOV v1.0
