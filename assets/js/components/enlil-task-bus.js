@@ -70,7 +70,7 @@
       }
       
       try {
-        // Try module brain handler
+        // Try module brain handler (registered by enlil-brain-wiring.js for all modules)
         let result = null;
         if (window.moduleBrains && window.moduleBrains[taskEntry.moduleId]) {
           const handler = window.moduleBrains[taskEntry.moduleId];
@@ -79,18 +79,21 @@
           }
         }
         
-        // Try GRACEX router handler
-        if (!result && window.GraceX && window.GraceX.Router) {
-          const router = window.GraceX.Router;
-          if (router.handleInput && typeof router.handleInput === 'function') {
-            result = await Promise.resolve(router.handleInput(taskEntry.input, {
-              module: taskEntry.moduleId,
-              target: taskEntry.target
-            }));
+        // Fallback: call runModuleBrain directly (wrapped by brainLevel5.js to call /api/brain)
+        if (!result && typeof window.runModuleBrain === 'function') {
+          var fullInput = taskEntry.input;
+          if (taskEntry.target) {
+            fullInput = '[TARGET: ' + taskEntry.target + '] ' + taskEntry.input;
           }
+          result = await Promise.resolve(window.runModuleBrain(taskEntry.moduleId, fullInput));
         }
         
-        // Try Core Orchestrator
+        // Fallback: runLevel5Brain directly
+        if (!result && typeof window.runLevel5Brain === 'function') {
+          result = await Promise.resolve(window.runLevel5Brain(taskEntry.moduleId, taskEntry.input));
+        }
+        
+        // Fallback: Core Orchestrator (internal routing, no API)
         if (!result && global.CoreOrchestrator && global.CoreOrchestrator.handleUserRequest) {
           result = await Promise.resolve(global.CoreOrchestrator.handleUserRequest(taskEntry.input, {
             module: taskEntry.moduleId,
@@ -98,15 +101,9 @@
           }));
         }
         
-        // Default stub response
+        // Last resort stub
         if (!result) {
-          result = {
-            summary: `AGENT acknowledged. No brain wired yet. Input logged and routed.`,
-            moduleId: taskEntry.moduleId,
-            target: taskEntry.target,
-            laserOn: taskEntry.laserOn,
-            note: 'Module handler not found. Task logged.'
-          };
+          result = taskEntry.moduleId.toUpperCase() + ' received your input. The AI brain API is not available right now. Your message has been logged.\n\nInput: "' + (taskEntry.input || '').substring(0, 200) + '"';
         }
         
         taskEntry.status = 'done';
