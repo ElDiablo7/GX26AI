@@ -168,7 +168,7 @@
                 if (Sentinel.unlockdown) {
                   unlocked = Sentinel.unlockdown(pin);
                 } else {
-                  var validPins = ['ENLIL_COMMAND', 'ENLIL', 'enlil', '3611'];
+                  var validPins = ['BIG_ZAC A0251AH', 'ENLIL_COMMAND', 'ENLIL', 'enlil', '3611'];
                   if (validPins.indexOf(pin) !== -1) {
                     Sentinel.lockdownActive = false;
                     Sentinel.lockdownReason = null;

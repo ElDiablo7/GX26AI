@@ -1,14 +1,93 @@
 <div class="grx26-panel" id="grx26-forge-map-root">
-  <h2>Forge Map — Registry</h2>
+  <h2>GIBIL MAP <span class="sub">System Registry — All Modules</span></h2>
   <div id="grx26-forge-map-container"></div>
 </div>
 <script>
 (function() {
   function render() {
-    if (typeof GRX26 === 'undefined' || !GRX26.ForgeMap || !GRX26.ForgeMap.renderInto) return;
     var container = document.getElementById('grx26-forge-map-container');
-    if (container) GRX26.ForgeMap.renderInto(container);
+    if (!container) return;
+
+    var registry = window.SYSTEM_REGISTRY;
+    if (!registry) {
+      container.innerHTML = '<p style="color:#9ca3af;">Registry not loaded.</p>';
+      return;
+    }
+
+    // Build nodes from registry
+    var agents = (registry.agents || []);
+    var modules = (registry.modules || []);
+
+    // Group: Security Gods (agents)
+    var securityGods = agents.filter(function(a) {
+      return ['sentinel', 'titan', 'venus', 'guardian', 'forge', 'audit', 'system-status'].indexOf(a.id) !== -1;
+    });
+
+    // Group: Core Infrastructure
+    var infrastructure = agents.filter(function(a) {
+      return ['core', 'compliance', 'watchtower'].indexOf(a.id) !== -1;
+    });
+
+    // Group: Agent modules (AGENT-01 through AGENT-14)
+    var agentModules = modules.filter(function(m) {
+      return m.enlilLabel && m.enlilLabel.indexOf('AGENT-') === 0;
+    });
+
+    // Group: System modules
+    var systemModules = modules.filter(function(m) {
+      return ['core', 'core2', 'forge_map', 'system-status', 'audit-log'].indexOf(m.id) !== -1;
+    });
+
+    function nodeHTML(item, isAgent) {
+      var status = item.status || 'active';
+      var statusColor = status === 'active' ? '#10b981' : status === 'standby' ? '#f59e0b' : '#6b7280';
+      var label = item.enlilLabel || item.name || item.id;
+      var subtitle = item.role || (item.agentId ? 'agent: ' + item.agentId : '');
+      var policy = item.invokePolicy || '';
+      var activity = item.lastActivity ? new Date(item.lastActivity).toLocaleTimeString() : '—';
+
+      return '<div class="grx26-forge-node" data-id="' + (item.id || '') + '" style="border-left: 3px solid ' + statusColor + ';">' +
+        '<span class="grx26-node-name" style="font-weight:600;color:#e6edf3;">' + label + '</span>' +
+        '<span class="grx26-node-id" style="font-size:10px;color:#6b7280;">' + (item.id || '') + '</span>' +
+        (subtitle ? '<span class="grx26-node-role" style="font-size:10px;color:#9ca3af;">' + subtitle + '</span>' : '') +
+        (policy ? '<span class="grx26-node-policy" style="font-size:10px;color:#667eea;">' + policy + '</span>' : '') +
+        '<span class="grx26-node-status" style="font-size:10px;color:' + statusColor + ';">' + status + '</span>' +
+        '<span class="grx26-node-activity" style="font-size:9px;color:#4b5563;">last: ' + activity + '</span>' +
+        '</div>';
+    }
+
+    function groupHTML(title, items, isAgent) {
+      var html = '<div class="grx26-forge-group" style="margin-bottom:20px;">';
+      html += '<div class="grx26-forge-group-title" style="font-size:12px;font-weight:600;color:#667eea;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid #2d3239;">' + title + '</div>';
+      html += '<div class="grx26-forge-nodes" style="display:flex;flex-wrap:wrap;gap:8px;">';
+      items.forEach(function(item) {
+        html += nodeHTML(item, isAgent);
+      });
+      if (items.length === 0) {
+        html += '<span style="font-size:11px;color:#6b7280;">None</span>';
+      }
+      html += '</div></div>';
+      return html;
+    }
+
+    var html = '<div class="grx26-forge-map">';
+    html += '<div style="font-size:11px;color:#9ca3af;margin-bottom:16px;">Build: <strong>' + (registry.buildFlavor || '—') + '</strong> | Agents: <strong>' + agents.length + '</strong> | Modules: <strong>' + modules.length + '</strong></div>';
+    html += groupHTML('Security Gods (Governance)', securityGods, true);
+    html += groupHTML('Core Infrastructure', infrastructure, true);
+    html += groupHTML('Agent Modules (AGENT-01 to AGENT-14)', agentModules, false);
+    html += groupHTML('System Modules', systemModules, false);
+    html += '</div>';
+
+    container.innerHTML = html;
   }
+
   setTimeout(render, 100);
+
+  // Also re-render when forge map is visited
+  document.addEventListener('gracex:module:loaded', function(ev) {
+    if (ev.detail && ev.detail.module === 'forge_map') {
+      setTimeout(render, 150);
+    }
+  });
 })();
 </script>

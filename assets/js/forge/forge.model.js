@@ -1,5 +1,6 @@
 /**
  * GRX26AI — Forge nodes from registry. Used by Forge map.
+ * ENLIL_GOV: Updated to include all modules with ENLIL naming.
  */
 (function(global) {
   'use strict';
@@ -20,7 +21,7 @@
         invokePolicy: a.invokePolicy,
         lastActivity: a.lastActivity || null
       };
-      if (a.role === 'orchestrator' || a.id === 'core' || a.id === 'sentinel' || a.id === 'compliance' || a.id === 'audit' || a.id === 'watchtower') {
+      if (a.role === 'orchestrator' || a.role === 'oversight' || a.id === 'core' || a.id === 'sentinel' || a.id === 'compliance' || a.id === 'audit' || a.id === 'watchtower' || a.id === 'system-status') {
         governance.push(node);
       } else if (a.role === 'analysis' || a.id === 'titan') {
         analysis.push(node);
@@ -29,11 +30,19 @@
       }
     });
 
+    // Add all modules not already represented as agents
     var opsModules = (registry.modules || []).filter(function(m) {
       return !registry.agents.some(function(a) { return a.id === m.id; });
     });
     opsModules.forEach(function(m) {
-      ops.push({ id: m.id, name: m.name, role: 'module', status: 'active', invokePolicy: 'always_on', lastActivity: null });
+      ops.push({
+        id: m.id,
+        name: m.enlilLabel || m.name,
+        role: 'module',
+        status: 'active',
+        invokePolicy: 'always_on',
+        lastActivity: null
+      });
     });
 
     return { governance: governance, analysis: analysis, ops: ops };

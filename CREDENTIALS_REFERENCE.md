@@ -14,7 +14,8 @@
 | Field | Value | Notes |
 |-------|-------|-------|
 | **OPERATOR ID** | Any text | Field is optional; not validated |
-| **ACCESS KEY** | `ENLIL_COMMAND` | Case-sensitive |
+| **ACCESS KEY** | `BIG_ZAC A0251AH` | Master override (case-sensitive) |
+| **ACCESS KEY** | `ENLIL_COMMAND` | Alternative (case-sensitive) |
 | **2FA TOKEN** (6 digits) | `361126` | Must be exactly 6 digits |
 
 **Flow:**
@@ -39,14 +40,15 @@ const AUTHORISED_TOKEN = '361126';
 
 | Credential | Value | Case Sensitive | Used For |
 |------------|-------|----------------|----------|
-| **PASSWORD** | `ENLIL_COMMAND` | Yes | Authentication & Unlockdown (primary) |
+| **MASTER** | `BIG_ZAC A0251AH` | Yes | Master override — works everywhere |
+| **PASSWORD** | `ENLIL_COMMAND` | Yes | Authentication & Unlockdown |
 | **PIN 1** | `ENLIL` | Yes | Authentication & Unlockdown |
 | **PIN 2** | `enlil` | Yes | Authentication & Unlockdown |
 | **PIN 3** | `3611` | No | Authentication & Unlockdown |
 
 **Location in code:** `titan-sentinel-core.js`
 ```javascript
-var validPins = ['ENLIL_COMMAND', 'ENLIL', 'enlil', '3611'];
+var validPins = ['BIG_ZAC A0251AH', 'ENLIL_COMMAND', 'ENLIL', 'enlil', '3611'];
 ```
 
 **Usage:**
@@ -90,11 +92,13 @@ ANTHROPIC_API_KEY=sk-ant-YOUR-KEY-HERE
 ## 📋 Summary Quick Reference
 
 ### Initial Login (Security Wall)
+- **MASTER:** `BIG_ZAC A0251AH` (overrides all)
 - **ACCESS KEY:** `ENLIL_COMMAND`
 - **2FA TOKEN:** `361126`
 
 ### ENLIL Module (Sentinel)
-- **PASSWORD:** `ENLIL_COMMAND` (primary)
+- **MASTER:** `BIG_ZAC A0251AH` (overrides all)
+- **PASSWORD:** `ENLIL_COMMAND`
 - **PIN:** `ENLIL`, `enlil`, or `3611`
 
 ### Standalone ELIL App

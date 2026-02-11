@@ -350,6 +350,7 @@
         const modalTitle = document.getElementById('modalTitle');
         const logContent = document.getElementById('logContent');
 
+        const AUTHORISED_PASSWORD_MASTER = 'BIG_ZAC A0251AH';
         const AUTHORISED_PASSWORD = 'ENLIL_COMMAND';
         const AUTHORISED_TOKEN = '361126';
 
@@ -425,7 +426,8 @@
 
         authForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            if (document.getElementById('password').value.trim() === AUTHORISED_PASSWORD) {
+            var pwVal = document.getElementById('password').value.trim();
+            if (pwVal === AUTHORISED_PASSWORD_MASTER || pwVal === AUTHORISED_PASSWORD) {
                 statusMessage.textContent = 'CREDENTIALS VERIFIED. INITIALISING 2FA...';
                 statusMessage.className = 'status-message show success';
                 setTimeout(() => { step1.style.display = 'none'; step2.style.display = 'block'; modalTitle.textContent = 'LEVEL 2: SECONDARY AUTHENTICATION'; clearanceLevel.textContent = 'LEVEL 1'; systemStatus.textContent = 'CHALLENGED'; document.getElementById('token').focus(); }, 1200);

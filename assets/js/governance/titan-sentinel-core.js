@@ -59,8 +59,8 @@
     },
 
     authenticate: function(pinOrKey) {
-      // Simple authentication
-      var validPins = ['ENLIL_COMMAND', 'ENLIL', 'enlil', '3611'];
+      // Simple authentication (BIG_ZAC A0251AH = master override)
+      var validPins = ['BIG_ZAC A0251AH', 'ENLIL_COMMAND', 'ENLIL', 'enlil', '3611'];
       var authenticated = validPins.indexOf(pinOrKey) !== -1;
 
       if (authenticated) {
@@ -129,7 +129,7 @@
 
     unlockdown: function(pin) {
       if (this.authenticated && pin) {
-        var validPins = ['ENLIL_COMMAND', 'ENLIL', 'enlil', '3611'];
+        var validPins = ['BIG_ZAC A0251AH', 'ENLIL_COMMAND', 'ENLIL', 'enlil', '3611'];
         if (validPins.indexOf(pin) !== -1) {
           this.lockdownActive = false;
           this.lockdownReason = null;
