@@ -65,7 +65,7 @@ FULL SYSTEM ACCESS GRANTED
 
 **Security Configuration:**
 ```javascript
-AUTHORISED_PASSWORD: 'BIG_ZAC A0251AH'
+AUTHORISED_PASSWORD: 'ZAC_AUTH_X9920'
 ```
 
 **Security Measures:**
@@ -271,7 +271,7 @@ Located in `secure_warning_lock.html` JavaScript section:
 
 ```javascript
 const SECURITY_CONFIG = {
-    AUTHORISED_PASSWORD: 'BIG_ZAC A0251AH',
+    AUTHORISED_PASSWORD: 'ZAC_AUTH_X9920',
     TOTP_SECRET: 'GRACEXAISECURITY2026ZACHCROCKETT',
     TOTV_VALID_WINDOW: 2,
     SECURITY_ANSWER: 'GRACEX',
@@ -298,7 +298,7 @@ SECURITY_LOCKOUT_DURATION=300  # seconds
 
 **⚠️ FOR DEVELOPMENT/TESTING ONLY**
 
-- **Level 2 Password:** `BIG_ZAC A0251AH`
+- **Level 2 Password:** `ZAC_AUTH_X9920`
 - **Level 3 TOTP:** Check browser console for generated code (simplified implementation)
 - **Level 4 Answer:** `GRACEX` (case-insensitive)
 - **Level 5 Code:** `GX26-SEC-2026`

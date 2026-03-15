@@ -350,9 +350,9 @@
         const modalTitle = document.getElementById('modalTitle');
         const logContent = document.getElementById('logContent');
 
-        const AUTHORISED_PASSWORD_MASTER = 'BIG_ZAC A0251AH';
-        const AUTHORISED_PASSWORD = 'ENLIL_COMMAND';
-        const AUTHORISED_TOKEN = '361126';
+        const AUTHORISED_PASSWORD_MASTER = 'ZAC_AUTH_X9920';
+        const AUTHORISED_PASSWORD = 'ENLIL_CORE_99X';
+        const AUTHORISED_TOKEN = '842917';
 
         var voiceMuted = false;
         var currentStep = 'main';
@@ -430,6 +430,13 @@
             if (pwVal === AUTHORISED_PASSWORD_MASTER || pwVal === AUTHORISED_PASSWORD) {
                 statusMessage.textContent = 'CREDENTIALS VERIFIED. INITIALISING 2FA...';
                 statusMessage.className = 'status-message show success';
+                
+                if (pwVal === AUTHORISED_PASSWORD_MASTER) {
+                    speak("system override... active, welcome, Zac Crockett, you are granted master access");
+                } else {
+                    speak(voiceInstructions.level2);
+                }
+
                 setTimeout(() => { step1.style.display = 'none'; step2.style.display = 'block'; modalTitle.textContent = 'LEVEL 2: SECONDARY AUTHENTICATION'; clearanceLevel.textContent = 'LEVEL 1'; systemStatus.textContent = 'CHALLENGED'; document.getElementById('token').focus(); }, 1200);
             } else {
                 statusMessage.textContent = 'INVALID ACCESS KEY — INCIDENT LOGGED';

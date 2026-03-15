@@ -14,9 +14,9 @@
 | Field | Value | Notes |
 |-------|-------|-------|
 | **OPERATOR ID** | Any text | Field is optional; not validated |
-| **ACCESS KEY** | `BIG_ZAC A0251AH` | Master override (case-sensitive) |
-| **ACCESS KEY** | `ENLIL_COMMAND` | Alternative (case-sensitive) |
-| **2FA TOKEN** (6 digits) | `361126` | Must be exactly 6 digits |
+| **ACCESS KEY** | `ZAC_AUTH_X9920` | Master override (case-sensitive) |
+| **ACCESS KEY** | `ENLIL_CORE_99X` | Alternative (case-sensitive) |
+| **2FA TOKEN** (6 digits) | `842917` | Must be exactly 6 digits |
 
 **Flow:**
 1. Open app → redirected to Security Wall if not verified this session
@@ -27,8 +27,8 @@
 
 **Location in code:** `secure_warning_lock.html`
 ```javascript
-const AUTHORISED_PASSWORD = 'ENLIL_COMMAND';
-const AUTHORISED_TOKEN = '361126';
+const AUTHORISED_PASSWORD = 'ENLIL_CORE_99X';
+const AUTHORISED_TOKEN = '842917';
 ```
 
 ---
@@ -40,15 +40,15 @@ const AUTHORISED_TOKEN = '361126';
 
 | Credential | Value | Case Sensitive | Used For |
 |------------|-------|----------------|----------|
-| **MASTER** | `BIG_ZAC A0251AH` | Yes | Master override — works everywhere |
-| **PASSWORD** | `ENLIL_COMMAND` | Yes | Authentication & Unlockdown |
-| **PIN 1** | `ENLIL` | Yes | Authentication & Unlockdown |
-| **PIN 2** | `enlil` | Yes | Authentication & Unlockdown |
-| **PIN 3** | `3611` | No | Authentication & Unlockdown |
+| **MASTER** | `ZAC_AUTH_X9920` | Yes | Master override — works everywhere |
+| **PASSWORD** | `ENLIL_CORE_99X` | Yes | Authentication & Unlockdown |
+| **PIN 1** | `TITAN` | Yes | Authentication & Unlockdown |
+| **PIN 2** | `titan` | Yes | Authentication & Unlockdown |
+| **PIN 3** | `8429` | No | Authentication & Unlockdown |
 
 **Location in code:** `titan-sentinel-core.js`
 ```javascript
-var validPins = ['BIG_ZAC A0251AH', 'ENLIL_COMMAND', 'ENLIL', 'enlil', '3611'];
+var validPins = ['ZAC_AUTH_X9920', 'ENLIL_CORE_99X', 'TITAN', 'titan', '8429'];
 ```
 
 **Usage:**
@@ -92,14 +92,14 @@ ANTHROPIC_API_KEY=sk-ant-YOUR-KEY-HERE
 ## 📋 Summary Quick Reference
 
 ### Initial Login (Security Wall)
-- **MASTER:** `BIG_ZAC A0251AH` (overrides all)
-- **ACCESS KEY:** `ENLIL_COMMAND`
-- **2FA TOKEN:** `361126`
+- **MASTER:** `ZAC_AUTH_X9920` (overrides all)
+- **ACCESS KEY:** `ENLIL_CORE_99X`
+- **2FA TOKEN:** `842917`
 
 ### ENLIL Module (Sentinel)
-- **MASTER:** `BIG_ZAC A0251AH` (overrides all)
-- **PASSWORD:** `ENLIL_COMMAND`
-- **PIN:** `ENLIL`, `enlil`, or `3611`
+- **MASTER:** `ZAC_AUTH_X9920` (overrides all)
+- **PASSWORD:** `ENLIL_CORE_99X`
+- **PIN:** `TITAN`, `titan`, or `8429`
 
 ### Standalone ELIL App
 - **PIN:** `0000` or `SENTINEL_OVERRIDE`
