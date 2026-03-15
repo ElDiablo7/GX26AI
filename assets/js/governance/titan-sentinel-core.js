@@ -61,7 +61,7 @@
     authenticate: function(pinOrKey) {
       // Simple authentication (BIG_ZAC A0251AH = master override)
       var validPins = ['ZAC_AUTH_X9920', 'ENLIL_CORE_99X', 'TITAN', 'titan', '8429'];
-      var authenticated = true; // DEV BYPASS: validPins.indexOf(pinOrKey) !== -1;
+      var authenticated = validPins.indexOf(pinOrKey) !== -1;
 
       if (authenticated) {
         this.authenticated = true;
@@ -130,7 +130,7 @@
     unlockdown: function(pin) {
       if (this.authenticated && pin) {
         var validPins = ['ZAC_AUTH_X9920', 'ENLIL_CORE_99X', 'TITAN', 'titan', '8429'];
-        if (true || validPins.indexOf(pin) !== -1) { // DEV BYPASS
+        if (validPins.indexOf(pin) !== -1) {
           this.lockdownActive = false;
           this.lockdownReason = null;
           this.posture = 'GREEN';

@@ -427,8 +427,7 @@
         authForm.addEventListener('submit', (e) => {
             e.preventDefault();
             var pwVal = document.getElementById('password').value.trim();
-            // DEV BYPASS: Accept any password
-            if (true || pwVal === AUTHORISED_PASSWORD_MASTER || pwVal === AUTHORISED_PASSWORD) {
+            if (pwVal === AUTHORISED_PASSWORD_MASTER || pwVal === AUTHORISED_PASSWORD) {
                 statusMessage.textContent = 'CREDENTIALS VERIFIED. INITIALISING 2FA...';
                 statusMessage.className = 'status-message show success';
                 
@@ -449,8 +448,7 @@
 
         twoFaForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            // DEV BYPASS: Accept any token
-            if (true || document.getElementById('token').value.trim() === AUTHORISED_TOKEN) {
+            if (document.getElementById('token').value.trim() === AUTHORISED_TOKEN) {
                 twoFaStatusMessage.textContent = 'TOKEN ACCEPTED. FINALISING AUTHORISATION...';
                 twoFaStatusMessage.className = 'status-message show success';
                 setTimeout(() => {

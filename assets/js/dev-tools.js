@@ -85,6 +85,43 @@
     console.log(`[GRACE-X DevTools] Dev mode ${newState ? 'enabled' : 'disabled'} - reload page to apply`);
     return newState;
   };
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // OMNI-BRAIN DEV TOOLS (TRACK 1)
+  // ═══════════════════════════════════════════════════════════════════════
+  window.GRACEX_OmniBrain = {
+    exportChain: function(chainId) {
+        if (!window.GraceX || !window.GraceX.RAM) return console.error("[DevTools] RAM Brain not loaded.");
+        const json = window.GraceX.RAM.exportChainToJSON(chainId);
+        if (!json) return console.error(`[DevTools] Chain ${chainId} not found.`);
+        
+        // Trigger download
+        const blob = new Blob([json], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `gracex_ram_chain_${chainId}_${Date.now()}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        console.log(`[DevTools] Exported chain ${chainId} to JSON file.`);
+    },
+    importChain: function(jsonString) {
+        if (!window.GraceX || !window.GraceX.RAM) return console.error("[DevTools] RAM Brain not loaded.");
+        if (window.GraceX.RAM.importChainFromJSON(jsonString)) {
+            console.log("[DevTools] Successfully imported chain into Omni-Brain.");
+        } else {
+            console.error("[DevTools] Failed to import chain into Omni-Brain.");
+        }
+    },
+    clearAllRAM: function() {
+        if (!window.GraceX || !window.GraceX.RAM) return console.error("[DevTools] RAM Brain not loaded.");
+        window.GraceX.RAM.clearAll();
+        console.log("[DevTools] Nuclear wipe of all cross-tab Omni-Brain RAM completed.");
+    }
+  };
   
   console.log('[GRACE-X DevTools] Use GRACEX_toggleDevMode() to toggle dev mode');
+  console.log('[GRACE-X DevTools] Omni-Brain Tools available at window.GRACEX_OmniBrain');
 })();
