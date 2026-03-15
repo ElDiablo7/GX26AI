@@ -59,6 +59,67 @@
   };
 
   // ═══════════════════════════════════════════════════════════════════════
+  // PERSISTENCE & CROSS-TAB SYNC (TRACK 1: OMNI-BRAIN)
+  // ═══════════════════════════════════════════════════════════════════════
+  
+  const STORAGE_KEY = 'gracex_omni_ram';
+
+  /**
+   * Save current RAM state to localStorage
+   */
+  function persistRAM() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(RAM_STORE));
+    } catch (e) {
+      console.warn("[RAM] Failed to persist RAM state to localStorage:", e);
+    }
+  }
+
+  /**
+   * Load RAM state from localStorage
+   */
+  function loadPersistedRAM() {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        // Only restore core data structures, keep max limits from code
+        RAM_STORE.buffers = parsed.buffers || {};
+        RAM_STORE.workingContext = parsed.workingContext || null;
+        RAM_STORE.chains = parsed.chains || {};
+        RAM_STORE.scratch = parsed.scratch || {};
+        RAM_STORE.moduleData = parsed.moduleData || {};
+        if (parsed.meta) RAM_STORE.meta = parsed.meta;
+        console.log("[RAM] Omni-Brain state restored from local storage.");
+      }
+    } catch (e) {
+      console.warn("[RAM] Failed to load persisted RAM state:", e);
+    }
+  }
+
+  // Listen for changes from other tabs to sync RAM state
+  window.addEventListener('storage', (event) => {
+    if (event.key === STORAGE_KEY && event.newValue) {
+      try {
+        const parsed = JSON.parse(event.newValue);
+        RAM_STORE.buffers = parsed.buffers || {};
+        RAM_STORE.workingContext = parsed.workingContext || null;
+        RAM_STORE.chains = parsed.chains || {};
+        RAM_STORE.scratch = parsed.scratch || {};
+        RAM_STORE.moduleData = parsed.moduleData || {};
+        if (parsed.meta) RAM_STORE.meta = parsed.meta;
+        console.log("[RAM] Omni-Brain synced state from another tab.");
+      } catch (e) {
+        console.warn("[RAM] Failed to sync RAM state from storage event:", e);
+      }
+    }
+  });
+
+  // Initial load
+  loadPersistedRAM();
+
+
+  // ═══════════════════════════════════════════════════════════════════════
   // BUFFER OPERATIONS (Clipboard-style)
   // ═══════════════════════════════════════════════════════════════════════
   
@@ -140,7 +201,10 @@
     if (!name) return false;
     const existed = !!RAM_STORE.buffers[name];
     delete RAM_STORE.buffers[name];
-    if (existed) console.log(`[RAM] Buffer deleted: ${name}`);
+    if (existed) {
+        console.log(`[RAM] Buffer deleted: ${name}`);
+        persistRAM();
+    }
     return existed;
   };
 
@@ -187,6 +251,7 @@
    */
   GraceX.RAM.clearContext = function() {
     RAM_STORE.workingContext = null;
+    persistRAM();
     console.log("[RAM] Working context cleared");
   };
 
@@ -271,6 +336,7 @@
   GraceX.RAM.abandonChain = function(chainId) {
     if (!chainId) return false;
     delete RAM_STORE.chains[chainId];
+    persistRAM();
     console.log(`[RAM] Chain abandoned: ${chainId}`);
     return true;
   };
@@ -303,6 +369,7 @@
    */
   GraceX.RAM.clearScratch = function() {
     RAM_STORE.scratch = {};
+    persistRAM();
     console.log("[RAM] Scratch cleared");
   };
 
@@ -338,6 +405,7 @@
    */
   GraceX.RAM.clearModuleData = function(module) {
     delete RAM_STORE.moduleData[module];
+    persistRAM();
     console.log(`[RAM] Module data cleared: ${module}`);
   };
 
@@ -380,6 +448,7 @@
     RAM_STORE.scratch = {};
     RAM_STORE.moduleData = {};
     RAM_STORE.meta.lastClear = Date.now();
+    persistRAM();
     console.log("[RAM] All RAM cleared");
     return true;
   };
@@ -440,7 +509,39 @@ Access Count: ${stats.meta.accessCount}
   function updateMeta() {
     RAM_STORE.meta.lastAccess = Date.now();
     RAM_STORE.meta.accessCount++;
+    persistRAM(); // Omnibrain persistence trigger
   }
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // EXPORT / IMPORT (TRACK 1: OMNI-BRAIN)
+  // ═══════════════════════════════════════════════════════════════════════
+
+  /**
+   * Export a specific reasoning chain to a JSON string
+   */
+  GraceX.RAM.exportChainToJSON = function(chainId) {
+    const chain = GraceX.RAM.getChain(chainId);
+    if (!chain) return null;
+    return JSON.stringify({ chainId, chain }, null, 2);
+  };
+
+  /**
+   * Import a reasoning chain from a JSON string
+   */
+  GraceX.RAM.importChainFromJSON = function(jsonString) {
+    try {
+      const parsed = JSON.parse(jsonString);
+      if (parsed.chainId && parsed.chain) {
+        RAM_STORE.chains[parsed.chainId] = parsed.chain;
+        persistRAM();
+        console.log(`[RAM] Chain imported: ${parsed.chainId}`);
+        return true;
+      }
+    } catch (e) {
+      console.error("[RAM] Failed to import chain JSON:", e);
+    }
+    return false;
+  };
 
   // Auto garbage collection every 5 minutes
   setInterval(() => {
