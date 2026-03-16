@@ -117,6 +117,10 @@
    */
   function playAudio(keyOrSrc) {
     return new Promise((resolve, reject) => {
+      // MP3 intros have been disabled globally
+      resolve();
+      return;
+      
       let src = keyOrSrc;
       
       // Check if it's a key that needs lookup
