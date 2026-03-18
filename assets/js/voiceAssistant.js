@@ -444,7 +444,7 @@
 
     // Speak the response
     if (window.GRACEX_TTS && window.GRACEX_TTS.isEnabled() && result) {
-      await window.GRACEX_TTS.speak(result).catch(err => {
+      await window.GRACEX_TTS.speak(result, { manual: true }).catch(err => {
         console.warn('[GRACEX VOICE] TTS error:', err);
       });
     }

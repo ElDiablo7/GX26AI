@@ -147,7 +147,6 @@
           chef_activate: "chef_activate.mp3",
           artist_activate: "artist_activate.mp3",
           beauty_activate: "beauty_activate.mp3",
-          sport_activate: "sport_activate.mp3",
           guardian_activate: "guardian_activate.mp3",  // PATCHED: Added
           forge_activate: "forge_activate.mp3"         // PATCHED: Added
         };

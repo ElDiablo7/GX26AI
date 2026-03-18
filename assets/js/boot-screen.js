@@ -30,7 +30,7 @@
       'UI CONTROLS'
     ],
     currentModuleIndex: 0,
-    bootDuration: 6000, // 6 seconds total boot time (fallback if video fails)
+    bootDuration: 1000, // 1 seconds total boot time (fallback if video fails)
     skipRequested: false,
     progressIntervalId: null,
     videoUnmuted: false,
