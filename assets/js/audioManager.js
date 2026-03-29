@@ -178,10 +178,6 @@ function stopAll() {
  */
 function playIntroAudio(key) {
   return new Promise((resolve) => {
-    // MP3 intros disabled globally
-    resolve();
-    return;
-    
     if (!key || muted) {
       resolve();
       return;
