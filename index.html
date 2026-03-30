@@ -329,5 +329,24 @@
     <script src="assets/js/laser-ultra.js?v=SEC7"></script>
     <!-- App Entry Point -->
     <script type="module" src="assets/js/app.js?v=SEC7"></script>
+    <!-- Personalized Greeting Handler -->
+    <script>
+      window.addEventListener('gracex:boot-complete', function() {
+        try {
+          const user = sessionStorage.getItem('gracex_user');
+          if (user === 'dee' && window.GRACEX_TTS) {
+            // Wait a moment for UI to settle
+            setTimeout(() => {
+              window.GRACEX_TTS.speak("Hi dee, welcome to the team . i am grace x . zac has given you master access just ask me if you need help with absoloutley anything", { force: true });
+              // Clear the flag so it doesn't repeat on Every refresh in the same session, 
+              // or keep it if that's desired. User said "welcome THIS user", usually means on login.
+              // sessionStorage lasts for the session, so it will play once per session if we redirect to index.
+            }, 1500);
+          }
+        } catch (e) {
+          console.warn('[GRACEX] Greeting error:', e);
+        }
+      });
+    </script>
 </body>
 </html>

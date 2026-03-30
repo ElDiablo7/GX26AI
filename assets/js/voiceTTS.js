@@ -35,7 +35,7 @@
   // Think: calm authority, NOT friendly assistant
   
   let voiceSettings = {
-    rate: 1.0,        // Medium-fast (spec: deliberate, rhythmic)
+    rate: 1.14,        // Medium-fast (spec: deliberate, rhythmic)
     pitch: 1.0,       // Mid-range female
     volume: 0.92,     // Forward, controlled projection
     lang: 'en-GB',    // UK English (LOCKED)
@@ -59,7 +59,7 @@
     // DEFAULT VOICE (SPEC BASELINE)
     // ═══════════════════════════════════════════
     grace_default: {
-      rate: 1.0,        // Medium-fast
+      rate: 1.14,        // Medium-fast
       pitch: 1.0,       // Mid-range
       volume: 0.92,     // Forward, controlled
       name: '✨ GRACE (Default)',

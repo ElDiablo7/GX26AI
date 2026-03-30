@@ -117,6 +117,10 @@
    */
   function playAudio(keyOrSrc) {
     return new Promise((resolve, reject) => {
+      // MP3 intros have been disabled globally
+      resolve();
+      return;
+      
       let src = keyOrSrc;
       
       // Check if it's a key that needs lookup
@@ -143,7 +147,6 @@
           chef_activate: "chef_activate.mp3",
           artist_activate: "artist_activate.mp3",
           beauty_activate: "beauty_activate.mp3",
-          sport_activate: "sport_activate.mp3",
           guardian_activate: "guardian_activate.mp3",  // PATCHED: Added
           forge_activate: "forge_activate.mp3"         // PATCHED: Added
         };

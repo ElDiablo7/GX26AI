@@ -32,7 +32,7 @@
     // How long to wait for speech before timing out
     silenceTimeout: 15000, // 5 seconds of silence
     // Continuous background listening for wake word
-    backgroundListening: true
+    backgroundListening: false
   };
 
   // ============================================
@@ -444,7 +444,7 @@
 
     // Speak the response
     if (window.GRACEX_TTS && window.GRACEX_TTS.isEnabled() && result) {
-      await window.GRACEX_TTS.speak(result).catch(err => {
+      await window.GRACEX_TTS.speak(result, { manual: true }).catch(err => {
         console.warn('[GRACEX VOICE] TTS error:', err);
       });
     }
@@ -530,41 +530,25 @@
     const shouldStart = !boot || boot.style.display === 'none';
     
     if (shouldStart) {
-      // Request microphone permission immediately
-      navigator.mediaDevices.getUserMedia({ audio: true })
-        .then(() => {
-          console.log('[GRACEX VOICE] Microphone access granted');
+      // Just start when ready, do not forcibly ask for mic here
+      if (CONFIG.backgroundListening) {
           start();
           // Show activation message
           if (statusIndicator) {
             updateStatus('wake', '🎤 Say "Hey Gracie" to talk!');
             setTimeout(() => updateStatus('hidden'), 5000);
           }
-        })
-        .catch((err) => {
-          console.warn('[GRACEX VOICE] Microphone access denied:', err);
-          // Show helpful message
-          if (statusIndicator) {
-            updateStatus('processing', '❌ Click mic button to enable voice');
-            setTimeout(() => updateStatus('hidden'), 5000);
-          }
-        });
+      }
     } else {
       // Wait for boot to complete
       const observer = new MutationObserver((mutations) => {
         if (boot.style.display === 'none') {
           observer.disconnect();
-          // Request permission after boot
-          navigator.mediaDevices.getUserMedia({ audio: true })
-            .then(() => {
+          if (CONFIG.backgroundListening) {
               start();
               updateStatus('wake', '🎤 Ready! Say "Hey Gracie"');
               setTimeout(() => updateStatus('hidden'), 5000);
-            })
-            .catch(() => {
-              updateStatus('processing', '❌ Click mic to enable');
-              setTimeout(() => updateStatus('hidden'), 5000);
-            });
+          }
         }
       });
       observer.observe(boot, { attributes: true, attributeFilter: ['style'] });

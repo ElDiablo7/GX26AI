@@ -351,9 +351,10 @@
         const logContent = document.getElementById('logContent');
 
         const AUTHORISED_PASSWORD_MASTER = 'ZAC_AUTH_X9920';
+        const AUTHORISED_PASSWORD_DEE = 'D33-wh!zz!3300';
         const AUTHORISED_PASSWORD = 'ENLIL_CORE_99X';
         const AUTHORISED_TOKEN = '842917';
-        const VALID_PINS = ['TITAN', 'titan', '8429'];
+        const VALID_PINS = ['TITAN', 'titan', '8429', '3300', 'D33'];
 
         var voiceMuted = false;
         var currentStep = 'main';
@@ -428,12 +429,15 @@
         authForm.addEventListener('submit', (e) => {
             e.preventDefault();
             var pwVal = document.getElementById('password').value.trim();
-            if (pwVal === AUTHORISED_PASSWORD_MASTER || pwVal === AUTHORISED_PASSWORD || VALID_PINS.includes(pwVal)) {
+            if (pwVal === AUTHORISED_PASSWORD_MASTER || pwVal === AUTHORISED_PASSWORD_DEE || pwVal === AUTHORISED_PASSWORD || VALID_PINS.includes(pwVal)) {
                 statusMessage.textContent = 'CREDENTIALS VERIFIED. INITIALISING 2FA...';
                 statusMessage.className = 'status-message show success';
                 
                 if (pwVal === AUTHORISED_PASSWORD_MASTER) {
                     speak("system override... active, welcome, Zac Crockett, you are granted master access");
+                } else if (pwVal === AUTHORISED_PASSWORD_DEE || pwVal === '3300' || pwVal === 'D33') {
+                    sessionStorage.setItem('gracex_user', 'dee');
+                    speak("Hi dee, welcome to the team . i am grace x . zac has given you master access just ask me if you need help with absoloutley anything");
                 } else {
                     speak(voiceInstructions.level2);
                 }
@@ -499,8 +503,15 @@
             currentStep = 'main';
             if (window.speechSynthesis) {
                 window.speechSynthesis.getVoices();
-                if (pickVoice()) setTimeout(speakMainOnce, 600);
-                else window.addEventListener('voiceschanged', function() { setTimeout(speakMainOnce, 200); }, { once: true });
+                // Browsers block autoplay audio until first interaction.
+                // We will trigger instructions on the first click or keydown.
+                const startAudioOnInteraction = function() {
+                    speakMainOnce();
+                    document.removeEventListener('click', startAudioOnInteraction);
+                    document.removeEventListener('keydown', startAudioOnInteraction);
+                };
+                document.addEventListener('click', startAudioOnInteraction);
+                document.addEventListener('keydown', startAudioOnInteraction);
             }
         });
         if (window.speechSynthesis) {
