@@ -1,0 +1,29 @@
+# =========================
+# GRACE-X CORE CREDENTIALS
+# =========================
+
+# Primary Access Keys
+MASTER_PASSWORD=ZAC_AUTH_X9920
+DEES_PASSWORD=D33-wh!zz!3300
+GENERAL_ACCESS=ENLIL_CORE_99X
+
+# =========================
+# 2FA CONFIG
+# =========================
+SECURITY_TOKEN=842917
+
+# =========================
+# PIN ACCESS (OPTIONAL AUTH)
+# =========================
+PIN_1=TITAN
+PIN_2=titan
+PIN_3=8429
+PIN_4=3300
+PIN_5=D33
+
+# =========================
+# SYSTEM FLAGS
+# =========================
+AUTH_METHOD=2FA_ENABLED
+BIOMETRIC_REDIRECT=index.html
+SYSTEM_NAME=GRACE_X_AUTH
