@@ -17,7 +17,7 @@ const auth = require('./auth');
 const app = express();
 
 const PORT = process.env.PORT || 3000;
-const API_VERSION = '2.0.0';
+const API_VERSION = '7.1.0';
 const dns = require('dns');
 const https = require('https');
 
@@ -475,11 +475,8 @@ const healthPayload = (req, res) => {
     status: 'ok',
     service: 'GRACE-X AI™ ELIL SECURITY SUITE™ Brain API',
     version: API_VERSION,
+    mode: process.env.NODE_ENV || 'development',
     timestamp: new Date().toISOString(),
-    provider: process.env.LLM_PROVIDER || 'openai',
-    model: process.env.LLM_PROVIDER === 'anthropic'
-      ? (process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514')
-      : (process.env.OPENAI_MODEL || 'gpt-4o-mini'),
     uptime: Math.floor(process.uptime())
   });
 };
@@ -1960,12 +1957,13 @@ app.use((req, res) => {
 
 // Global error handler
 app.use((err, req, res, next) => {
-  log('error', `Unhandled error: ${err.message}`, { requestId: req.requestId, stack: err.stack });
+  log('error', `Unhandled error: ${err.message}`, { requestId: req.requestId });
   
+  const isProduction = process.env.NODE_ENV === 'production';
   res.status(500).json({
     error: 'Internal server error',
     code: 'INTERNAL_ERROR',
-    message: process.env.NODE_ENV === 'development' ? err.message : undefined,
+    message: isProduction ? undefined : err.message,
     requestId: req.requestId
   });
 });

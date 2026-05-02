@@ -1,6 +1,6 @@
 {
   "name": "gracex-brain-api",
-  "version": "7.0.1-security-hardening",
+  "version": "7.1.0-production-ready",
   "description": "GRACE-X Level 5 Brain API Backend - Multi-provider LLM integration",
   "main": "server.js",
   "private": true,
