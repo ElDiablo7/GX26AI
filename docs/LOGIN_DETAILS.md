@@ -1,18 +1,18 @@
-# GRACE-X AI™ ELIL SECURITY SUITE — Login Details
+# GRACE-X AI™ ELIL SECURITY SUITE — Login Details Template
 
 **© Zac Crockett 2026**
 
-Use these credentials to pass the Security Wall. Verification is required on **every new session** (every login).
+> **⚠️ SECURITY:** This is a **TEMPLATE**. Real credentials are stored as bcrypt hashes in `server/.env` (never committed to git).
 
 ---
 
 ## Security Wall (secure_warning_lock.html)
 
-| Field | Value |
-|-------|--------|
+| Field | Notes |
+|-------|-------|
 | **OPERATOR ID** | Any (field is optional; not validated) |
-| **ACCESS KEY** | `ENLIL_CORE_99X` |
-| **2FA TOKEN** (6 digits) | `842917` |
+| **ACCESS KEY** | Set via `AUTH_MASTER_HASH` or `AUTH_GENERAL_HASH` in server `.env` |
+| **2FA TOKEN** (6 digits) | Set via `AUTH_TOKEN_HASH` in server `.env` |
 
 ---
 
@@ -20,35 +20,33 @@ Use these credentials to pass the Security Wall. Verification is required on **e
 
 1. Open the app — you are redirected to the Security Wall if not verified this session.
 2. Click **AUTHORISE ACCESS**.
-3. Enter OPERATOR ID (any) and **ACCESS KEY** above, then **PROCEED**.
-4. Enter **2FA TOKEN** (6 digits), then **VERIFY TOKEN**.
-5. After Level 3 clearance, you are redirected to the main system.
+3. Enter OPERATOR ID (any) and **ACCESS KEY**, then **PROCEED**.
+4. Credentials are verified server-side via `/api/auth/login`.
+5. Enter **2FA TOKEN**, verified via `/api/auth/verify-2fa`.
+6. JWT session token issued → redirected to main system.
 
 ---
 
-## Changing credentials
+## Setting Up Credentials
 
-Credentials are defined in **secure_warning_lock.html**:
-
-- `AUTHORISED_PASSWORD` — ACCESS KEY (`ENLIL_CORE_99X`)
-- `AUTHORISED_TOKEN` — 2FA token (`842917`)
-
-Edit those constants to change the accepted values. For production, consider moving credentials to environment variables or a server-side check.
-
----
-
-## ENLIL logo
-
-Place your ENLIL logo image at **`assets/img/enlil-logo.png`** so it appears on the splash screen, security wall, and main app sidebar. If the file is missing, the app falls back to the GRACE-X logo.
+1. Copy `server/.env.example` → `server/.env`
+2. Edit `server/generate-hashes.js` with your chosen passwords
+3. Run: `node server/generate-hashes.js`
+4. Paste the generated hashes into `server/.env`
+5. Clear the plaintext from `generate-hashes.js`
+6. Start: `npm start`
 
 ---
 
-## Keeping this file private
+## Keeping This File Private
 
-If you do not want this file in version control, add to `.gitignore`:
+If you add real notes to this file, add to `.gitignore`:
 
 ```
 docs/LOGIN_DETAILS.md
 ```
 
-Then keep a local copy for your reference.
+---
+
+**Last Updated:** May 2, 2026  
+**Build:** v7.0.1-security-hardening

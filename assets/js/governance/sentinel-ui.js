@@ -168,14 +168,8 @@
                 if (Sentinel.unlockdown) {
                   unlocked = Sentinel.unlockdown(pin);
                 } else {
-                  var validPins = ['ZAC_AUTH_X9920', 'ENLIL_CORE_99X', 'TITAN', 'titan', '8429'];
-                  if (validPins.indexOf(pin) !== -1) {
-                    Sentinel.lockdownActive = false;
-                    Sentinel.lockdownReason = null;
-                    Sentinel.posture = 'GREEN';
-                    Sentinel.currentPosture = 'GREEN';
-                    unlocked = true;
-                  }
+                  // No client-side credential fallback
+                  unlocked = false;
                 }
                 if (unlocked && lockdownReason) {
                   lockdownReason.style.display = 'none';

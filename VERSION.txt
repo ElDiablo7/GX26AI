@@ -1,16 +1,30 @@
 ═══════════════════════════════════════════════════════════
-  GRACE-X ULTIMATE EDITION
-  Version 6.6.0
-  Build: ULTIMATE_PACK_2026
+  GRACE-X AI™ ELIL SECURITY SUITE™
+  Version 7.0.1-security-hardening
+  Build: SECURITY_HARDENING_2026_05_02
 ═══════════════════════════════════════════════════════════
 
-Release Date: January 30, 2026
-Build Location: Built in a shed
-Development Time: 4 months (conception to production)
-Developer: Zac Crockett
+Release Date: May 2, 2026
+Previous Version: 6.6.0 ULTIMATE / 7.0.0
+Developer: Zachary Charles Anthony Crockett
 
 ═══════════════════════════════════════════════════════════
-  ULTIMATE EDITION FEATURES
+  SECURITY HARDENING CHANGES (v7.0.1)
+═══════════════════════════════════════════════════════════
+
+✅ Server-side authentication (bcrypt + JWT)
+✅ All credentials removed from client-side source
+✅ Hardened Forge path validation
+✅ Auth middleware on sensitive endpoints
+✅ Real SHA-256 audit hash chain (Web Crypto API)
+✅ CORS restricted to known origins
+✅ .env.example with placeholders only
+✅ Credential documents sanitized
+✅ License corrected to UNLICENSED (proprietary)
+✅ Version numbers synchronized across all files
+
+═══════════════════════════════════════════════════════════
+  SYSTEM FEATURES
 ═══════════════════════════════════════════════════════════
 
 ✅ Cinema Boot Screen with AI PRO FILM PRODUCTION SUITE logo
@@ -20,9 +34,8 @@ Developer: Zac Crockett
 ✅ Call Sheets™ (Crew Management System)
 ✅ Risk & Safety™ (Compliance Tracking)
 ✅ Module Discovery Dashboard
-✅ £47M Valuation Dashboard (Interactive Charts)
 ✅ LASER™ Ultra (Universal Inspector)
-✅ Forge™ (Desktop File Operations)
+✅ Forge™ (Desktop File Operations — auth-protected)
 ✅ Guardian™ (Security & Alerts)
 ✅ Sport™ (Betting Analysis)
 ✅ Accounting™ (Financial Management)
@@ -30,34 +43,25 @@ Developer: Zac Crockett
 ✅ Builder™ (Project Management)
 ✅ Venus UI (Premium Glassmorphism)
 ✅ 40+ Backend API Endpoints
-✅ Smooth Boot-to-Dashboard Transitions
-
-═══════════════════════════════════════════════════════════
-  DEPLOYMENT STATUS
-═══════════════════════════════════════════════════════════
-
-Government Tender: £47M
-Target: Ministry of Defence & Cabinet Office
-Status: TENDER READY
-Classification: Industrial/Government Grade
+✅ SENTINEL™ + TITAN™ Governance
 
 ═══════════════════════════════════════════════════════════
   TECHNICAL SPECIFICATIONS
 ═══════════════════════════════════════════════════════════
 
-Backend: Node.js/Express (Port 3000)
+Backend: Node.js 18+/Express (Port 3000)
 Frontend: Static SPA (Port 8080)
+Auth: bcrypt password hashing + JWT sessions
 Modules: 18 Active
 API Endpoints: 40+
 Brain Layers: 5
 Boot Time: 6 seconds (skippable)
-Fade Transition: 1.2 seconds
 
 ═══════════════════════════════════════════════════════════
-  ULTIMATE EDITION - COMPLETE PACKAGE
+  PROPRIETARY SOFTWARE
 ═══════════════════════════════════════════════════════════
 
-© 2026 Zac Crockett
-GRACE-X AI™ ULTIMATE EDITION v6.6.0
-
-🦁 ULTIMATE. OPERATIONAL. £47M READY.
+© 2026 Zachary Charles Anthony Crockett
+GRACE-X AI™ / GX26AI is proprietary software.
+No copying, redistribution, resale, or derivative use
+without written permission.

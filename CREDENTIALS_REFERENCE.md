@@ -1,8 +1,8 @@
-# 🔐 GRACE-X AI™ ELIL SECURITY SUITE — Access Keys & Credentials Reference
+# 🔐 GRACE-X AI™ ELIL SECURITY SUITE — Credentials Reference Template
 
 **© Zac Crockett 2026**
 
-**⚠️ SECURITY NOTE:** Keep this file private. Do not commit to public repositories. For production, move credentials to environment variables or server-side authentication.
+> **⚠️ SECURITY:** This is a **TEMPLATE FILE**. Real credentials must NEVER be committed to version control.
 
 ---
 
@@ -14,155 +14,68 @@
 | Field | Value | Notes |
 |-------|-------|-------|
 | **OPERATOR ID** | Any text | Field is optional; not validated |
-| **ACCESS KEY** | `ZAC_AUTH_X9920` | Master override (case-sensitive) |
-| **ACCESS KEY** | `ENLIL_CORE_99X` | Alternative (case-sensitive) |
-| **2FA TOKEN** (6 digits) | `842917` | Must be exactly 6 digits |
+| **ACCESS KEY** | *Set in `.env` as `AUTH_MASTER_HASH`* | Server-side verified |
+| **2FA TOKEN** (6 digits) | *Set in `.env` as `AUTH_TOKEN_HASH`* | Server-side verified |
 
 **Flow:**
 1. Open app → redirected to Security Wall if not verified this session
 2. Click **AUTHORISE ACCESS**
 3. Enter OPERATOR ID (any) + **ACCESS KEY** → **PROCEED**
 4. Enter **2FA TOKEN** → **VERIFY TOKEN**
-5. Level 3 clearance → redirected to main system
-
-**Location in code:** `secure_warning_lock.html`
-```javascript
-const AUTHORISED_PASSWORD = 'ENLIL_CORE_99X';
-const AUTHORISED_TOKEN = '842917';
-```
+5. Backend verifies credentials → JWT session token issued
+6. Level 3 clearance → redirected to main system
 
 ---
 
-## 🛡️ Sentinel/ENLIL Authentication (Module Access)
+## 🛡️ SENTINEL/ENLIL Authentication (Module Access)
 
-**File:** `assets/js/governance/titan-sentinel-core.js`  
-**Purpose:** Authenticate to ENLIL module for governance operations
-
-| Credential | Value | Case Sensitive | Used For |
-|------------|-------|----------------|----------|
-| **MASTER** | `ZAC_AUTH_X9920` | Yes | Master override — works everywhere |
-| **PASSWORD** | `ENLIL_CORE_99X` | Yes | Authentication & Unlockdown |
-| **PIN 1** | `TITAN` | Yes | Authentication & Unlockdown |
-| **PIN 2** | `titan` | Yes | Authentication & Unlockdown |
-| **PIN 3** | `8429` | No | Authentication & Unlockdown |
-
-**Location in code:** `titan-sentinel-core.js`
-```javascript
-var validPins = ['ZAC_AUTH_X9920', 'ENLIL_CORE_99X', 'TITAN', 'titan', '8429'];
-```
-
-**Usage:**
-- Enter in ENLIL module authentication field
-- Also used to unlock system from LOCKDOWN/SAFE MODE
-
----
-
-## 🔐 ELIL-v1.0 Standalone (TITAN + SENTINEL)
-
-**File:** `C:\Users\anyth\Documents\GitHub\ELIL-v1.0`  
-**Purpose:** Standalone TITAN + SENTINEL security overlay
-
-| Credential | Value | Notes |
-|------------|-------|-------|
-| **Default PIN** | `0000` | Standard authentication |
-| **Override Code** | `SENTINEL_OVERRIDE` | Testing/development bypass |
-
-**Location:** `assets/js/sentinel.js` and `assets/data/config.default.json`
+Authentication now uses the same backend `/api/auth/login` endpoint.
+PINs/passwords are verified server-side against bcrypt hashes in `.env`.
 
 ---
 
 ## 🌐 API Keys (Backend)
 
-**File:** `server/.env`  
-**Purpose:** Backend API authentication
+**File:** `server/.env` (copy from `server/.env.example`)
 
-| Key | Format | Example |
-|-----|--------|---------|
-| **Anthropic API Key** | `sk-ant-...` | `sk-ant-api03-YOUR-KEY-HERE` |
-
-**Location:** `server/.env`
-```env
-ANTHROPIC_API_KEY=sk-ant-YOUR-KEY-HERE
-```
-
-**Note:** Must be obtained from Anthropic. Placeholder keys will not work.
+| Key | Format | Notes |
+|-----|--------|-------|
+| **OpenAI API Key** | `sk-...` | Obtain from OpenAI |
+| **Anthropic API Key** | `sk-ant-...` | Obtain from Anthropic |
+| **OpenRouter API Key** | `sk-or-...` | Obtain from OpenRouter |
 
 ---
 
-## 📋 Summary Quick Reference
+## 🔄 How to Set Up Credentials
 
-### Initial Login (Security Wall)
-- **MASTER:** `ZAC_AUTH_X9920` (overrides all)
-- **ACCESS KEY:** `ENLIL_CORE_99X`
-- **2FA TOKEN:** `842917`
-
-### ENLIL Module (Sentinel)
-- **MASTER:** `ZAC_AUTH_X9920` (overrides all)
-- **PASSWORD:** `ENLIL_CORE_99X`
-- **PIN:** `TITAN`, `titan`, or `8429`
-
-### Standalone ELIL App
-- **PIN:** `0000` or `SENTINEL_OVERRIDE`
-
-### Backend API
-- **Anthropic Key:** Set in `server/.env` (format: `sk-ant-...`)
+1. Copy `server/.env.example` to `server/.env`
+2. Run `node server/generate-hashes.js` to generate bcrypt hashes
+3. Paste the hashes into `server/.env`
+4. Set your API keys in `server/.env`
+5. Start the server: `npm start`
 
 ---
 
-## 🔄 Session Management
+## 🔄 How to Rotate Credentials
 
-- **Security Wall:** Session-only (`sessionStorage`); must verify on every new browser session
-- **ENLIL Auth:** Session-only; stored in `sessionStorage` as `sentinel_session`
-- **ENLIL_GOV Build:** No persistent bypass; all authentication is session-only
-
----
-
-## 🛠️ Changing Credentials
-
-### Security Wall
-Edit `secure_warning_lock.html`:
-```javascript
-const AUTHORISED_PASSWORD = 'YOUR_NEW_PASSWORD';
-const AUTHORISED_TOKEN = 'YOUR_NEW_TOKEN';
-```
-
-### ENLIL PINs
-Edit `assets/js/governance/titan-sentinel-core.js`:
-```javascript
-var validPins = ['YOUR_PIN_1', 'YOUR_PIN_2', 'YOUR_PIN_3'];
-```
-
-### Standalone ELIL
-Edit `assets/data/config.default.json`:
-```json
-{
-  "authentication": {
-    "default_pin": "YOUR_PIN"
-  }
-}
-```
+1. Choose new passwords/PINs/tokens
+2. Edit `server/generate-hashes.js` with the new values
+3. Run `node server/generate-hashes.js`
+4. Copy the output hashes into `server/.env`
+5. Clear the plaintext from `generate-hashes.js`
+6. Restart the server
 
 ---
 
-## ⚠️ Security Recommendations
+## ⚠️ Security Rules
 
-1. **Production:** Move all credentials to environment variables or server-side validation
-2. **Git:** Add `CREDENTIALS_REFERENCE.md` and `docs/LOGIN_DETAILS.md` to `.gitignore` if containing sensitive info
-3. **Rotation:** Regularly rotate credentials, especially in production
-4. **Access Control:** Limit who has access to this file
-5. **Audit:** All authentication attempts are logged in UTU LOG (Audit Log)
-
----
-
-## 📝 Notes
-
-- All PINs/passwords are case-sensitive unless noted otherwise
-- Security Wall verification is required on every new browser session
-- ENLIL authentication persists for the browser session only
-- Failed authentication attempts are logged in the audit system
-- LOCKDOWN mode requires ENLIL PIN to unlock
+1. **NEVER** commit real credentials to git
+2. **NEVER** put passwords in client-side JavaScript
+3. **ALWAYS** use hashed credentials in `.env`
+4. **ALWAYS** rotate credentials if you suspect exposure
+5. **ALWAYS** keep this template — never the real values
 
 ---
 
-**Last Updated:** February 10, 2026  
-**Build:** ENLIL_GOV v1.0
+**Last Updated:** May 2, 2026  
+**Build:** v7.0.1-security-hardening

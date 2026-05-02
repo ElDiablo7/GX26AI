@@ -59,22 +59,39 @@
     },
 
     authenticate: function(pinOrKey) {
-      // Simple authentication (BIG_ZAC A0251AH = master override)
-      var validPins = ['ZAC_AUTH_X9920', 'ENLIL_CORE_99X', 'TITAN', 'titan', '8429'];
-      var authenticated = validPins.indexOf(pinOrKey) !== -1;
+      // Server-side authentication — no credentials stored client-side
+      var self = this;
+      var API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+        ? 'http://localhost:3000' : window.location.origin;
 
-      if (authenticated) {
-        this.authenticated = true;
-        this.currentRole = 'Operator';
-        this.sessionId = Utils.traceId();
-        this.sessionStart();
-        LogManager.log('sentinel_auth_success', { role: this.currentRole }, this.sessionId);
-      } else {
+      return fetch(API_BASE + '/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: pinOrKey })
+      })
+      .then(function(resp) { return resp.json(); })
+      .then(function(data) {
+        if (data.success) {
+          // Store token for API access
+          if (data.token) sessionStorage.setItem('gracex_auth_token', data.token);
+          if (data.preToken) sessionStorage.setItem('preToken', data.preToken);
+          self.authenticated = true;
+          self.currentRole = data.role || 'Operator';
+          self.sessionId = Utils.traceId();
+          self.sessionStart();
+          LogManager.log('sentinel_auth_success', { role: self.currentRole }, self.sessionId);
+          self.saveSession();
+          return true;
+        }
         LogManager.log('sentinel_auth_failure', {}, Utils.traceId());
-      }
-
-      this.saveSession();
-      return authenticated;
+        self.saveSession();
+        return false;
+      })
+      .catch(function() {
+        // Fallback: if backend is unreachable, deny access
+        LogManager.log('sentinel_auth_failure', { reason: 'backend_unreachable' }, Utils.traceId());
+        return false;
+      });
     },
 
     sessionStart: function() {
@@ -129,20 +146,34 @@
 
     unlockdown: function(pin) {
       if (this.authenticated && pin) {
-        var validPins = ['ZAC_AUTH_X9920', 'ENLIL_CORE_99X', 'TITAN', 'titan', '8429'];
-        if (validPins.indexOf(pin) !== -1) {
-          this.lockdownActive = false;
-          this.lockdownReason = null;
-          this.posture = 'GREEN';
-          this.currentPosture = 'GREEN';
-          LogManager.log('sentinel_unlockdown', {}, this.sessionId);
-          if (typeof window !== 'undefined') {
-            window.dispatchEvent(new CustomEvent('grx26-lockdown-changed', { detail: { active: false } }));
+        // Server-side verification for unlockdown
+        var self = this;
+        var API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+          ? 'http://localhost:3000' : window.location.origin;
+
+        return fetch(API_BASE + '/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: pin })
+        })
+        .then(function(resp) { return resp.json(); })
+        .then(function(data) {
+          if (data.success) {
+            self.lockdownActive = false;
+            self.lockdownReason = null;
+            self.posture = 'GREEN';
+            self.currentPosture = 'GREEN';
+            LogManager.log('sentinel_unlockdown', {}, self.sessionId);
+            if (typeof window !== 'undefined') {
+              window.dispatchEvent(new CustomEvent('grx26-lockdown-changed', { detail: { active: false } }));
+            }
+            return true;
           }
-          return true;
-        }
+          return false;
+        })
+        .catch(function() { return false; });
       }
-      return false;
+      return Promise.resolve(false);
     },
 
     requireTwoPersonRule: function(action) {

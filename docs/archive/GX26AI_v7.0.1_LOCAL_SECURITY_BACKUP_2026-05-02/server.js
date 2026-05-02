@@ -1229,7 +1229,12 @@ const FORGE_BLOCKED_EXTENSIONS = ['.env', '.key', '.pem', '.cert', '.secret'];
 function validateForgePath(filePath) {
   if (!filePath || typeof filePath !== 'string') return false;
 
+  // Reject absolute paths from client
+  if (path.isAbsolute(filePath) && !filePath.startsWith(FORGE_BASE_DIR)) return false;
+
   // Reject traversal sequences before resolving
+  const normalized = path.normalize(filePath);
+  if (normalized.includes('..')) return false;
   if (filePath.includes('..')) return false;
 
   // Reject encoded traversal
@@ -1237,24 +1242,16 @@ function validateForgePath(filePath) {
   if (filePath.includes('%2f') || filePath.includes('%2F')) return false;
   if (filePath.includes('%5c') || filePath.includes('%5C')) return false;
 
-  // Resolve relative to FORGE_BASE_DIR (not CWD)
+  // Resolve and verify containment
+  const resolved = path.resolve(filePath);
   const baseResolved = path.resolve(FORGE_BASE_DIR);
-  let resolved;
-  if (path.isAbsolute(filePath)) {
-    resolved = path.resolve(filePath);
-  } else {
-    resolved = path.resolve(FORGE_BASE_DIR, filePath);
-  }
-
-  // Verify containment within base directory
   if (!resolved.startsWith(baseResolved + path.sep) && resolved !== baseResolved) return false;
 
   // Reject blocked extensions
   const ext = path.extname(resolved).toLowerCase();
   if (FORGE_BLOCKED_EXTENSIONS.includes(ext)) return false;
 
-  // Return the safe absolute path (not the raw client input)
-  return resolved;
+  return true;
 }
 
 // SAVE FILE TO DESKTOP
@@ -1269,9 +1266,8 @@ app.post('/api/forge/save-file', auth.requireAuth, async (req, res) => {
       });
     }
     
-    // Security check — returns safe absolute path or false
-    const safePath = validateForgePath(filePath);
-    if (!safePath) {
+    // Security check
+    if (!validateForgePath(filePath)) {
       return res.status(403).json({ 
         success: false,
         error: 'Path outside allowed directory' 
@@ -1279,11 +1275,11 @@ app.post('/api/forge/save-file', auth.requireAuth, async (req, res) => {
     }
     
     // Ensure directory exists
-    const dir = path.dirname(safePath);
+    const dir = path.dirname(filePath);
     await fs.mkdir(dir, { recursive: true });
     
     // Write file
-    await fs.writeFile(safePath, content, 'utf8');
+    await fs.writeFile(filePath, content, 'utf8');
     
     console.log('[FORGE] ✅ File saved:', filePath);
     res.json({ 
@@ -1313,16 +1309,15 @@ app.post('/api/forge/read-file', auth.requireAuth, async (req, res) => {
       });
     }
     
-    // Security check — returns safe absolute path or false
-    const safePath = validateForgePath(filePath);
-    if (!safePath) {
+    // Security check
+    if (!validateForgePath(filePath)) {
       return res.status(403).json({ 
         success: false,
         error: 'Path outside allowed directory' 
       });
     }
     
-    const content = await fs.readFile(safePath, 'utf8');
+    const content = await fs.readFile(filePath, 'utf8');
     console.log('[FORGE] ✅ File read:', filePath);
     res.json({ 
       success: true, 
@@ -1351,9 +1346,8 @@ app.post('/api/forge/list-directory', auth.requireAuth, async (req, res) => {
       });
     }
     
-    // Security check — returns safe absolute path or false
-    const safePath = validateForgePath(dirPath);
-    if (!safePath) {
+    // Security check
+    if (!validateForgePath(dirPath)) {
       return res.status(403).json({ 
         success: false,
         error: 'Path outside allowed directory' 
@@ -1361,9 +1355,9 @@ app.post('/api/forge/list-directory', auth.requireAuth, async (req, res) => {
     }
     
     // Create directory if it doesn't exist
-    await fs.mkdir(safePath, { recursive: true });
+    await fs.mkdir(dirPath, { recursive: true });
     
-    const entries = await fs.readdir(safePath, { withFileTypes: true });
+    const entries = await fs.readdir(dirPath, { withFileTypes: true });
     const files = entries.map(entry => ({
       name: entry.name,
       isDirectory: entry.isDirectory(),
@@ -1398,16 +1392,15 @@ app.post('/api/forge/delete-file', auth.requireAuth, async (req, res) => {
       });
     }
     
-    // Security check — returns safe absolute path or false
-    const safePath = validateForgePath(filePath);
-    if (!safePath) {
+    // Security check
+    if (!validateForgePath(filePath)) {
       return res.status(403).json({ 
         success: false,
         error: 'Path outside allowed directory' 
       });
     }
     
-    await fs.unlink(safePath);
+    await fs.unlink(filePath);
     console.log('[FORGE] ✅ File deleted:', filePath);
     res.json({ 
       success: true,

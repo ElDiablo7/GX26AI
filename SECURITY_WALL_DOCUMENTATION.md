@@ -65,7 +65,8 @@ FULL SYSTEM ACCESS GRANTED
 
 **Security Configuration:**
 ```javascript
-AUTHORISED_PASSWORD: 'ZAC_AUTH_X9920'
+// Credentials now verified server-side via /api/auth/login
+// Set password hashes in server/.env (AUTH_MASTER_HASH, etc.)
 ```
 
 **Security Measures:**
@@ -92,8 +93,8 @@ AUTHORISED_PASSWORD: 'ZAC_AUTH_X9920'
 
 **TOTP Configuration:**
 ```javascript
-TOTP_SECRET: 'GRACEXAISECURITY2026ZACHCROCKETT'
-TOTP_VALID_WINDOW: 2  // Accept codes from ±2 time steps
+// 2FA token now verified server-side via /api/auth/verify-2fa
+// Set token hash in server/.env (AUTH_TOKEN_HASH)
 ```
 
 **Security Measures:**
@@ -124,7 +125,8 @@ TOTP_VALID_WINDOW: 2  // Accept codes from ±2 time steps
 
 **Security Configuration:**
 ```javascript
-SECURITY_ANSWER: 'GRACEX'  // In production, hash and compare
+// Security answers now verified server-side
+// Set hash in server/.env
 ```
 
 **Security Measures:**
@@ -155,7 +157,8 @@ SECURITY_ANSWER: 'GRACEX'  // In production, hash and compare
 
 **Security Configuration:**
 ```javascript
-FINAL_AUTH_CODE: 'GX26-SEC-2026'
+// Final auth code now verified server-side
+// Set hash in server/.env
 ```
 
 **Security Measures:**
@@ -270,13 +273,9 @@ All security events are logged with:
 Located in `secure_warning_lock.html` JavaScript section:
 
 ```javascript
-const SECURITY_CONFIG = {
-    AUTHORISED_PASSWORD: 'ZAC_AUTH_X9920',
-    TOTP_SECRET: 'GRACEXAISECURITY2026ZACHCROCKETT',
-    TOTV_VALID_WINDOW: 2,
-    SECURITY_ANSWER: 'GRACEX',
-    FINAL_AUTH_CODE: 'GX26-SEC-2026'
-};
+// All credentials now stored as bcrypt hashes in server/.env
+// See server/.env.example for configuration template
+// Run: node server/generate-hashes.js to generate hashes
 ```
 
 ### **Environment Variables (Production)**
@@ -298,12 +297,11 @@ SECURITY_LOCKOUT_DURATION=300  # seconds
 
 **⚠️ FOR DEVELOPMENT/TESTING ONLY**
 
-- **Level 2 Password:** `ZAC_AUTH_X9920`
-- **Level 3 TOTP:** Check browser console for generated code (simplified implementation)
-- **Level 4 Answer:** `GRACEX` (case-insensitive)
-- **Level 5 Code:** `GX26-SEC-2026`
+- **All credentials:** Set via bcrypt hashes in `server/.env`
+- **Generate hashes:** Run `node server/generate-hashes.js`
+- **No plaintext credentials in source code**
 
-**⚠️ CHANGE ALL CREDENTIALS IN PRODUCTION**
+**⚠️ SEE server/.env.example FOR CONFIGURATION**
 
 ---
 
