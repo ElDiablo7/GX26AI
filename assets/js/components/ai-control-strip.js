@@ -334,7 +334,22 @@
       try {
         const handler = window.moduleBrains[moduleId];
         if (typeof handler === 'function') {
-          result = handler(input, { target: target });
+          const handlerResult = handler(input, { target: target });
+          // Handler may return a Promise (Level 5) or a string (Level 1)
+          if (handlerResult && typeof handlerResult.then === 'function') {
+            handlerResult.then(function(reply) {
+              const text = typeof reply === 'string' ? reply : JSON.stringify(reply, null, 2);
+              updateOutput(moduleId, 'done', text);
+              // AUDIO REPLY: Speak the response to the user
+              speakResponse(text);
+            }).catch(function(err) {
+              const errMsg = 'Error: ' + (err.message || err);
+              updateOutput(moduleId, 'error', errMsg);
+              speakResponse('Sorry, I encountered an error processing that request.');
+            });
+            return; // async path — don't fall through
+          }
+          result = handlerResult;
         }
       } catch (e) {
         console.error('[ENLIL Control Strip] Module handler error:', e);
@@ -347,8 +362,28 @@
     }
     
     setTimeout(() => {
-      updateOutput(moduleId, 'done', typeof result === 'string' ? result : JSON.stringify(result, null, 2));
+      const text = typeof result === 'string' ? result : JSON.stringify(result, null, 2);
+      updateOutput(moduleId, 'done', text);
+      // AUDIO REPLY: Speak the response to the user
+      speakResponse(text);
     }, 500);
+  }
+
+  /**
+   * Speak a response through Grace TTS
+   * Truncates very long responses so Grace doesn't read for minutes
+   */
+  function speakResponse(text) {
+    if (!text) return;
+    if (window.GRACEX_TTS && typeof window.GRACEX_TTS.speak === 'function') {
+      // Truncate to ~300 chars for speech (keeps replies snappy)
+      let spokenText = text.length > 300 ? text.substring(0, 297) + '...' : text;
+      // Clean markdown / code artifacts
+      spokenText = spokenText.replace(/[`*#\[\]]/g, '').replace(/\n{2,}/g, '. ').replace(/\n/g, ' ').trim();
+      window.GRACEX_TTS.speak(spokenText, { manual: true, force: true }).catch(function(err) {
+        console.warn('[ENLIL Control Strip] TTS error:', err);
+      });
+    }
   }
 
   global.ENLIL = global.ENLIL || {};

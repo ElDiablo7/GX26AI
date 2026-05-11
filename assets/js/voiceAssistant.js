@@ -32,7 +32,7 @@
     // How long to wait for speech before timing out
     silenceTimeout: 15000, // 5 seconds of silence
     // Continuous background listening for wake word
-    backgroundListening: false
+    backgroundListening: true
   };
 
   // ============================================

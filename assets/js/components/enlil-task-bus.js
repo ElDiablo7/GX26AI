@@ -118,6 +118,9 @@
           );
         }
         
+        // AUDIO REPLY: Speak the response to the user
+        speakBusResponse(taskEntry.result);
+        
         // Log to audit
         if (global.Audit && global.Audit.log) {
           global.Audit.log('enlil_task_complete', {
@@ -144,6 +147,9 @@
             'Error: ' + taskEntry.error
           );
         }
+        
+        // AUDIO REPLY: Speak the error to the user
+        speakBusResponse('Sorry, I encountered an error. ' + taskEntry.error);
         
         // Log to audit
         if (global.Audit && global.Audit.log) {
@@ -190,6 +196,23 @@
       return this.tasks.filter(t => t.moduleId === moduleId);
     }
   };
+
+  /**
+   * Speak a task bus response through Grace TTS
+   * Truncates very long responses for snappy audio feedback
+   */
+  function speakBusResponse(text) {
+    if (!text) return;
+    if (global.GRACEX_TTS && typeof global.GRACEX_TTS.speak === 'function') {
+      // Truncate to ~300 chars for speech (keeps replies snappy)
+      var spokenText = text.length > 300 ? text.substring(0, 297) + '...' : text;
+      // Clean markdown / code artifacts
+      spokenText = spokenText.replace(/[`*#\[\]]/g, '').replace(/\n{2,}/g, '. ').replace(/\n/g, ' ').trim();
+      global.GRACEX_TTS.speak(spokenText, { manual: true, force: true }).catch(function(err) {
+        console.warn('[ENLIL Bus] TTS error:', err);
+      });
+    }
+  }
 
   global.ENLIL_BUS = ENLIL_BUS;
   global.ENLIL = global.ENLIL || {};
