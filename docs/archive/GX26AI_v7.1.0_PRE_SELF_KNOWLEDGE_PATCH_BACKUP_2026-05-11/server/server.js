@@ -17,7 +17,7 @@ const auth = require('./auth');
 const app = express();
 
 const PORT = process.env.PORT || 3000;
-const API_VERSION = '7.1.1';
+const API_VERSION = '7.1.0';
 const dns = require('dns');
 const https = require('https');
 
@@ -737,41 +737,6 @@ app.get('/api/system/status', (req, res) => {
 });
 
 // ============================================
-// SYSTEM CAPABILITIES ENDPOINT (PHASE 3)
-// ============================================
-
-app.get('/api/system/capabilities', (req, res) => {
-  try {
-    const sk = loadSelfKnowledge();
-    if (!sk) {
-      return res.status(503).json({
-        ok: false,
-        error: 'System capabilities file unavailable'
-      });
-    }
-
-    // Load truth rules to merge
-    const tr = loadTruthRules();
-    if (tr && tr.truth_rules) {
-      sk._supplementary_truth_rules = tr.truth_rules;
-    }
-
-    res.json({
-      ok: true,
-      timestamp: new Date().toISOString(),
-      source: 'server/system_knowledge/gracex_self_knowledge.json',
-      capabilities: sk
-    });
-  } catch (error) {
-    log('error', `Capabilities endpoint error: ${error.message}`);
-    res.status(500).json({
-      ok: false,
-      error: 'System capabilities file unavailable'
-    });
-  }
-});
-
-// ============================================
 // SPORTS API ENDPOINTS
 // ============================================
 const sportsAPI = require('./sports-api');
@@ -949,12 +914,9 @@ app.post('/api/brain', rateLimitMiddleware, async (req, res) => {
     });
   }
 
-  // Build the complete system prompt with GRACE-X identity + module context + self-knowledge
+  // Build the complete system prompt with GRACE-X identity + module context
   const moduleContext = MODULE_CONTEXTS[module] || MODULE_CONTEXTS.core;
-  const selfKnowledgeContext = buildSelfKnowledgeContext();
-  const fullSystemPrompt = selfKnowledgeContext
-    ? `${GRACEX_SYSTEM_PROMPT}\n\n${selfKnowledgeContext}\n\n## Current Module Context\n${moduleContext}`
-    : `${GRACEX_SYSTEM_PROMPT}\n\n## Current Module Context\n${moduleContext}`;
+  const fullSystemPrompt = `${GRACEX_SYSTEM_PROMPT}\n\n## Current Module Context\n${moduleContext}`;
 
   // Sanitize messages and inject system prompt
   const sanitizedMessages = [];
@@ -1253,76 +1215,6 @@ async function callOllama(messages, temperature, max_tokens) {
 // ============================================
 
 const fs = require('fs').promises;
-const fsSync = require('fs');
-
-// ============================================
-// GRACE-X SELF-KNOWLEDGE LOADER
-// ============================================
-
-const SELF_KNOWLEDGE_PATH = path.join(__dirname, 'system_knowledge', 'gracex_self_knowledge.json');
-const TRUTH_RULES_PATH = path.join(__dirname, 'system_knowledge', 'gracex_truth_rules.json');
-
-let _selfKnowledgeCache = null;
-let _selfKnowledgeCacheTime = 0;
-const SELF_KNOWLEDGE_CACHE_TTL = 60000; // Reload every 60s
-
-function loadSelfKnowledge() {
-  const now = Date.now();
-  if (_selfKnowledgeCache && (now - _selfKnowledgeCacheTime) < SELF_KNOWLEDGE_CACHE_TTL) {
-    return _selfKnowledgeCache;
-  }
-  try {
-    const raw = fsSync.readFileSync(SELF_KNOWLEDGE_PATH, 'utf8');
-    _selfKnowledgeCache = JSON.parse(raw);
-    _selfKnowledgeCacheTime = now;
-    return _selfKnowledgeCache;
-  } catch (err) {
-    log('warn', `Self-knowledge file could not be loaded: ${err.message}`);
-    return null;
-  }
-}
-
-function loadTruthRules() {
-  try {
-    const raw = fsSync.readFileSync(TRUTH_RULES_PATH, 'utf8');
-    return JSON.parse(raw);
-  } catch (err) {
-    return null;
-  }
-}
-
-function buildSelfKnowledgeContext() {
-  const sk = loadSelfKnowledge();
-  if (!sk) return '';
-
-  const id = sk.system_identity || {};
-  const modules = (sk.modules || []).map(m => `${m.name} (${m.readiness})`).join(', ');
-  const limits = (sk.known_limits || []).map((l, i) => `${i+1}. ${l}`).join('\n');
-  const truthRules = (sk.truth_rules || []).map((r, i) => `${i+1}. ${r}`).join('\n');
-
-  return `
-═══════════════════════════════════════════════════════════
-GRACE-X CANONICAL SELF-KNOWLEDGE (v${id.version || '?'})
-═══════════════════════════════════════════════════════════
-System: ${id.system_name || 'GX26AI / GRACE-X AI™'}
-Version: ${id.version || '?'} — ${id.patch_name || ''}
-Creator: ${id.creator || 'Zac Crockett'} (${id.full_creator_name || ''})
-Type: ${id.system_type || ''}
-Status: ${id.current_status || ''}
-Description: ${id.canonical_description || ''}
-
-Modules (${(sk.modules || []).length}): ${modules}
-
-Known Limits:
-${limits}
-
-Truth Rules (NON-NEGOTIABLE):
-${truthRules}
-
-Plain English: ${sk.plain_english_summary || ''}
-═══════════════════════════════════════════════════════════
-`.trim();
-}
 
 // Define allowed base directory for Forge projects
 const FORGE_BASE_DIR = path.join(require('os').homedir(), 'Desktop', 'FORGE_PROJECTS');
@@ -1619,7 +1511,7 @@ app.get('/api/callsheets/:id', (req, res) => {
 });
 
 // UPDATE CALL SHEET
-app.put('/api/callsheets/:id', auth.requireAuth, (req, res) => {
+app.put('/api/callsheets/:id', (req, res) => {
   try {
     const index = callSheets.findIndex(s => s.id === req.params.id);
     
@@ -1651,7 +1543,7 @@ app.put('/api/callsheets/:id', auth.requireAuth, (req, res) => {
 });
 
 // CLOCK IN/OUT
-app.post('/api/callsheets/crew/clockin', auth.requireAuth, (req, res) => {
+app.post('/api/callsheets/crew/clockin', (req, res) => {
   try {
     const { sheetId, crewId, action } = req.body;
     
@@ -1697,7 +1589,7 @@ app.post('/api/callsheets/crew/clockin', auth.requireAuth, (req, res) => {
 });
 
 // SYNC CALL SHEETS
-app.post('/api/callsheets/sync', auth.requireAuth, (req, res) => {
+app.post('/api/callsheets/sync', (req, res) => {
   try {
     const sheet = req.body;
     const existing = callSheets.findIndex(s => s.id === sheet.id);
@@ -1806,7 +1698,7 @@ app.get('/api/safety/incidents/:siteId?', (req, res) => {
 });
 
 // UPDATE INCIDENT
-app.put('/api/safety/incident/:id', auth.requireAuth, (req, res) => {
+app.put('/api/safety/incident/:id', (req, res) => {
   try {
     const index = incidents.findIndex(i => i.id === req.params.id);
     
@@ -1838,7 +1730,7 @@ app.put('/api/safety/incident/:id', auth.requireAuth, (req, res) => {
 });
 
 // CREATE SAFETY CHECKLIST
-app.post('/api/safety/checklist', auth.requireAuth, (req, res) => {
+app.post('/api/safety/checklist', (req, res) => {
   try {
     const checklist = {
       id: `chk-${Date.now()}`,
@@ -1863,7 +1755,7 @@ app.post('/api/safety/checklist', auth.requireAuth, (req, res) => {
 });
 
 // COMPLETE SAFETY CHECKLIST
-app.post('/api/safety/checklist/complete', auth.requireAuth, (req, res) => {
+app.post('/api/safety/checklist/complete', (req, res) => {
   try {
     const { checklistId, signature, results } = req.body;
     
@@ -1895,7 +1787,7 @@ app.post('/api/safety/checklist/complete', auth.requireAuth, (req, res) => {
 });
 
 // REGISTER RISK
-app.post('/api/safety/risk', auth.requireAuth, (req, res) => {
+app.post('/api/safety/risk', (req, res) => {
   try {
     const risk = {
       id: `risk-${Date.now()}`,
@@ -1945,7 +1837,7 @@ app.get('/api/safety/risks/matrix', (req, res) => {
 });
 
 // RECORD INDUCTION
-app.post('/api/safety/induction', auth.requireAuth, (req, res) => {
+app.post('/api/safety/induction', (req, res) => {
   try {
     const induction = {
       id: `ind-${Date.now()}`,
