@@ -71,7 +71,7 @@
         
         <!-- System Info (Top Right) -->
         <div class="boot-system-info">
-          <div>GRACE-X AI™ ELIL SECURITY SUITE™</div>
+          <div>GRACE-X AI™ ENLIL SECURITY SUITE™</div>
           <div>BUILD: TITAN_v${this.getBuildVersion()}</div>
           <div>MODULES: 18</div>
           <div>STATUS: INITIALIZING</div>
@@ -90,7 +90,7 @@
         <!-- Status Text & Progress -->
         <div class="boot-status">
           <div class="boot-status-text" id="boot-status-text">
-            INITIALIZING GRACE-X AI™ ELIL SECURITY SUITE™...
+            INITIALIZING GRACE-X AI™ ENLIL SECURITY SUITE™...
           </div>
           <div class="boot-progress-container">
             <div class="boot-progress-bar" id="boot-progress-bar"></div>
@@ -223,7 +223,7 @@
       
       // Final updates
       progressBar.style.width = '100%';
-      statusText.textContent = 'ALL SYSTEMS OPERATIONAL • GRACE-X AI™ ELIL SECURITY SUITE™ READY';
+      statusText.textContent = 'ALL SYSTEMS OPERATIONAL • GRACE-X AI™ ENLIL SECURITY SUITE™ READY';
       statusText.style.color = '#00ff88';
       systemInfo.querySelector('div:last-child').textContent = 'STATUS: READY';
       systemInfo.querySelector('div:last-child').style.color = '#00ff88';
@@ -252,7 +252,7 @@
           }, 50); // Small delay to ensure transition triggers
         }
         
-        console.log('✅ GRACE-X AI™ ELIL SECURITY SUITE™ BOOT COMPLETE - System Ready');
+        console.log('✅ GRACE-X AI™ ENLIL SECURITY SUITE™ BOOT COMPLETE - System Ready');
         
         // Dispatch custom event for other systems to know boot is complete
         window.dispatchEvent(new CustomEvent('gracex:boot-complete'));

@@ -1,7 +1,7 @@
 {
   "name": "gx26ai",
   "version": "7.1.1",
-  "description": "GRACE-X AI™ ELIL SECURITY SUITE™ - Advanced Modular AI Governance & Security Console",
+  "description": "GRACE-X AI™ ENLIL SECURITY SUITE™ - Advanced Modular AI Governance & Security Console",
   "private": true,
   "scripts": {
     "start": "cd server && node server.js",

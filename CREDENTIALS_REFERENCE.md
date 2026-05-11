@@ -1,4 +1,4 @@
-# 🔐 GRACE-X AI™ ELIL SECURITY SUITE — Credentials Reference Template
+# 🔐 GRACE-X AI™ ENLIL SECURITY SUITE — Credentials Reference Template
 
 **© Zac Crockett 2026**
 

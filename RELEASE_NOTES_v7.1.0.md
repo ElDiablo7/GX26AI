@@ -9,7 +9,7 @@
 
 ## Release Summary
 
-GX26AI v7.1.0 is the **production-ready release** — a finalised, hardened, documented, and packaged build of the GRACE-X AI™ ELIL SECURITY SUITE™. This release focuses on security hardening, documentation completeness, version consistency, and investor/demo readiness.
+GX26AI v7.1.0 is the **production-ready release** — a finalised, hardened, documented, and packaged build of the GRACE-X AI™ ENLIL SECURITY SUITE™. This release focuses on security hardening, documentation completeness, version consistency, and investor/demo readiness.
 
 ---
 

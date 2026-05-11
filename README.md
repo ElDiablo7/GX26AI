@@ -1,4 +1,4 @@
-# GX26AI — GRACE-X AI™ ELIL SECURITY SUITE™
+# GX26AI — GRACE-X AI™ ENLIL SECURITY SUITE™
 
 **Version:** 7.1.0-production-ready  
 **© 2026 Zachary Charles Anthony Crockett. All rights reserved.**

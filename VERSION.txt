@@ -1,5 +1,5 @@
 ═══════════════════════════════════════════════════════════
-  GRACE-X AI™ ELIL SECURITY SUITE™
+  GRACE-X AI™ ENLIL SECURITY SUITE™
   Version 7.1.0-production-ready
   Build: PRODUCTION_READY_2026_05_02
 ═══════════════════════════════════════════════════════════

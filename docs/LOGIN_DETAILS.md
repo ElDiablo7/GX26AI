@@ -1,4 +1,4 @@
-# GRACE-X AI™ ELIL SECURITY SUITE — Login Details Template
+# GRACE-X AI™ ENLIL SECURITY SUITE — Login Details Template
 
 **© Zac Crockett 2026**
 

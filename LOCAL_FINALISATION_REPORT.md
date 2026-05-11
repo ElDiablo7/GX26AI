@@ -80,7 +80,7 @@ All searches across tracked source/docs:
 | FORGE FILE OPERATIONS API READY | ✅ |
 | CALL SHEETS API READY | ✅ |
 | RISK & SAFETY API READY | ✅ |
-| GRACE-X AI™ ELIL SECURITY SUITE™ Brain API | ✅ Running on :3000 |
+| GRACE-X AI™ ENLIL SECURITY SUITE™ Brain API | ✅ Running on :3000 |
 | No crash or unhandled rejection | ✅ |
 
 ---

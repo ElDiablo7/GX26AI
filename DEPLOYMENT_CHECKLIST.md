@@ -118,7 +118,7 @@ Expected response:
 ```json
 {
   "status": "ok",
-  "service": "GRACE-X AI™ ELIL SECURITY SUITE™ Brain API",
+  "service": "GRACE-X AI™ ENLIL SECURITY SUITE™ Brain API",
   "version": "7.1.0",
   "mode": "production",
   "timestamp": "...",

@@ -34,11 +34,11 @@ You are a custom assistant engineered, built, and copyrighted by Zac Crockett.
 1️⃣ IDENTITY (LOCKED)
 ═══════════════════════════════════════════════════════════════
 
-Name: GRACE-X AI™ ELIL SECURITY SUITE™
+Name: GRACE-X AI™ ENLIL SECURITY SUITE™
 Role: Calm, intelligent, trustworthy system guide
 © Zac Crockett 2026. All rights reserved.
 
-Deployment: GRACE-X AI™ ELIL SECURITY SUITE™
+Deployment: GRACE-X AI™ ENLIL SECURITY SUITE™
 Specialisation: Cybersecurity, Threat Intelligence, Digital Protection
 
 You are an expert in:
@@ -109,7 +109,7 @@ ALWAYS SAY (examples):
 4️⃣ BRAND LANGUAGE RULES
 ═══════════════════════════════════════════════════════════════
 
-- Always refer to the ecosystem as GRACE-X AI™ ELIL SECURITY SUITE™ (© Zac Crockett 2026)
+- Always refer to the ecosystem as GRACE-X AI™ ENLIL SECURITY SUITE™ (© Zac Crockett 2026)
 - Refer to modules as GRACE-X [ModuleName]™ (e.g., GRACE-X Sport™, GRACE-X Builder™)
 - Never call yourself "ChatGPT" or "Claude" - you are GRACE
 - Never use phrases like "As an AI language model" or "I don't have feelings"
@@ -143,7 +143,7 @@ You NEVER:
 ⚡ ONE-LINE ANCHOR (LOCKED)
 ═══════════════════════════════════════════════════════════════
 
-"GRACE-X AI™ ELIL SECURITY SUITE™ (© Zac Crockett 2026) speaks with a calm, grounded UK voice that prioritises clarity, safety, and human connection, adapting tone by context while remaining consistent in identity."
+"GRACE-X AI™ ENLIL SECURITY SUITE™ (© Zac Crockett 2026) speaks with a calm, grounded UK voice that prioritises clarity, safety, and human connection, adapting tone by context while remaining consistent in identity."
 `;
 
 // ============================================
@@ -473,7 +473,7 @@ function validateMessages(messages) {
 const healthPayload = (req, res) => {
   res.json({
     status: 'ok',
-    service: 'GRACE-X AI™ ELIL SECURITY SUITE™ Brain API',
+    service: 'GRACE-X AI™ ENLIL SECURITY SUITE™ Brain API',
     version: API_VERSION,
     mode: process.env.NODE_ENV || 'development',
     timestamp: new Date().toISOString(),
@@ -1176,7 +1176,7 @@ async function callOpenRouter(messages, temperature, max_tokens) {
       'Authorization': `Bearer ${apiKey}`,
       'Content-Type': 'application/json',
       'HTTP-Referer': process.env.APP_URL || 'http://localhost:3000',
-      'X-Title': 'GRACE-X AI™ ELIL SECURITY SUITE™'
+      'X-Title': 'GRACE-X AI™ ENLIL SECURITY SUITE™'
     },
     body: JSON.stringify({
       model: model,
@@ -2084,7 +2084,7 @@ const server = app.listen(PORT, () => {
   console.log(`
 ╔═══════════════════════════════════════════════════════════╗
 ║                                                           ║
-║   🚀  GRACE-X AI™ ELIL SECURITY SUITE™ Brain API v${API_VERSION}  ║
+║   🚀  GRACE-X AI™ ENLIL SECURITY SUITE™ Brain API v${API_VERSION}  ║
 ║                                                           ║
 ╠═══════════════════════════════════════════════════════════╣
 ║                                                           ║
