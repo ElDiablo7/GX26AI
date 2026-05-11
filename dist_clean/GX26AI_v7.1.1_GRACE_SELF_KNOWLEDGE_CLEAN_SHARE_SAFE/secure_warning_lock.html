@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure System — Authorised Access Only</title>
+    <meta name="description" content="GRACE-X AI ENLIL Security Suite — Authorised access only. Government-grade authentication portal.">
+    <!-- FAVICON — prevents /favicon.ico 404 -->
+    <link rel="icon" href="favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="assets/img/enlil-logo.png">
+    <link rel="icon" type="image/svg+xml" href="assets/img/logo.svg">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: #000011;
+            color: #e8e8e8;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Background scan animation */
+        @keyframes scan {
+            0% { transform: translateY(-100%); opacity: 0.03; }
+            50% { opacity: 0.05; }
+            100% { transform: translateY(100vh); opacity: 0.03; }
+        }
+
+        .scan-band {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(to bottom, transparent, rgba(200, 220, 255, 0.1), transparent);
+            animation: scan 8s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Panel breathe animation */
+        @keyframes breathe {
+            0%, 100% { box-shadow: 0 0 20px rgba(200, 220, 255, 0.15), 0 0 40px rgba(200, 220, 255, 0.08), inset 0 0 20px rgba(200, 220, 255, 0.05); }
+            50% { box-shadow: 0 0 25px rgba(200, 220, 255, 0.2), 0 0 50px rgba(200, 220, 255, 0.12), inset 0 0 25px rgba(200, 220, 255, 0.08); }
+        }
+
+        .warning-panel {
+            position: relative;
+            z-index: 10;
+            max-width: 800px;
+            width: 90%;
+            padding: 3rem 2.5rem;
+            background: rgba(5, 10, 25, 0.95);
+            border: 1px solid rgba(200, 220, 255, 0.2);
+            border-radius: 4px;
+            animation: breathe 5s ease-in-out infinite;
+            box-shadow: 0 0 20px rgba(200, 220, 255, 0.15), 0 0 40px rgba(200, 220, 255, 0.08), inset 0 0 20px rgba(200, 220, 255, 0.05);
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .warning-panel { padding: 2rem 1.5rem; width: 95%; }
+        }
+
+        h1 {
+            font-size: 1.4rem;
+            font-weight: 400;
+            letter-spacing: 0.03em;
+            margin: 0 auto 1.5rem auto;
+            color: #ff0040;
+            text-align: center;
+            white-space: nowrap;
+            padding: 0.8rem 1.5rem;
+            border: 1px solid #ff0040;
+            display: inline-block;
+            box-shadow: 0 0 10px rgba(255, 0, 64, 0.8), 0 0 20px rgba(255, 0, 64, 0.5), inset 0 0 10px rgba(255, 0, 64, 0.2);
+            text-shadow: 0 0 15px rgba(255, 0, 64, 1), 0 0 30px rgba(255, 0, 64, 0.9), 0 0 45px rgba(255, 0, 64, 0.7), 0 0 60px rgba(255, 0, 64, 0.5);
+        }
+
+        h1 .exclamation {
+            font-size: 1.4rem;
+            font-weight: 400;
+            color: #ff0040;
+            margin-left: 0.2rem;
+            vertical-align: middle;
+            text-shadow: 0 0 15px rgba(255, 0, 64, 1), 0 0 30px rgba(255, 0, 64, 0.9), 0 0 45px rgba(255, 0, 64, 0.7), 0 0 60px rgba(255, 0, 64, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 1.1rem; letter-spacing: 0.02em; }
+            h1 .exclamation { font-size: 1.1rem; }
+        }
+
+        .body-text {
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 2rem;
+            color: #e0e0e0;
+            text-align: center;
+        }
+
+        .body-text p { margin-bottom: 1rem; }
+        .body-text strong { color: #f5f5f5; font-weight: 600; }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2.5rem;
+        }
+
+        .monitoring-wrapper {
+            margin-top: 3.5rem;
+            position: relative;
+            display: block;
+            padding: 1rem 1.5rem;
+            border: 1px solid #00ff88;
+            text-align: center;
+            width: 100%;
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+        }
+
+        .monitoring-status {
+            font-size: 0.85rem;
+            letter-spacing: 0.08em;
+            text-align: center;
+            color: #00ff88;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.8), 0 0 20px rgba(0, 255, 136, 0.6), 0 0 30px rgba(0, 255, 136, 0.4);
+            animation: pulse 2.6s ease-in-out infinite;
+        }
+
+        .border-animation {
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            pointer-events: none;
+            overflow: visible;
+        }
+
+        .pin-light {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #00ff88;
+            border-radius: 50%;
+            box-shadow: 0 0 8px rgba(0, 255, 136, 1), 0 0 16px rgba(0, 255, 136, 0.9), 0 0 24px rgba(0, 255, 136, 0.7);
+            animation: travelAround 7s linear infinite;
+        }
+
+        @keyframes pulse { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; } }
+
+        @keyframes travelAround {
+            0% { top: -3px; left: -3px; }
+            25% { top: -3px; left: calc(100% - 3px); }
+            50% { top: calc(100% - 3px); left: calc(100% - 3px); }
+            75% { top: calc(100% - 3px); left: -3px; }
+            100% { top: -3px; left: -3px; }
+        }
+
+        button {
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            padding: 0.85rem 2rem;
+            border: 1px solid;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+        }
+
+        .btn-primary { background: rgba(220, 50, 50, 0.15); border-color: rgba(220, 50, 50, 0.5); color: #ffcccc; }
+        .btn-primary:hover, .btn-primary:focus { background: rgba(220, 50, 50, 0.25); border-color: rgba(220, 50, 50, 0.7); outline: none; }
+        .btn-secondary { background: rgba(200, 220, 255, 0.08); border-color: rgba(200, 220, 255, 0.3); color: #d0d8e8; }
+        .btn-secondary:hover, .btn-secondary:focus { background: rgba(200, 220, 255, 0.15); border-color: rgba(200, 220, 255, 0.5); outline: none; }
+
+        /* Modal styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 5, 0.95);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active { display: flex; }
+
+        .modal-content {
+            background: rgba(5, 10, 25, 0.98);
+            border: 1px solid rgba(200, 220, 255, 0.3);
+            border-radius: 4px;
+            padding: 2.5rem;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 0 30px rgba(200, 220, 255, 0.2);
+        }
+
+        .modal-content h2 { font-size: 1rem; margin-bottom: 1.5rem; color: #00ff88; text-align: left; letter-spacing: 0.1em; }
+
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; font-size: 0.85rem; margin-bottom: 0.5rem; color: #d0d0d0; letter-spacing: 0.03em; }
+        .form-group input { width: 100%; padding: 0.75rem; background: rgba(0, 0, 10, 0.8); border: 1px solid rgba(200, 220, 255, 0.2); border-radius: 2px; color: #e8e8e8; font-family: inherit; font-size: 0.95rem; }
+        .form-group input:focus { outline: none; border-color: rgba(200, 220, 255, 0.5); background: rgba(0, 0, 15, 0.9); }
+
+        .modal-buttons { display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem; }
+        .modal-buttons button { padding: 0.7rem 1.5rem; font-size: 0.9rem; }
+
+        .status-message {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(200, 150, 50, 0.15);
+            border: 1px solid rgba(200, 150, 50, 0.4);
+            color: #ffd8a0;
+            font-size: 0.9rem;
+            text-align: center;
+            display: none;
+        }
+
+        .status-message.show { display: block; }
+        .status-message.success { background: rgba(50, 200, 100, 0.15); border-color: rgba(50, 200, 100, 0.4); color: #a0ffcc; }
+        .status-message.error { background: rgba(200, 50, 50, 0.15); border-color: rgba(200, 50, 50, 0.4); color: #ffaaaa; }
+
+        .unlocked-content { display: none; padding: 2rem; text-align: center; color: #e8e8e8; }
+        .unlocked-content.active { display: block; }
+        .unlocked-content h2 { font-size: 1.5rem; margin-bottom: 1rem; color: #a0ffcc; }
+
+        .terminated-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000011; color: #e8e8e8; align-items: center; justify-content: center; z-index: 1000; }
+        .terminated-screen.active { display: flex; }
+        .terminated-content { text-align: center; font-size: 1.5rem; letter-spacing: 0.1em; color: #d0d0d0; }
+
+        .security-signature { position: absolute; bottom: 1.5rem; left: 50%; transform: translateX(-50%); font-size: 0.7rem; color: rgba(200, 220, 255, 0.4); letter-spacing: 0.05em; text-align: center; z-index: 10; }
+        .voice-repeat-btn { position: absolute; bottom: 3.5rem; left: 50%; transform: translateX(-50%); font-size: 0.75rem; padding: 0.4rem 0.8rem; background: rgba(200, 220, 255, 0.1); border: 1px solid rgba(200, 220, 255, 0.3); color: #d0d8e8; cursor: pointer; z-index: 10; border-radius: 2px; }
+        .voice-repeat-btn:hover { background: rgba(200, 220, 255, 0.2); }
+        .voice-repeat-btn.muted { opacity: 0.5; }
+
+        #stepIndicator { position: fixed; top: 20px; right: 20px; color: #00ff88; font-family: monospace; font-size: 0.8rem; z-index: 200; text-align: right; }
+
+        @keyframes bioScan { 0% { top: 0; } 100% { top: 100%; } }
+    </style>
+</head>
+<body>
+    <div class="scan-band"></div>
+
+    <div class="warning-panel">
+        <div class="security-logo-wrap" style="text-align:center;margin-bottom:1rem;">
+          <img src="assets/img/enlil-logo.png" alt="ENLIL" class="security-logo" style="max-width:100px;height:auto;opacity:0.9;" onerror="this.onerror=null;this.src='assets/img/gracex_main_logo.png';">
+        </div>
+        <h1>SECURE SYSTEM — AUTHORISED ACCESS ONLY<span class="exclamation">!</span></h1>
+        <div class="body-text">
+            <p>This system is designated for <strong>restricted operational use</strong>.</p>
+            <p>Access is limited to <strong>authorised personnel</strong> acting within the scope of their approved authority.</p>
+            <p><strong>Your presence on this system has been detected.</strong></p>
+            <p>Unauthorised access, use, disclosure, copying, or interference with this system or its contents is <strong>prohibited</strong> and may constitute a <strong>criminal offence</strong> under applicable law.</p>
+            <p>All system activity is <strong>monitored, logged, and subject to audit</strong>.</p>
+            <p>If you are not authorised to access this system, <strong>disconnect immediately</strong>.</p>
+            <p><strong>Proceed only if you are explicitly authorised.</strong></p>
+        </div>
+        <div class="button-group">
+            <button class="btn-primary" id="exitBtn" autofocus>EXIT SYSTEM</button>
+            <button class="btn-secondary" id="authBtn">AUTHORISE ACCESS</button>
+        </div>
+        <div class="monitoring-wrapper">
+            <div class="border-animation"><div class="pin-light"></div></div>
+            <div class="monitoring-status"><strong>Presence detected · System monitoring active · Biometrics logged</strong></div>
+        </div>
+    </div>
+
+    <div class="security-signature">© Zac Crockett 2026 · GRACE-X AI™ ENLIL SECURITY SUITE™</div>
+    <span style="position:absolute;bottom:3.5rem;left:50%;transform:translateX(-50%);z-index:10;display:flex;gap:8px;align-items:center;">
+        <button type="button" class="voice-repeat-btn" id="voiceRepeatBtn" title="Repeat instructions">🔊 Repeat instructions</button>
+        <button type="button" class="voice-repeat-btn" id="voiceMuteBtn" title="Mute voice">Mute voice</button>
+      </span>
+
+    <div id="stepIndicator" style="display:none;">
+        SECURITY CLEARANCE: <span id="clearanceLevel">LEVEL 0</span><br>
+        STATUS: <span id="systemStatus">MONITORING</span><br>
+        ENCRYPTION: <span id="encryptionStatus">256-BIT AES</span>
+    </div>
+
+    <div class="modal-overlay" id="authModal">
+        <div class="modal-content">
+            <div style="text-align:center;margin-bottom:1rem;"><img src="assets/img/enlil-logo.png" alt="ENLIL" style="max-width:72px;height:auto;opacity:0.85;" onerror="this.onerror=null;this.src='assets/img/gracex_main_logo.png';"></div>
+            <h2 id="modalTitle">LEVEL 1: IDENTITY VERIFICATION</h2>
+            
+            <div id="step1" class="auth-step">
+                <form id="authForm">
+                    <div class="form-group"><label for="username">OPERATOR ID</label><input type="text" id="username" name="username" required autocomplete="username" placeholder="Enter identification..."></div>
+                    <div class="form-group"><label for="password">ACCESS KEY</label><input type="password" id="password" name="password" required autocomplete="current-password" placeholder="••••••••"></div>
+                    <div class="status-message" id="statusMessage"></div>
+                    <div class="modal-buttons"><button type="button" class="btn-secondary" id="cancelBtn">ABORT</button><button type="submit" class="btn-secondary">PROCEED</button></div>
+                </form>
+            </div>
+
+            <div id="step2" class="auth-step" style="display:none;">
+                <p style="font-size: 0.9rem; margin-bottom: 1.5rem; color: #d0d8e8; text-align: center;">TWO-FACTOR AUTHENTICATION REQUIRED.<br><span style="color: #ffd8a0;">ENTER GENERATED SECURITY TOKEN.</span></p>
+                <form id="twoFaForm">
+                    <div class="form-group"><label for="token">SECURE TOKEN (6 DIGITS)</label><input type="text" id="token" name="token" required pattern="[0-9]{6}" maxlength="6" placeholder="000000" style="text-align: center; font-size: 2rem; letter-spacing: 0.5rem;"></div>
+                    <div class="status-message" id="twoFaStatusMessage"></div>
+                    <div class="modal-buttons"><button type="button" class="btn-secondary" id="backTo1">BACK</button><button type="submit" class="btn-secondary" style="border-color: #00ff88; color: #00ff88;">VERIFY TOKEN</button></div>
+                </form>
+            </div>
+
+            <div id="step3" class="auth-step" style="display:none; text-align: center;">
+                <div id="biometricScan" style="height: 100px; border: 1px solid #00ff88; margin-bottom: 1.5rem; position: relative; background: rgba(0, 255, 136, 0.05); overflow: hidden;">
+                    <div style="position: absolute; width: 100%; height: 2px; background: #00ff88; top: 0; left: 0; box-shadow: 0 0 10px #00ff88; animation: bioScan 2s linear infinite;"></div>
+                    <p style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 0.7rem; color: #00ff88; letter-spacing: 0.2em; width: 100%;">SCANNING BIOMETRICS...</p>
+                </div>
+                <div id="finalStatus" style="font-family: monospace; font-size: 0.8rem; color: #d0d8e8; text-align: left; padding: 10px; background: #000; height: 120px; overflow: hidden; border: 1px solid rgba(200, 220, 255, 0.2);"><div id="logContent">> INITIALISING HANDSHAKE...<br>> ENCRYPTION SYNC...</div></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="terminated-screen" id="terminatedScreen"><div class="terminated-content">SESSION TERMINATED</div></div>
+    <div class="unlocked-content" id="unlockedContent"><div style="text-align:center;margin-bottom:1rem;"><img src="assets/img/enlil-logo.png" alt="ENLIL" style="max-width:80px;height:auto;opacity:0.9;" onerror="this.onerror=null;this.src='assets/img/gracex_main_logo.png';"></div><h2>ACCESS AUTHORISED</h2><p>Verification complete. Redirecting to main system...</p><p style="font-size:0.85rem;color:rgba(200,220,255,0.6);margin-top:1rem;">You must verify again on every new session (every login).</p></div>
+
+    <script>
+        const exitBtn = document.getElementById('exitBtn');
+        const authBtn = document.getElementById('authBtn');
+        const authModal = document.getElementById('authModal');
+        const authForm = document.getElementById('authForm');
+        const twoFaForm = document.getElementById('twoFaForm');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const backTo1 = document.getElementById('backTo1');
+        const statusMessage = document.getElementById('statusMessage');
+        const twoFaStatusMessage = document.getElementById('twoFaStatusMessage');
+        const terminatedScreen = document.getElementById('terminatedScreen');
+        const unlockedContent = document.getElementById('unlockedContent');
+        const warningPanel = document.querySelector('.warning-panel');
+        const scanBand = document.querySelector('.scan-band');
+        const stepIndicator = document.getElementById('stepIndicator');
+        const clearanceLevel = document.getElementById('clearanceLevel');
+        const systemStatus = document.getElementById('systemStatus');
+        const step1 = document.getElementById('step1');
+        const step2 = document.getElementById('step2');
+        const step3 = document.getElementById('step3');
+        const modalTitle = document.getElementById('modalTitle');
+        const logContent = document.getElementById('logContent');
+
+        // No credentials stored client-side. All auth via backend API.
+        const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+          ? 'http://localhost:3000'
+          : window.location.origin;
+
+        var voiceMuted = false;
+        var currentStep = 'main';
+        var voiceInstructions = {
+            main: 'Secure system. Authorised access only. Your presence has been detected. Click Exit System to leave, or Authorise Access to sign in. Proceed only if you are explicitly authorised.',
+            level1: 'Level 1: Identity verification. Enter your Operator ID and Access Key in the fields, then click Proceed.',
+            level2: 'Level 2: Two factor authentication. Enter your six digit security token, then click Verify Token. Use Back to return to Level 1.',
+            level3: 'Level 3: Final clearance. Biometric scan in progress. Please wait.',
+            unlocked: 'Access authorised. Verification complete. Redirecting to the main system.'
+        };
+        function pickVoice() {
+            if (!window.speechSynthesis) return null;
+            var voices = window.speechSynthesis.getVoices();
+            if (!voices.length) return null;
+            var preferred = voices.filter(function(v) {
+                var lang = (v.lang || '').toLowerCase();
+                var name = (v.name || '').toLowerCase();
+                return (lang === 'en-gb' || lang.startsWith('en_gb')) && (name.indexOf('google') !== -1 && name.indexOf('female') !== -1);
+            })[0];
+            if (!preferred) preferred = voices.filter(function(v) { var l = (v.lang || '').toLowerCase(); return l === 'en-gb' || l.startsWith('en_gb'); })[0];
+            if (!preferred) preferred = voices.filter(function(v) { return (v.lang || '').toLowerCase().startsWith('en'); })[0];
+            return preferred || voices[0];
+        }
+        function speak(text) {
+            if (voiceMuted || !text) return;
+            try {
+                if (window.speechSynthesis) {
+                    window.speechSynthesis.cancel();
+                    var u = new SpeechSynthesisUtterance(text);
+                    u.rate = 1.15;
+                    u.pitch = 1.15;
+                    u.volume = 1;
+                    var voice = pickVoice();
+                    if (voice) u.voice = voice;
+                    window.speechSynthesis.speak(u);
+                }
+            } catch (e) {}
+        }
+        function speakCurrentStep() { speak(voiceInstructions[currentStep] || voiceInstructions.main); }
+
+        function updateLog(message) {
+            const line = document.createElement('div');
+            line.textContent = '> ' + message;
+            logContent.appendChild(line);
+            logContent.scrollTop = logContent.scrollHeight;
+        }
+
+        exitBtn.addEventListener('click', () => { try { window.speechSynthesis && window.speechSynthesis.cancel(); } catch (e) {} try { window.close(); } catch (e) {} setTimeout(() => { document.body.style.display = 'none'; terminatedScreen.classList.add('active'); }, 100); });
+        authBtn.addEventListener('click', () => {
+            currentStep = 'level1';
+            authModal.classList.add('active');
+            stepIndicator.style.display = 'block';
+            document.getElementById('username').focus();
+            setTimeout(function() { speak(voiceInstructions.level1); }, 300);
+        });
+        cancelBtn.addEventListener('click', () => {
+            currentStep = 'main';
+            authModal.classList.remove('active');
+            stepIndicator.style.display = 'none';
+            statusMessage.classList.remove('show');
+            authForm.reset();
+        });
+        backTo1.addEventListener('click', () => {
+            currentStep = 'level1';
+            step2.style.display = 'none';
+            step1.style.display = 'block';
+            modalTitle.textContent = 'LEVEL 1: IDENTITY VERIFICATION';
+            clearanceLevel.textContent = 'LEVEL 0';
+            setTimeout(function() { speak(voiceInstructions.level1); }, 200);
+        });
+
+        authForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            var pwVal = document.getElementById('password').value.trim();
+            if (!pwVal) {
+                statusMessage.textContent = 'ACCESS KEY REQUIRED';
+                statusMessage.className = 'status-message show error';
+                return;
+            }
+            statusMessage.textContent = 'VERIFYING CREDENTIALS...';
+            statusMessage.className = 'status-message show';
+            try {
+                var resp = await fetch(API_BASE + '/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password: pwVal })
+                });
+                var data = await resp.json();
+                if (resp.ok && data.success) {
+                    statusMessage.textContent = 'CREDENTIALS VERIFIED. INITIALISING 2FA...';
+                    statusMessage.className = 'status-message show success';
+                    if (data.role === 'master') {
+                        speak('System override active. Welcome.');
+                    } else if (data.role === 'dee') {
+                        sessionStorage.setItem('gracex_user', 'dee');
+                        speak('Welcome to the team.');
+                    } else {
+                        speak(voiceInstructions.level2);
+                    }
+                    if (data.requires2FA && data.preToken) {
+                        sessionStorage.setItem('preToken', data.preToken);
+                        sessionStorage.setItem('authRole', data.role);
+                    } else if (data.token) {
+                        sessionStorage.setItem('gracex_auth_token', data.token);
+                        sessionStorage.setItem('authRole', data.role);
+                    }
+                    setTimeout(() => { step1.style.display = 'none'; step2.style.display = 'block'; modalTitle.textContent = 'LEVEL 2: SECONDARY AUTHENTICATION'; clearanceLevel.textContent = 'LEVEL 1'; systemStatus.textContent = 'CHALLENGED'; document.getElementById('token').focus(); }, 1200);
+                } else {
+                    statusMessage.textContent = 'INVALID ACCESS KEY — INCIDENT LOGGED';
+                    statusMessage.className = 'status-message show error';
+                    document.getElementById('password').value = '';
+                    document.getElementById('password').focus();
+                }
+            } catch (err) {
+                statusMessage.textContent = 'CONNECTION ERROR — IS BACKEND RUNNING?';
+                statusMessage.className = 'status-message show error';
+            }
+        });
+
+        twoFaForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            var tokenVal = document.getElementById('token').value.trim();
+            var preToken = sessionStorage.getItem('preToken');
+            var existingToken = sessionStorage.getItem('gracex_auth_token');
+            if (existingToken && !preToken) {
+                twoFaStatusMessage.textContent = 'TOKEN ACCEPTED. FINALISING AUTHORISATION...';
+                twoFaStatusMessage.className = 'status-message show success';
+                setTimeout(() => {
+                    step2.style.display = 'none';
+                    step3.style.display = 'block';
+                    modalTitle.textContent = 'LEVEL 3: FINAL CLEARANCE';
+                    clearanceLevel.textContent = 'LEVEL 2';
+                    systemStatus.textContent = 'HANDSHAKING';
+                    currentStep = 'level3';
+                    speak(voiceInstructions.level3);
+                    runFinalSequence();
+                }, 1000);
+                return;
+            }
+            if (!preToken) {
+                twoFaStatusMessage.textContent = 'SESSION EXPIRED — RESTART AUTHENTICATION';
+                twoFaStatusMessage.className = 'status-message show error';
+                return;
+            }
+            try {
+                var resp = await fetch(API_BASE + '/api/auth/verify-2fa', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token: tokenVal, preToken: preToken })
+                });
+                var data = await resp.json();
+                if (resp.ok && data.success && data.token) {
+                    sessionStorage.setItem('gracex_auth_token', data.token);
+                    sessionStorage.removeItem('preToken');
+                    twoFaStatusMessage.textContent = 'TOKEN ACCEPTED. FINALISING AUTHORISATION...';
+                    twoFaStatusMessage.className = 'status-message show success';
+                    setTimeout(() => {
+                        step2.style.display = 'none';
+                        step3.style.display = 'block';
+                        modalTitle.textContent = 'LEVEL 3: FINAL CLEARANCE';
+                        clearanceLevel.textContent = 'LEVEL 2';
+                        systemStatus.textContent = 'HANDSHAKING';
+                        currentStep = 'level3';
+                        speak(voiceInstructions.level3);
+                        runFinalSequence();
+                    }, 1000);
+                } else {
+                    twoFaStatusMessage.textContent = 'INVALID TOKEN — SECURITY PROTOCOL ENGAGED';
+                    twoFaStatusMessage.className = 'status-message show error';
+                    document.getElementById('token').value = '';
+                    document.getElementById('token').focus();
+                }
+            } catch (err) {
+                twoFaStatusMessage.textContent = 'CONNECTION ERROR — IS BACKEND RUNNING?';
+                twoFaStatusMessage.className = 'status-message show error';
+            }
+        });
+
+        function runFinalSequence() {
+            const logs = ["REQUESTING SYSTEM PRIVILEGES...", "BIOMETRIC DATA ACQUIRED.", "VERIFYING RETINAL PATTERN...", "MATCH CONFIRMED.", "BYPASSING KERNEL LOCKS...", "ESTABLISHING SECURE TUNNEL...", "AUTHORISATION GRANTED.", "OPENING SECURITY GATE..."];
+            let i = 0;
+            const interval = setInterval(() => {
+                if (i < logs.length) { updateLog(logs[i]); i++; } 
+                else { clearInterval(interval); clearanceLevel.textContent = 'LEVEL 3'; systemStatus.textContent = 'AUTHORISED'; setTimeout(unlockSystem, 1000); }
+            }, 600);
+        }
+
+        function unlockSystem() {
+            currentStep = 'unlocked';
+            speak(voiceInstructions.unlocked);
+            authModal.classList.remove('active');
+            warningPanel.style.display = 'none';
+            scanBand.style.display = 'none';
+            stepIndicator.style.display = 'none';
+            unlockedContent.classList.add('active');
+            try { sessionStorage.setItem('securityWallVerified', '1'); } catch (e) {}
+            setTimeout(function() { window.location.href = 'index.html'; }, 2000);
+        }
+        function speakMainOnce() {
+            if (currentStep !== 'main') return;
+            speak(voiceInstructions.main);
+        }
+        window.addEventListener('load', function() {
+            exitBtn.focus();
+            currentStep = 'main';
+            if (window.speechSynthesis) {
+                window.speechSynthesis.getVoices();
+                // Browsers block autoplay audio until first interaction.
+                // We will trigger instructions on the first click or keydown.
+                const startAudioOnInteraction = function() {
+                    speakMainOnce();
+                    document.removeEventListener('click', startAudioOnInteraction);
+                    document.removeEventListener('keydown', startAudioOnInteraction);
+                };
+                document.addEventListener('click', startAudioOnInteraction);
+                document.addEventListener('keydown', startAudioOnInteraction);
+            }
+        });
+        if (window.speechSynthesis) {
+            window.speechSynthesis.getVoices();
+            window.addEventListener('voiceschanged', function() { window.speechSynthesis.getVoices(); });
+        }
+        var voiceRepeatBtn = document.getElementById('voiceRepeatBtn');
+        if (voiceRepeatBtn) {
+            voiceRepeatBtn.addEventListener('click', function() {
+                if (voiceMuted) return;
+                speakCurrentStep();
+            });
+        }
+        var voiceMuteBtn = document.getElementById('voiceMuteBtn');
+        if (voiceMuteBtn) {
+            voiceMuteBtn.addEventListener('click', function() {
+                voiceMuted = !voiceMuted;
+                if (window.speechSynthesis) window.speechSynthesis.cancel();
+                voiceMuteBtn.textContent = voiceMuted ? 'Unmute voice' : 'Mute voice';
+                voiceMuteBtn.classList.toggle('muted', voiceMuted);
+            });
+        }
+    </script>
+</body>
+</html>

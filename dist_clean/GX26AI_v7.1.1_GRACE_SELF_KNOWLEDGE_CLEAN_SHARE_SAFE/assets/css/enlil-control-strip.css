@@ -1,0 +1,289 @@
+/**
+ * ENLIL_GOV: AI Control Strip Styles
+ * Compact, sci-fi, functional (no Apple look)
+ */
+.enlil-ai-control-strip {
+  background: var(--grx26-surface, #1a1d24);
+  border: 1px solid var(--grx26-border, #2d3239);
+  border-radius: 4px;
+  padding: 12px;
+  margin-bottom: 16px;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+}
+
+.enlil-strip-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--grx26-border, #2d3239);
+}
+
+.enlil-strip-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--grx26-heading, #e6edf3);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.enlil-strip-specialty {
+  font-size: 11px;
+  color: var(--grx26-text-muted, #9ca3af);
+  font-style: italic;
+}
+
+.enlil-strip-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.enlil-input-group,
+.enlil-laser-group,
+.enlil-target-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.enlil-input-group {
+  flex: 2;
+}
+
+.enlil-laser-group {
+  flex: 0 0 80px;
+}
+
+.enlil-target-group {
+  flex: 1.5;
+}
+
+.enlil-ai-control-strip label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--grx26-text-muted, #9ca3af);
+  font-weight: 600;
+}
+
+.enlil-input-textarea {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--grx26-border, #2d3239);
+  color: var(--grx26-text, #e6edf3);
+  padding: 8px;
+  font-family: inherit;
+  font-size: 12px;
+  resize: vertical;
+  min-height: 60px;
+}
+
+.enlil-input-textarea:focus {
+  outline: none;
+  border-color: var(--grx26-accent, #667eea);
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+}
+
+.enlil-input-textarea:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.enlil-laser-btn {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--grx26-border, #2d3239);
+  color: var(--grx26-text, #e6edf3);
+  padding: 8px 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 11px;
+  text-transform: uppercase;
+  transition: all 0.2s;
+}
+
+.enlil-laser-btn:hover:not(:disabled) {
+  border-color: var(--grx26-accent, #667eea);
+}
+
+.enlil-laser-btn[data-state="on"],
+.enlil-laser-btn.laser-active {
+  background: rgba(220, 38, 38, 0.2);
+  border-color: #dc2626;
+  color: #fca5a5;
+}
+
+.enlil-laser-btn[data-state="on"] .laser-indicator,
+.enlil-laser-btn.laser-active .laser-indicator {
+  width: 8px;
+  height: 8px;
+  background: #dc2626;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #dc2626;
+  animation: enlil-pulse 1.5s infinite;
+}
+
+.enlil-laser-btn[data-state="off"] .laser-indicator {
+  width: 8px;
+  height: 8px;
+  background: #6b7280;
+  border-radius: 50%;
+}
+
+.enlil-laser-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@keyframes enlil-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.2); }
+}
+
+.enlil-target-input {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--grx26-border, #2d3239);
+  color: var(--grx26-text, #e6edf3);
+  padding: 8px;
+  font-family: inherit;
+  font-size: 12px;
+}
+
+.enlil-target-input:focus {
+  outline: none;
+  border-color: var(--grx26-accent, #667eea);
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+}
+
+.enlil-target-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.enlil-output-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.enlil-output-panel {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--grx26-border, #2d3239);
+  padding: 12px;
+  min-height: 100px;
+  max-height: 300px;
+  overflow-y: auto;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.enlil-output-status {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+  color: var(--grx26-text-muted, #9ca3af);
+}
+
+.enlil-status-idle .enlil-output-status { color: #6b7280; }
+.enlil-status-running .enlil-output-status { color: #f59e0b; }
+.enlil-status-done .enlil-output-status { color: #10b981; }
+.enlil-status-error .enlil-output-status { color: #ef4444; }
+
+.enlil-output-content {
+  color: var(--grx26-text, #e6edf3);
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.enlil-targeted-io {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--grx26-border, #2d3239);
+  padding: 8px;
+  border-radius: 2px;
+}
+
+.enlil-io-display {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}
+
+.enlil-io-item {
+  display: flex;
+  gap: 8px;
+  font-size: 10px;
+}
+
+.enlil-io-label {
+  font-weight: 600;
+  color: var(--grx26-text-muted, #9ca3af);
+  min-width: 60px;
+  text-transform: uppercase;
+}
+
+.enlil-io-value {
+  color: var(--grx26-text, #e6edf3);
+  flex: 1;
+  word-break: break-word;
+}
+
+.enlil-strip-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--grx26-border, #2d3239);
+}
+
+.enlil-action-btn {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--grx26-border, #2d3239);
+  color: var(--grx26-text, #e6edf3);
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.enlil-action-btn:hover:not(:disabled) {
+  background: rgba(102, 126, 234, 0.2);
+  border-color: var(--grx26-accent, #667eea);
+}
+
+.enlil-action-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.enlil-btn-run {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: #10b981;
+}
+
+.enlil-btn-run:hover:not(:disabled) {
+  background: rgba(16, 185, 129, 0.2);
+}
+
+.enlil-btn-export {
+  background: rgba(102, 126, 234, 0.1);
+  border-color: #667eea;
+}
+
+.enlil-btn-clear {
+  background: rgba(107, 114, 128, 0.1);
+  border-color: #6b7280;
+}

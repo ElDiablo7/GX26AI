@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+
+# Environment files with secrets
+.env
+.env.*
+server/.env
+server/.env.*
+!server/.env.example
+!server/.env.complete.example
+
+# Keep templates
+!.env.example
+!env.template
+!env.example.txt
+
+# Credential documents (contain sensitive data)
+CREDENTIALS_REFERENCE.md
+docs/LOGIN_DETAILS.md
+*.secret
+*.secrets
+credentials.json
+tokens.json
+
+# Backups
+*.backup
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*

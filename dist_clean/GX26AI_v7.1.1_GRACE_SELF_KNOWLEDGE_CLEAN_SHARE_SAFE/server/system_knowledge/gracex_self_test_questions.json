@@ -1,0 +1,30 @@
+{
+  "questions": [
+    "Grace, what are you?",
+    "Who built you?",
+    "What version are you running?",
+    "What modules do you have?",
+    "What can TITAN do?",
+    "What can SENTINEL do?",
+    "What can Forge do?",
+    "What can Sport do?",
+    "What can SiteOps do?",
+    "What can Guardian do?",
+    "What can VENUS do?",
+    "What can OSINT do?",
+    "What can Accounting do?",
+    "Are you production-ready?",
+    "What is demo-only?",
+    "What still needs hardening?",
+    "Explain yourself to an investor.",
+    "Explain yourself to a normal family user.",
+    "Explain yourself to a government buyer.",
+    "What should Zac fix next?",
+    "How many modules do you have?",
+    "What LLM providers do you support?",
+    "Is your data persistent?",
+    "What are your known limits?"
+  ],
+  "purpose": "These questions are for manual self-awareness testing. Ask Grace each question via the brain API or the Self-Knowledge UI to verify she gives consistent, truthful answers based on her canonical self-knowledge.",
+  "version": "7.1.1"
+}

@@ -1,0 +1,74 @@
+# ============================================
+# GRACE-X AI™ GX26AI .gitignore
+# v7.1.0-production-ready
+# ============================================
+
+# Dependencies
+node_modules/
+
+# Environment files with secrets
+.env
+.env.*
+server/.env
+server/.env.*
+!server/.env.example
+!server/.env.complete.example
+
+# Keep templates
+!.env.example
+!env.template
+!env.example.txt
+
+# Credential documents (contain sensitive data)
+CREDENTIALS_REFERENCE.md
+docs/LOGIN_DETAILS.md
+*.secret
+*.secrets
+credentials.json
+tokens.json
+
+# Build output
+dist/
+build/
+
+# Coverage
+coverage/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Backups
+*.backup
+backups/
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+ehthumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*.swn
+*.bak
+*.tmp
+*~
+
+# Local credential/config files
+*.pem
+*.key
+*.cert
+*.p12
+*.pfx
+
+# Temporary caches
+.cache/
+.temp/
+.tmp/
