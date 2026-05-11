@@ -371,19 +371,31 @@
 
   /**
    * Speak a response through Grace TTS
-   * Truncates very long responses so Grace doesn't read for minutes
+   * Reads the FULL output. Uses global dedup to prevent repeating.
    */
   function speakResponse(text) {
     if (!text) return;
-    if (window.GRACEX_TTS && typeof window.GRACEX_TTS.speak === 'function') {
-      // Truncate to ~300 chars for speech (keeps replies snappy)
-      let spokenText = text.length > 300 ? text.substring(0, 297) + '...' : text;
-      // Clean markdown / code artifacts
-      spokenText = spokenText.replace(/[`*#\[\]]/g, '').replace(/\n{2,}/g, '. ').replace(/\n/g, ' ').trim();
-      window.GRACEX_TTS.speak(spokenText, { manual: true, force: true }).catch(function(err) {
-        console.warn('[ENLIL Control Strip] TTS error:', err);
-      });
+    if (!window.GRACEX_TTS || typeof window.GRACEX_TTS.speak !== 'function') return;
+
+    // DEDUP GUARD: prevent double-speaking (shared with task bus)
+    var now = Date.now();
+    var textKey = text.substring(0, 80);
+    if (window._GRACEX_LAST_SPOKEN && window._GRACEX_LAST_SPOKEN.key === textKey && (now - window._GRACEX_LAST_SPOKEN.ts) < 8000) {
+      console.log('[ENLIL Control Strip] Skipping duplicate speech');
+      return;
     }
+    window._GRACEX_LAST_SPOKEN = { key: textKey, ts: now };
+
+    // Clean markdown / code artifacts but read the FULL response
+    var spokenText = text
+      .replace(/[`*#\[\]]/g, '')
+      .replace(/\n{2,}/g, '. ')
+      .replace(/\n/g, ' ')
+      .trim();
+
+    window.GRACEX_TTS.speak(spokenText, { manual: true, force: true }).catch(function(err) {
+      console.warn('[ENLIL Control Strip] TTS error:', err);
+    });
   }
 
   global.ENLIL = global.ENLIL || {};

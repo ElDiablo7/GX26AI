@@ -442,11 +442,19 @@
       window.GRACEX_Core.routeCommand(cleanText);
     }
 
-    // Speak the response
+    // Speak the response (with dedup guard to prevent repeating)
     if (window.GRACEX_TTS && window.GRACEX_TTS.isEnabled() && result) {
-      await window.GRACEX_TTS.speak(result, { manual: true }).catch(err => {
-        console.warn('[GRACEX VOICE] TTS error:', err);
-      });
+      var now = Date.now();
+      var textKey = result.substring(0, 80);
+      var shouldSpeak = !window._GRACEX_LAST_SPOKEN || 
+                        window._GRACEX_LAST_SPOKEN.key !== textKey || 
+                        (now - window._GRACEX_LAST_SPOKEN.ts) >= 8000;
+      if (shouldSpeak) {
+        window._GRACEX_LAST_SPOKEN = { key: textKey, ts: now };
+        await window.GRACEX_TTS.speak(result, { manual: true, force: true }).catch(err => {
+          console.warn('[GRACEX VOICE] TTS error:', err);
+        });
+      }
     }
 
     updateStatus('hidden');

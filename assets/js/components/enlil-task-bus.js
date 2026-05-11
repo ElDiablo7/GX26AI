@@ -199,19 +199,31 @@
 
   /**
    * Speak a task bus response through Grace TTS
-   * Truncates very long responses for snappy audio feedback
+   * Reads the FULL output. Uses global dedup to prevent repeating.
    */
   function speakBusResponse(text) {
     if (!text) return;
-    if (global.GRACEX_TTS && typeof global.GRACEX_TTS.speak === 'function') {
-      // Truncate to ~300 chars for speech (keeps replies snappy)
-      var spokenText = text.length > 300 ? text.substring(0, 297) + '...' : text;
-      // Clean markdown / code artifacts
-      spokenText = spokenText.replace(/[`*#\[\]]/g, '').replace(/\n{2,}/g, '. ').replace(/\n/g, ' ').trim();
-      global.GRACEX_TTS.speak(spokenText, { manual: true, force: true }).catch(function(err) {
-        console.warn('[ENLIL Bus] TTS error:', err);
-      });
+    if (!global.GRACEX_TTS || typeof global.GRACEX_TTS.speak !== 'function') return;
+
+    // DEDUP GUARD: prevent double-speaking the same response
+    var now = Date.now();
+    var textKey = text.substring(0, 80);
+    if (global._GRACEX_LAST_SPOKEN && global._GRACEX_LAST_SPOKEN.key === textKey && (now - global._GRACEX_LAST_SPOKEN.ts) < 8000) {
+      console.log('[ENLIL Bus] Skipping duplicate speech');
+      return;
     }
+    global._GRACEX_LAST_SPOKEN = { key: textKey, ts: now };
+
+    // Clean markdown / code artifacts but read the FULL response
+    var spokenText = text
+      .replace(/[`*#\[\]]/g, '')
+      .replace(/\n{2,}/g, '. ')
+      .replace(/\n/g, ' ')
+      .trim();
+
+    global.GRACEX_TTS.speak(spokenText, { manual: true, force: true }).catch(function(err) {
+      console.warn('[ENLIL Bus] TTS error:', err);
+    });
   }
 
   global.ENLIL_BUS = ENLIL_BUS;
