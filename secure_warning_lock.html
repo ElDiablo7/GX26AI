@@ -248,7 +248,7 @@
         .terminated-content { text-align: center; font-size: 1.5rem; letter-spacing: 0.1em; color: #d0d0d0; }
 
         .security-signature { position: absolute; bottom: 1.5rem; left: 50%; transform: translateX(-50%); font-size: 0.7rem; color: rgba(200, 220, 255, 0.4); letter-spacing: 0.05em; text-align: center; z-index: 10; }
-        .voice-repeat-btn { position: absolute; bottom: 3.5rem; left: 50%; transform: translateX(-50%); font-size: 0.75rem; padding: 0.4rem 0.8rem; background: rgba(200, 220, 255, 0.1); border: 1px solid rgba(200, 220, 255, 0.3); color: #d0d8e8; cursor: pointer; z-index: 10; border-radius: 2px; }
+        .voice-repeat-btn { font-size: 0.75rem; padding: 0.4rem 0.8rem; background: rgba(200, 220, 255, 0.1); border: 1px solid rgba(200, 220, 255, 0.3); color: #d0d8e8; cursor: pointer; z-index: 10; border-radius: 2px; }
         .voice-repeat-btn:hover { background: rgba(200, 220, 255, 0.2); }
         .voice-repeat-btn.muted { opacity: 0.5; }
 
@@ -566,10 +566,17 @@
             currentStep = 'main';
             if (window.speechSynthesis) {
                 window.speechSynthesis.getVoices();
-                // Browsers block autoplay audio until first interaction.
-                // We will trigger instructions on the first click or keydown.
-                const startAudioOnInteraction = function() {
+                
+                // Attempt immediate playback (Autoplay)
+                setTimeout(function() {
                     speakMainOnce();
+                }, 500);
+
+                // Fallback: Trigger instructions on the first click or keydown if blocked by browser
+                const startAudioOnInteraction = function() {
+                    if (window.speechSynthesis && !window.speechSynthesis.speaking) {
+                        speakMainOnce();
+                    }
                     document.removeEventListener('click', startAudioOnInteraction);
                     document.removeEventListener('keydown', startAudioOnInteraction);
                 };
