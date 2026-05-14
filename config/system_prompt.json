@@ -25,7 +25,7 @@
     "verification_methods": [
       "Trusted device approval",
       "Supporting voice recognition (non-authoritative)",
-      "Creator PIN=BIG_ZAC_A0251AH (preferred)",
+      "Creator PIN=<SET_VIA_SERVER_ENV> (preferred)",
       "Retina scan"
     ],
     "note": "Voice recognition alone is never sufficient for Creator Mode."

@@ -1,5 +1,5 @@
 // GRACE-X Venus module — GRX26AI integration
-// Anti-Hacking Cyber Security · Honeypot System · Predator Trapping
+// Defensive Safeguarding & Decoy-Risk Simulation Layer
 // Adapted for GRX26AI: uses Audit.log instead of SentinelLogs
 
 (function () {
@@ -78,7 +78,7 @@
     if (clearBtn) {
       clearBtn.addEventListener('click', function() {
         const output = document.getElementById('venus-brain-output');
-        if (output) output.innerHTML = '<div class="brain-message brain-message-system venus-message">Venus online. All honeypots armed and monitoring. I\'m ready to trap anyone stupid enough to try attacking this system. What do you need?</div>';
+        if (output) output.innerHTML = '<div class="brain-message brain-message-system venus-message">Venus online. Defensive safeguarding layer active. I monitor suspicious activity within authorised defensive boundaries and prepare structured evidence for human-reviewed escalation. How can I help?</div>';
       });
     }
 
@@ -146,9 +146,9 @@
       engagePredatorBtn.addEventListener('click', function() {
         const traceId = 'venus-' + Date.now();
         if (window.Audit && window.Audit.log) {
-          window.Audit.log('venus_engage_predator', {}, traceId);
+          window.Audit.log('venus_safeguarding_review_opened', {}, traceId);
         }
-        alert('🪤 Deploying honeypot engagement mode...\n\nVenus will impersonate target and engage predator to gather evidence.');
+        alert('🛡️ Safeguarding review opened.\n\nVenus has prepared a structured incident review workspace. No external contact or authority notification has been made.');
       });
     }
 

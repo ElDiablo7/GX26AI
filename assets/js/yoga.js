@@ -2,13 +2,14 @@
 // Handles:
 //  - "Ask Yoga" helper replies
 //  - "Start Short Flow" prototype button
+//  - Brain wiring (V5 + Level 5)
 
 (function () {
   function getYogaReply(text) {
     const t = (text || "").toLowerCase().trim();
 
     if (!t) {
-      return "Tell me where it feels tight, how long you’ve got (3, 5 or 10 minutes), and if you’re mostly sitting or standing.";
+      return "Tell me where it feels tight, how long you've got (3, 5 or 10 minutes), and if you're mostly sitting or standing.";
     }
 
     const mentionsBack     = t.includes("back") || t.includes("spine");
@@ -37,7 +38,7 @@
       return "For stress and anxiety, start with your breath: sit comfortably, breathe in for 4, hold for 2, breathe out for 6–8. Do that for 3–5 minutes before any stretching.";
     }
 
-    return "I’d keep it gentle: pick one area (neck, shoulders, back or hips), move slowly for 3–5 minutes, and breathe out a bit longer than you breathe in. Small, repeatable is better than perfect.";
+    return "I'd keep it gentle: pick one area (neck, shoulders, back or hips), move slowly for 3–5 minutes, and breathe out a bit longer than you breathe in. Small, repeatable is better than perfect.";
   }
 
   function initYoga() {
@@ -82,7 +83,7 @@
         }
       });
     }
-    
+
     // Keyboard shortcuts for Yoga
     if (window.GRACEX_Utils && inputEl) {
       GRACEX_Utils.addKeyboardShortcut("Enter", () => {
@@ -91,6 +92,114 @@
       GRACEX_Utils.addKeyboardShortcut("Escape", () => {
         if (outputEl) outputEl.textContent = "";
       });
+    }
+  }
+
+  // ---- GRACE-X Yoga V5 Brain Wiring ----
+  function initYogaBrain() {
+    if (window.initBrainV5) {
+      window.initBrainV5("yoga", {
+        welcomeMessage: "Tell me what's tight, how long you've got, and whether you're sitting or standing."
+      });
+    } else {
+      const panel = document.getElementById("yoga-brain-panel");
+      const input = document.getElementById("yoga-brain-input");
+      const send = document.getElementById("yoga-brain-send");
+      const output = document.getElementById("yoga-brain-output");
+      const clearBtn = document.getElementById("yoga-brain-clear");
+
+      if (!panel || !input || !send || !output) return;
+
+      function appendMessage(role, text) {
+        const msg = document.createElement("div");
+        msg.className = "brain-message brain-message-" + role;
+        msg.textContent = text;
+        output.appendChild(msg);
+        output.scrollTop = output.scrollHeight;
+      }
+
+      async function handleQuestion() {
+        const q = input.value.trim();
+        if (!q) {
+          if (window.GRACEX_Utils) {
+            GRACEX_Utils.showToast("Please enter a message", "error");
+          }
+          return;
+        }
+
+        // Input validation
+        if (window.GRACEX_Utils) {
+          const validation = GRACEX_Utils.validateInput(q, {
+            required: true,
+            maxLength: 500
+          });
+          if (!validation.valid) {
+            GRACEX_Utils.showToast(validation.errors[0], "error");
+            return;
+          }
+        }
+
+        input.value = "";
+        appendMessage("user", q);
+
+        // Show loading state
+        const loader = window.GRACEX_Utils ? GRACEX_Utils.showLoading(output, "Thinking...") : null;
+
+        try {
+          // Try GraceX.think first, then fallback to runModuleBrain
+          let result;
+          if (window.GraceX && typeof window.GraceX.think === 'function') {
+            const res = window.GraceX.think({
+              text: q,
+              module: "yoga",
+              mode: 'chat'
+            });
+            result = res.reply || res.message || "I'm not sure how to respond to that.";
+          } else if (window.runModuleBrain) {
+            const reply = window.runModuleBrain("yoga", q);
+            result = reply instanceof Promise ? await reply : reply;
+          } else {
+            result = "Brain system not available.";
+          }
+          appendMessage("ai", result);
+        } catch (err) {
+          console.error("[GRACEX YOGA] Brain error:", err);
+          appendMessage("ai", "Sorry, something went wrong.");
+          if (window.GRACEX_Utils) {
+            GRACEX_Utils.showToast("Failed to process message", "error");
+          }
+        } finally {
+          if (loader && window.GRACEX_Utils) {
+            GRACEX_Utils.hideLoading(loader);
+          }
+        }
+      }
+
+      send.addEventListener("click", handleQuestion);
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          handleQuestion();
+        }
+      });
+
+      // Keyboard shortcuts
+      if (window.GRACEX_Utils) {
+        GRACEX_Utils.addKeyboardShortcut("Escape", () => {
+          input.value = "";
+          input.focus();
+        }, input);
+      }
+
+      if (clearBtn) {
+        clearBtn.addEventListener("click", () => {
+          output.innerHTML = "";
+          if (window.clearBrainHistory) window.clearBrainHistory("yoga");
+          if (window.GRACEX_Utils) {
+            GRACEX_Utils.showToast("Chat cleared", "info");
+          }
+        });
+      }
     }
   }
 
@@ -107,116 +216,9 @@
     if (url && url.indexOf("yoga.html") !== -1) {
       initYoga();
     }
+  });
 
-   // ---- GRACE-X Yoga V5 Brain Wiring ----
-
-function initYogaBrain() {
-  if (window.initBrainV5) {
-    window.initBrainV5("yoga", {
-      welcomeMessage: "Tell me what's tight, how long you've got, and whether you're sitting or standing."
-    });
-  } else {
-    const panel = document.getElementById("yoga-brain-panel");
-    const input = document.getElementById("yoga-brain-input");
-    const send = document.getElementById("yoga-brain-send");
-    const output = document.getElementById("yoga-brain-output");
-    const clearBtn = document.getElementById("yoga-brain-clear");
-
-    if (!panel || !input || !send || !output) return;
-
-    function appendMessage(role, text) {
-      const msg = document.createElement("div");
-      msg.className = "brain-message brain-message-" + role;
-      msg.textContent = text;
-      output.appendChild(msg);
-      output.scrollTop = output.scrollHeight;
-    }
-
-    async function handleQuestion() {
-      const q = input.value.trim();
-      if (!q) {
-        if (window.GRACEX_Utils) {
-          GRACEX_Utils.showToast("Please enter a message", "error");
-        }
-        return;
-      }
-      
-      // Input validation
-      if (window.GRACEX_Utils) {
-        const validation = GRACEX_Utils.validateInput(q, {
-          required: true,
-          maxLength: 500
-        });
-        if (!validation.valid) {
-          GRACEX_Utils.showToast(validation.errors[0], "error");
-          return;
-        }
-      }
-      
-      input.value = "";
-      appendMessage("user", q);
-
-      // Show loading state
-      const loader = window.GRACEX_Utils ? GRACEX_Utils.showLoading(output, "Thinking...") : null;
-
-      try {
-        // Try GraceX.think first, then fallback to runModuleBrain
-        let result;
-        if (window.GraceX && typeof window.GraceX.think === 'function') {
-          const res = window.GraceX.think({
-            text: q,
-            module: "yoga",
-            mode: 'chat'
-          });
-          result = res.reply || res.message || "I'm not sure how to respond to that.";
-        } else if (window.runModuleBrain) {
-          const reply = window.runModuleBrain("yoga", q);
-          result = reply instanceof Promise ? await reply : reply;
-        } else {
-          result = "Brain system not available.";
-        }
-        appendMessage("ai", result);
-      } catch (err) {
-        console.error("[GRACEX YOGA] Brain error:", err);
-        appendMessage("ai", "Sorry, something went wrong.");
-        if (window.GRACEX_Utils) {
-          GRACEX_Utils.showToast("Failed to process message", "error");
-        }
-      } finally {
-        if (loader && window.GRACEX_Utils) {
-          GRACEX_Utils.hideLoading(loader);
-        }
-      }
-    }
-
-    send.addEventListener("click", handleQuestion);
-    input.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        handleQuestion();
-      }
-    });
-
-    // Keyboard shortcuts
-    if (window.GRACEX_Utils) {
-      GRACEX_Utils.addKeyboardShortcut("Escape", () => {
-        input.value = "";
-        input.focus();
-      }, input);
-    }
-
-    if (clearBtn) {
-      clearBtn.addEventListener("click", () => {
-        output.innerHTML = "";
-        if (window.clearBrainHistory) window.clearBrainHistory("yoga");
-        if (window.GRACEX_Utils) {
-          GRACEX_Utils.showToast("Chat cleared", "info");
-        }
-      });
-    }
-  }
-}
-
+  // Re-run brain wiring when yoga module is activated
   document.addEventListener("gracex:module:loaded", (ev) => {
     if (ev.detail && (ev.detail.module === "yoga" || (ev.detail.url && ev.detail.url.includes("yoga.html")))) {
       setTimeout(initYogaBrain, 50);
@@ -228,6 +230,7 @@ function initYogaBrain() {
   }
 
 })();
+
 // ============================================
 // BRAIN WIRING - Level 5 Integration
 // ============================================
