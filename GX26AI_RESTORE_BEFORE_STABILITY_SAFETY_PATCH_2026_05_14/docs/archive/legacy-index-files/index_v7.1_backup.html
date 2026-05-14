@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRACE-X AI™ TITAN - v7.1</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/img/gracex_main_logo.png">
+    
+    <!-- Cache-busted CSS with unique timestamp -->
+    <link rel="stylesheet" href="assets/css/titan-modern.css?v=<?php echo time(); ?>">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="assets/img/gracex_main_logo.png" as="image">
+    
+    <style>
+        /* Critical inline CSS for instant load */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #000;
+            color: #fff;
+            overflow: hidden;
+        }
+        
+        /* Boot Screen - Always shows first */
+        #boot-screen {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #000000 0%, #0a0a0a 50%, #000000 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            animation: bootFadeIn 0.5s ease;
+        }
+        
+        @keyframes bootFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .boot-content {
+            text-align: center;
+            animation: bootPulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes bootPulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.9; }
+        }
+        
+        .boot-logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px;
+            filter: drop-shadow(0 0 30px rgba(6, 182, 212, 0.6));
+            animation: logoSpin 3s linear infinite;
+        }
+        
+        @keyframes logoSpin {
+            0% { transform: rotate(0deg); filter: drop-shadow(0 0 30px rgba(6, 182, 212, 0.6)); }
+            50% { transform: rotate(180deg); filter: drop-shadow(0 0 50px rgba(139, 92, 246, 0.8)); }
+            100% { transform: rotate(360deg); filter: drop-shadow(0 0 30px rgba(6, 182, 212, 0.6)); }
+        }
+        
+        .boot-title {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #06b6d4, #8b5cf6, #06b6d4);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease infinite;
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .boot-subtitle {
+            font-size: 1.2rem;
+            color: #94a3b8;
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+        
+        .boot-progress {
+            width: 300px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 0 auto 20px;
+        }
+        
+        .boot-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #06b6d4, #8b5cf6);
+            animation: bootProgress 2s ease-in-out;
+            border-radius: 10px;
+        }
+        
+        @keyframes bootProgress {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+        
+        .boot-status {
+            font-size: 0.9rem;
+            color: #06b6d4;
+            font-weight: 500;
+            animation: statusBlink 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes statusBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .boot-tap-hint {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.9rem;
+            color: #64748b;
+            animation: hintFade 2s ease-in-out infinite;
+        }
+        
+        @keyframes hintFade {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+        
+        /* Hide app initially */
+        #app {
+            display: none;
+            opacity: 0;
+        }
+        
+        #app.loaded {
+            display: block;
+            animation: appFadeIn 0.8s ease forwards;
+        }
+        
+        @keyframes appFadeIn {
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Boot Screen -->
+    <div id="boot-screen">
+        <div class="boot-content">
+            <img src="assets/img/gracex_main_logo.png" alt="GRACE-X" class="boot-logo">
+            <div class="boot-title">GRACE-X AI™</div>
+            <div class="boot-subtitle">TITAN Edition v7.1</div>
+            <div class="boot-progress">
+                <div class="boot-progress-bar"></div>
+            </div>
+            <div class="boot-status">Initializing Systems...</div>
+        </div>
+        <div class="boot-tap-hint">Click anywhere to begin</div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="app">
+        <!-- Animated Background -->
+        <div class="bg-animated"></div>
+        
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="assets/img/gracex_main_logo.png" alt="GRACE-X" class="sidebar-logo">
+                <div class="sidebar-brand">
+                    <h1>GRACE-X AI™</h1>
+                    <span>TITAN v7.1</span>
+                </div>
+            </div>
+            
+            <div class="sidebar-section-title">Core Modules</div>
+            
+            <nav class="module-nav">
+                <button class="module-btn active" data-module="core">
+                    <span class="module-icon">⚡</span>
+                    <span class="module-name">Core</span>
+                </button>
+                <button class="module-btn" data-module="sport">
+                    <span class="module-icon">⚽</span>
+                    <span class="module-name">Sport</span>
+                </button>
+                <button class="module-btn" data-module="builder">
+                    <span class="module-icon">🔨</span>
+                    <span class="module-name">Builder</span>
+                </button>
+                <button class="module-btn" data-module="siteops">
+                    <span class="module-icon">⚙️</span>
+                    <span class="module-name">SiteOps</span>
+                </button>
+                <button class="module-btn" data-module="tradelink">
+                    <span class="module-icon">🔗</span>
+                    <span class="module-name">TradeLink</span>
+                </button>
+                <button class="module-btn" data-module="beauty">
+                    <span class="module-icon">💄</span>
+                    <span class="module-name">Beauty</span>
+                </button>
+                <button class="module-btn" data-module="fit">
+                    <span class="module-icon">💪</span>
+                    <span class="module-name">Fit</span>
+                </button>
+                <button class="module-btn" data-module="yoga">
+                    <span class="module-icon">🧘</span>
+                    <span class="module-name">Yoga</span>
+                </button>
+                <button class="module-btn" data-module="uplift">
+                    <span class="module-icon">✨</span>
+                    <span class="module-name">Uplift</span>
+                </button>
+                <button class="module-btn" data-module="chef">
+                    <span class="module-icon">👨‍🍳</span>
+                    <span class="module-name">Chef</span>
+                </button>
+                <button class="module-btn" data-module="artist">
+                    <span class="module-icon">🎨</span>
+                    <span class="module-name">Artist</span>
+                </button>
+                <button class="module-btn" data-module="family">
+                    <span class="module-icon">👨‍👩‍👧‍👦</span>
+                    <span class="module-name">Family</span>
+                </button>
+                <button class="module-btn" data-module="gamer">
+                    <span class="module-icon">🎮</span>
+                    <span class="module-name">Gamer</span>
+                </button>
+                <button class="module-btn" data-module="accounting">
+                    <span class="module-icon">💰</span>
+                    <span class="module-name">Accounting</span>
+                </button>
+                <button class="module-btn" data-module="osint">
+                    <span class="module-icon">🔍</span>
+                    <span class="module-name">OSINT</span>
+                </button>
+                <button class="module-btn" data-module="guardian">
+                    <span class="module-icon">🛡️</span>
+                    <span class="module-name">Guardian</span>
+                </button>
+                <button class="module-btn" data-module="forge">
+                    <span class="module-icon">⚒️</span>
+                    <span class="module-name">Forge</span>
+                </button>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="connection-status">
+                    <div class="status-dot"></div>
+                    <span>Connected</span>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <div class="content-container" id="module-container">
+                <!-- Modules load here dynamically -->
+            </div>
+        </main>
+        
+        <!-- Voice Assistant Button -->
+        <button class="voice-btn" id="voice-btn" title="Voice Assistant (Hey Gracie)">
+            <span class="voice-icon">🎤</span>
+            <span class="voice-pulse"></span>
+        </button>
+        
+        <!-- Version Badge -->
+        <div class="version-badge">TITAN v7.1</div>
+    </div>
+
+    <!-- Load External CSS (deferred for performance) -->
+    <link rel="stylesheet" href="assets/css/core.css?v=7.1.0">
+    <link rel="stylesheet" href="assets/css/builder.css?v=7.1.0">
+    <link rel="stylesheet" href="assets/css/gracex-v6.css?v=7.1.0">
+    <link rel="stylesheet" href="assets/css/forge.css?v=7.1.0">
+    <link rel="stylesheet" href="assets/css/osint.css?v=7.1.0">
+    <link rel="stylesheet" href="assets/css/accounting.css?v=7.1.0">
+    <link rel="stylesheet" href="assets/css/polish-enhancements.css?v=7.1.0">
+    <link rel="stylesheet" href="assets/css/laser.css?v=7.1.0">
+    
+    <!-- Core Scripts -->
+    <script src="assets/js/speechQueue.js?v=7.1.0"></script>
+    <script src="assets/js/voiceTTS.js?v=7.1.0"></script>
+    <script src="assets/js/voiceAssistant.js?v=7.1.0"></script>
+    
+    <!-- Boot Script -->
+    <script>
+        // Boot sequence
+        (function() {
+            const bootScreen = document.getElementById('boot-screen');
+            const app = document.getElementById('app');
+            const bootStatus = document.querySelector('.boot-status');
+            
+            let bootStage = 0;
+            const stages = [
+                'Loading AI Brain...',
+                'Connecting to Sonnet 4...',
+                'Initializing modules...',
+                'Loading Sport APIs...',
+                'Activating voice system...',
+                'Ready!'
+            ];
+            
+            // Animate boot stages
+            function updateBootStage() {
+                if (bootStage < stages.length) {
+                    bootStatus.textContent = stages[bootStage];
+                    bootStage++;
+                    setTimeout(updateBootStage, 400);
+                }
+            }
+            
+            // Start boot animation
+            setTimeout(updateBootStage, 500);
+            
+            // Auto-complete boot after 2.5 seconds
+            setTimeout(() => {
+                completeBoot();
+            }, 2500);
+            
+            // Also allow manual skip
+            bootScreen.addEventListener('click', completeBoot);
+            document.addEventListener('keydown', completeBoot, { once: true });
+            
+            function completeBoot() {
+                bootScreen.style.animation = 'fadeOut 0.5s ease forwards';
+                setTimeout(() => {
+                    bootScreen.style.display = 'none';
+                    app.classList.add('loaded');
+                    initializeApp();
+                }, 500);
+            }
+            
+            // Initialize main app
+            function initializeApp() {
+                console.log('🚀 GRACE-X TITAN v7.1 Initialized');
+                
+                // Load Core module by default
+                loadModule('core');
+                
+                // Setup module navigation
+                document.querySelectorAll('.module-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        // Remove active class from all
+                        document.querySelectorAll('.module-btn').forEach(b => b.classList.remove('active'));
+                        // Add to clicked
+                        this.classList.add('active');
+                        // Load module
+                        loadModule(this.dataset.module);
+                    });
+                });
+                
+                // Setup voice button
+                const voiceBtn = document.getElementById('voice-btn');
+                if (voiceBtn) {
+                    voiceBtn.addEventListener('click', () => {
+                        if (window.GRACEX_VoiceAssistant && window.GRACEX_VoiceAssistant.activate) {
+                            window.GRACEX_VoiceAssistant.activate();
+                            voiceBtn.classList.add('active');
+                            setTimeout(() => voiceBtn.classList.remove('active'), 3000);
+                        }
+                    });
+                }
+                
+                // Notify user about voice
+                setTimeout(() => {
+                    if (window.GRACEX_VoiceAssistant) {
+                        console.log('🎤 Voice Assistant ready - say "Hey Gracie"');
+                    }
+                }, 1000);
+            }
+            
+            // Load module content
+            function loadModule(moduleName) {
+                const container = document.getElementById('module-container');
+                container.innerHTML = '<div class="loading">Loading ' + moduleName + '...</div>';
+                
+                // Load module HTML
+                fetch(`modules/${moduleName}.html`)
+                    .then(response => response.text())
+                    .then(html => {
+                        container.innerHTML = html;
+                        console.log(`✅ Loaded module: ${moduleName}`);
+                    })
+                    .catch(error => {
+                        container.innerHTML = `
+                            <div class="error-state">
+                                <div class="error-icon">⚠️</div>
+                                <h2>Module Not Found</h2>
+                                <p>The ${moduleName} module couldn't be loaded.</p>
+                            </div>
+                        `;
+                        console.error(`Error loading ${moduleName}:`, error);
+                    });
+            }
+        })();
+    </script>
+    
+    <style>
+        @keyframes fadeOut {
+            to { opacity: 0; }
+        }
+        
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            font-size: 1.2rem;
+            color: #94a3b8;
+        }
+        
+        .error-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+        }
+        
+        .error-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+        
+        .error-state h2 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: #f1f5f9;
+        }
+        
+        .error-state p {
+            color: #94a3b8;
+        }
+    </style>
+
+</body>
+</html>

@@ -1,0 +1,233 @@
+<div class="grx26-panel" id="grx26-self-knowledge-root">
+  <h2>GRACE-X Self-Knowledge <span class="sub">System Identity & Capabilities — v7.1.1</span></h2>
+
+  <!-- System Identity Card -->
+  <div id="sk-identity-card" style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.25);border-radius:8px;padding:16px;margin:12px 0;">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+      <span style="font-size:28px;">🛡️</span>
+      <div>
+        <div id="sk-name" style="font-size:18px;font-weight:700;color:#10b981;">Loading…</div>
+        <div id="sk-version" style="font-size:13px;color:var(--grx26-text-muted,#9ca3af);">—</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px;">
+      <div><strong>Creator:</strong> <span id="sk-creator">—</span></div>
+      <div><strong>Status:</strong> <span id="sk-status">—</span></div>
+      <div style="grid-column:1/-1;"><strong>Patch:</strong> <span id="sk-patch">—</span></div>
+      <div style="grid-column:1/-1;"><strong>Type:</strong> <span id="sk-type">—</span></div>
+    </div>
+  </div>
+
+  <!-- API Status -->
+  <div style="margin:12px 0;">
+    <strong style="font-size:13px;">Capabilities API:</strong>
+    <span id="sk-api-status" style="font-size:12px;padding:2px 8px;border-radius:4px;background:rgba(255,255,255,0.05);">Checking…</span>
+  </div>
+
+  <!-- Module Count -->
+  <div style="margin:12px 0;font-size:14px;font-weight:600;">
+    Modules: <span id="sk-module-count" style="color:#10b981;">—</span>
+  </div>
+
+  <!-- Module List -->
+  <div id="sk-module-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:6px;margin:8px 0;max-height:300px;overflow-y:auto;"></div>
+
+  <!-- Core Capabilities -->
+  <details style="margin:16px 0;">
+    <summary style="cursor:pointer;font-weight:600;font-size:14px;color:#10b981;">Core Capabilities</summary>
+    <ul id="sk-capabilities" style="font-size:12px;margin-top:8px;padding-left:20px;line-height:1.8;"></ul>
+  </details>
+
+  <!-- Known Limits -->
+  <details style="margin:16px 0;">
+    <summary style="cursor:pointer;font-weight:600;font-size:14px;color:#f59e0b;">⚠ Known Limits</summary>
+    <ul id="sk-limits" style="font-size:12px;margin-top:8px;padding-left:20px;line-height:1.8;color:#fbbf24;"></ul>
+  </details>
+
+  <!-- Truth Rules -->
+  <details style="margin:16px 0;">
+    <summary style="cursor:pointer;font-weight:600;font-size:14px;color:#ef4444;">🔒 Truth Rules (Non-Negotiable)</summary>
+    <ol id="sk-truth-rules" style="font-size:12px;margin-top:8px;padding-left:20px;line-height:1.8;color:#f87171;"></ol>
+  </details>
+
+  <!-- Plain English Summary -->
+  <div style="margin:16px 0;background:rgba(255,255,255,0.03);border:1px solid var(--grx26-border,#333);border-radius:6px;padding:12px;">
+    <strong style="font-size:13px;">Plain English Summary</strong>
+    <p id="sk-summary" style="font-size:12px;margin-top:6px;line-height:1.7;color:var(--grx26-text-muted,#9ca3af);">—</p>
+  </div>
+
+  <!-- Self-Knowledge Quick Questions -->
+  <h2 style="margin-top:24px;">Ask Grace</h2>
+  <p style="font-size:12px;color:var(--grx26-text-muted,#9ca3af);">Quick self-knowledge questions — sends via /api/brain. Requires a configured LLM provider.</p>
+  <div id="sk-quick-btns" style="display:flex;flex-wrap:wrap;gap:6px;margin:10px 0;">
+    <button type="button" class="sk-q-btn" data-q="What are you?">What are you?</button>
+    <button type="button" class="sk-q-btn" data-q="What can you do?">What can you do?</button>
+    <button type="button" class="sk-q-btn" data-q="Are you production-ready?">Production-ready?</button>
+    <button type="button" class="sk-q-btn" data-q="What is demo-only?">What is demo-only?</button>
+    <button type="button" class="sk-q-btn" data-q="What still needs hardening?">Needs hardening?</button>
+    <button type="button" class="sk-q-btn" data-q="Explain yourself to an investor.">Investor pitch</button>
+    <button type="button" class="sk-q-btn" data-q="Explain yourself to a normal family user.">Normal user</button>
+  </div>
+  <input type="text" id="sk-custom-q" placeholder="Or type a custom question…" style="width:100%;max-width:500px;padding:8px;margin:6px 0;background:var(--grx26-surface,#1a1a2e);border:1px solid var(--grx26-border,#333);color:var(--grx26-text,#e5e7eb);border-radius:4px;">
+  <button type="button" id="sk-ask-btn" style="padding:6px 16px;background:#10b981;color:#fff;border:none;border-radius:4px;cursor:pointer;font-weight:600;">Ask Grace</button>
+  <pre id="sk-answer" style="margin-top:12px;font-size:12px;white-space:pre-wrap;background:rgba(0,0,0,0.25);padding:14px;border-radius:6px;max-height:400px;overflow-y:auto;line-height:1.6;"></pre>
+</div>
+
+<style>
+  .sk-q-btn {
+    padding: 5px 12px;
+    background: rgba(16,185,129,0.12);
+    border: 1px solid rgba(16,185,129,0.3);
+    color: #10b981;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 600;
+    transition: background 0.2s;
+  }
+  .sk-q-btn:hover { background: rgba(16,185,129,0.25); }
+  .sk-module-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--grx26-border,#333);
+    border-radius: 4px;
+    font-size: 11px;
+  }
+  .sk-module-chip .sk-dot {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  }
+  .sk-dot-demo { background: #f59e0b; }
+  .sk-dot-live { background: #10b981; }
+  .sk-dot-concept { background: #6366f1; }
+</style>
+
+<script>
+(function() {
+  var API_BASE = window.GRACEX_API_BASE || '';
+
+  // Load capabilities from backend
+  function loadCapabilities() {
+    var statusEl = document.getElementById('sk-api-status');
+    fetch(API_BASE + '/api/system/capabilities')
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (!data.ok) {
+          if (statusEl) statusEl.textContent = '❌ Unavailable';
+          return;
+        }
+        if (statusEl) {
+          statusEl.textContent = '✅ Connected';
+          statusEl.style.color = '#10b981';
+        }
+        renderSelfKnowledge(data.capabilities);
+      })
+      .catch(function(err) {
+        if (statusEl) {
+          statusEl.textContent = '❌ Error: ' + err.message;
+          statusEl.style.color = '#ef4444';
+        }
+      });
+  }
+
+  function renderSelfKnowledge(sk) {
+    var id = sk.system_identity || {};
+    setText('sk-name', id.system_name || '—');
+    setText('sk-version', 'v' + (id.version || '?') + ' — ' + (id.patch_name || ''));
+    setText('sk-creator', (id.full_creator_name || id.creator || '—'));
+    setText('sk-status', id.current_status || '—');
+    setText('sk-patch', id.patch_name || '—');
+    setText('sk-type', id.system_type || '—');
+    setText('sk-summary', sk.plain_english_summary || '—');
+
+    // Modules
+    var modules = sk.modules || [];
+    setText('sk-module-count', modules.length);
+    var list = document.getElementById('sk-module-list');
+    if (list) {
+      list.innerHTML = modules.map(function(m) {
+        var dotClass = m.readiness.includes('live') ? 'sk-dot-live' : m.readiness.includes('concept') ? 'sk-dot-concept' : 'sk-dot-demo';
+        return '<div class="sk-module-chip"><span class="sk-dot ' + dotClass + '"></span><strong>' + esc(m.name) + '</strong><span style="opacity:0.6;font-size:10px;">' + esc(m.readiness) + '</span></div>';
+      }).join('');
+    }
+
+    // Capabilities
+    renderList('sk-capabilities', sk.core_capabilities, 'li');
+    // Limits
+    renderList('sk-limits', sk.known_limits, 'li');
+    // Truth rules
+    renderList('sk-truth-rules', sk.truth_rules, 'li');
+  }
+
+  function setText(id, val) {
+    var el = document.getElementById(id);
+    if (el) el.textContent = val;
+  }
+  function esc(s) { var d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+  function renderList(id, arr, tag) {
+    var el = document.getElementById(id);
+    if (!el || !arr) return;
+    el.innerHTML = arr.map(function(item) { return '<' + tag + '>' + esc(item) + '</' + tag + '>'; }).join('');
+  }
+
+  // Ask Grace
+  function askGrace(question) {
+    var answerEl = document.getElementById('sk-answer');
+    if (answerEl) answerEl.textContent = 'Thinking…';
+
+    var token = sessionStorage.getItem('gracex_token') || '';
+    var headers = { 'Content-Type': 'application/json' };
+    if (token) headers['Authorization'] = 'Bearer ' + token;
+
+    fetch(API_BASE + '/api/brain', {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify({
+        module: 'core',
+        messages: [{ role: 'user', content: question }],
+        temperature: 0.5,
+        max_tokens: 800
+      })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (answerEl) answerEl.textContent = data.reply || data.error || JSON.stringify(data, null, 2);
+    })
+    .catch(function(err) {
+      if (answerEl) answerEl.textContent = 'Error: ' + err.message + '\n\n(Make sure an LLM provider is configured in server/.env)';
+    });
+  }
+
+  // Wire quick buttons
+  document.querySelectorAll('.sk-q-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var q = this.getAttribute('data-q');
+      var input = document.getElementById('sk-custom-q');
+      if (input) input.value = q;
+      askGrace(q);
+    });
+  });
+
+  // Wire ask button
+  var askBtn = document.getElementById('sk-ask-btn');
+  var customQ = document.getElementById('sk-custom-q');
+  if (askBtn) {
+    askBtn.addEventListener('click', function() {
+      var q = (customQ && customQ.value.trim()) || 'What are you?';
+      askGrace(q);
+    });
+  }
+  if (customQ) {
+    customQ.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        askGrace(this.value.trim() || 'What are you?');
+      }
+    });
+  }
+
+  // Load on init
+  setTimeout(loadCapabilities, 200);
+})();
+</script>

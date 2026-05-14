@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>GRACE-X AI™ ENLIL SECURITY SUITE™ — © Zac Crockett 2026</title>
+
+    <!-- FAVICON — root favicon.ico prevents browser 404 -->
+    <link rel="icon" href="favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="assets/img/enlil-logo.png">
+    <link rel="icon" type="image/svg+xml" href="assets/img/logo.svg">
+    <link rel="icon" type="image/png" href="assets/img/gracex_main_logo.png" id="favicon-fallback">
+
+    <!-- MAIN CSS - Complete GRACE-X styling -->
+    <link rel="stylesheet" href="assets/css/gracex-v6.css?v=SEC7">
+    <link rel="stylesheet" href="assets/css/core.css?v=SEC7">
+    <link rel="stylesheet" href="assets/css/forge.css?v=SEC7">
+    <link rel="stylesheet" href="assets/css/laser.css?v=SEC7">
+    <link rel="stylesheet" href="assets/css/guardian-alerts.css?v=SEC7">
+    <link rel="stylesheet" href="assets/css/polish-enhancements.css?v=SEC7">
+    <link rel="stylesheet" href="assets/css/accounting.css?v=SEC7">
+    <link rel="stylesheet" href="assets/css/osint.css?v=SEC7">
+    <!-- THEME SYSTEM - Loaded last to override -->
+    <link rel="stylesheet" href="assets/css/gracex-themes.css?v=SEC7">
+    <!-- BOOT SCREEN - Enterprise Startup -->
+    <link rel="stylesheet" href="assets/css/boot-screen.css?v=SEC7">
+    <!-- GRX26AI Police/MOD theme -->
+    <link rel="stylesheet" href="assets/css/grx26.theme.css?v=GRX26">
+    <link rel="stylesheet" href="assets/css/grx26.layout.css?v=GRX26">
+    <!-- Venus pack CSS -->
+    <link rel="stylesheet" href="assets/css/venus.css?v=VENUS">
+    <!-- TITAN + SENTINEL CSS -->
+    <link rel="stylesheet" href="assets/css/titan.css?v=TITAN_SENTINEL">
+    <!-- ENLIL_GOV: AI Control Strip -->
+    <link rel="stylesheet" href="assets/css/enlil-control-strip.css?v=ENLIL">
+</head>
+
+<body class="grx26-police">
+  <!-- SECURITY WALL: Verify user every login (session-only; no persistent bypass) -->
+  <script>
+    (function() {
+      try {
+        if (!sessionStorage.getItem('securityWallVerified')) {
+          window.location.replace('secure_warning_lock.html');
+          return;
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <!-- ENTERPRISE BOOT SCREEN (Loads first via boot-screen.js) -->
+  <script src="assets/js/boot-screen.js?v=SEC7"></script>
+  
+  <!-- Build tag - GX26AI v7.1.1 -->
+  <div style="position:fixed;bottom:8px;left:8px;font-size:11px;opacity:0.7;z-index:9999;font-weight:600;color:#10b981;">🛡️ GRACE-X AI™ ENLIL SECURITY SUITE™ v7.1.1 · © Zac Crockett 2026</div>
+
+    <!-- Boot: enterprise boot screen only (boot-screen.js). Legacy video overlay removed to avoid overlap. -->
+
+    <!-- Main App Shell -->
+    <div id="app" style="display:none;">
+
+        <!-- Left Sidebar -->
+        <aside class="aside">
+            <div class="brand">
+                <img src="assets/img/enlil-logo.png" alt="ENLIL" class="sidebar-logo-img" onerror="this.onerror=null;this.src='assets/img/gracex_main_logo.png';this.alt='GRACE-X';">
+                <div>
+                    <h1 class="grx26-header-title">GRACE-X AI™ ENLIL SECURITY SUITE™ · © Zac Crockett 2026</h1>
+                    <div class="small">Core · Sentinel · Titan</div>
+                </div>
+            </div>
+
+            <div class="section-title">Core &amp; Governance</div>
+            <div class="sidebar-theme-row">
+              <button type="button" id="grx26-theme-btn" class="module-btn grx26-theme-btn" title="Theme (Venus / MOD)">Theme</button>
+            </div>
+
+            <!-- READ-ONLY DEMO MODE: disables tasking/targeting/export -->
+            <div class="section-title">Governance</div>
+            <div class="sidebar-demo-row">
+              <label class="grx26-demo-toggle">
+                <input type="checkbox" id="grx26-readonly-demo" title="When on, tasking/targeting/export buttons are disabled">
+                <span>READ-ONLY DEMO</span>
+              </label>
+            </div>
+
+            <!-- Module Buttons -->
+            <nav class="module-nav">
+  <button class="module-btn" data-module="venus">VENUS</button>
+  <button class="module-btn titan-btn" data-module="titan" title="TITAN — Tactical Internal Threat Assessment Nucleus">
+    <img src="assets/img/titan-button-icon.png" alt="TITAN" class="module-btn-icon" style="width: 20px; height: 20px; margin-right: 8px; object-fit: contain; vertical-align: middle;" onerror="this.style.display='none';">
+    <span>TITAN</span>
+  </button>
+  <button class="module-btn" data-module="guardian">GUARDIAN</button>
+  <button class="module-btn" data-module="sentinel">SENTINEL</button>
+  <button class="module-btn" data-module="forge">FORGE</button>
+  <button class="module-btn" data-module="core">CORE</button>
+  <button class="module-btn" data-module="forge_map">FORGE MAP</button>
+  <button class="module-btn" data-module="system-status">System Status</button>
+  <button class="module-btn" data-module="grace-self-knowledge" style="color:#10b981;">Self-Knowledge</button>
+  <button class="module-btn" data-module="audit-log">Audit Log</button>
+  <button class="module-btn" data-module="core2">CORE 2.0</button>
+  <button class="module-btn" data-module="builder">AGENT-01</button>
+  <button class="module-btn" data-module="siteops">AGENT-02</button>
+  <button class="module-btn" data-module="tradelink">AGENT-03</button>
+  <button class="module-btn" data-module="beauty">AGENT-04</button>
+  <button class="module-btn" data-module="fit">AGENT-05</button>
+  <button class="module-btn" data-module="yoga">AGENT-06</button>
+  <button class="module-btn" data-module="uplift">AGENT-07</button>
+  <button class="module-btn" data-module="chef">AGENT-08</button>
+  <button class="module-btn" data-module="artist">AGENT-09</button>
+  <button class="module-btn" data-module="family">AGENT-10</button>
+  <button class="module-btn" data-module="gamer">AGENT-11</button>
+  <button class="module-btn" data-module="accounting">AGENT-12</button>
+  <button class="module-btn" data-module="osint">AGENT-13</button>
+  <button class="module-btn" data-module="sport">AGENT-14</button>
+</nav>
+
+            <!-- Voice Settings Button -->
+            <button id="gracex-voice-toggle" style="position: fixed; bottom: 20px; right: 20px; width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; color: white; font-size: 24px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 9998; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Click: Toggle Voice | Right-click: Settings">🔊</button>
+            
+            <script>
+              // Wire up voice settings button
+              document.addEventListener('DOMContentLoaded', () => {
+                const voiceBtn = document.getElementById('gracex-voice-toggle');
+                if (voiceBtn) {
+                  // Update button based on TTS state
+                  function updateVoiceBtn() {
+                    if (window.GRACEX_TTS) {
+                      const enabled = GRACEX_TTS.isEnabled();
+                      voiceBtn.textContent = enabled ? '🔊' : '🔇';
+                      voiceBtn.style.background = enabled 
+                        ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+                        : 'linear-gradient(135deg, #4b5563 0%, #374151 100%)';
+                      voiceBtn.title = enabled 
+                        ? 'Voice ON - Click to toggle, Right-click for settings'
+                        : 'Voice OFF - Click to enable';
+                    }
+                  }
+                  
+                  // Left click: Toggle TTS on/off
+                  voiceBtn.addEventListener('click', () => {
+                    if (window.GRACEX_TTS) {
+                      GRACEX_TTS.toggle();
+                      updateVoiceBtn();
+                      // Speak confirmation if just enabled
+                      if (GRACEX_TTS.isEnabled()) {
+                        GRACEX_TTS.preview('Voice enabled.');
+                      }
+                    }
+                  });
+                  
+                  // Right click: Open settings
+                  voiceBtn.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                    if (window.GRACEX_TTS) {
+                      GRACEX_TTS.showSettings();
+                    }
+                  });
+                  
+                  // Update button state after TTS loads
+                  setTimeout(updateVoiceBtn, 1000);
+                  setTimeout(updateVoiceBtn, 3000);
+                }
+              });
+            </script>
+            
+            <script>
+              (function() {
+                var cb = document.getElementById('grx26-readonly-demo');
+                if (cb) {
+                  cb.checked = sessionStorage.getItem('grx26_readonly_demo') === '1';
+                  cb.addEventListener('change', function() {
+                    sessionStorage.setItem('grx26_readonly_demo', this.checked ? '1' : '0');
+                    window.GRX26_DEMO_MODE = this.checked;
+                    window.dispatchEvent(new CustomEvent('grx26-demo-mode-changed', { detail: { demoMode: this.checked } }));
+                  });
+                }
+                window.addEventListener('grx26-lockdown-changed', function(ev) {
+                  if (document.body) document.body.dataset.grx26Lockdown = (ev.detail && ev.detail.active) ? '1' : '';
+                  // Update SAFE_MODE flag
+                  if (window.GRX26_FLAGS) {
+                    window.GRX26_FLAGS.SAFE_MODE = (ev.detail && ev.detail.active) || false;
+                  }
+                  // Update all control strips
+                  if (window.ENLIL && window.ENLIL.ControlStrip) {
+                    document.querySelectorAll('.enlil-ai-control-strip').forEach(function(strip) {
+                      const moduleId = strip.getAttribute('data-module');
+                      if (moduleId && window.ENLIL.ControlStrip.init) {
+                        window.ENLIL.ControlStrip.init(moduleId);
+                      }
+                    });
+                  }
+                });
+              })();
+            </script>
+        </aside>
+
+        <!-- Main Content Window -->
+        <main id="content">
+  <div id="view" class="module-view"></div>
+</main>
+
+    </div>
+
+    <!-- Main JS -->
+    <!-- GALVANIZED RECOVERY LAYER - Ultimate Error Handling -->
+    <script src="assets/js/galvanized-recovery.js?v=GALVANIZED"></script>
+    <!-- Level 5 API Configuration - ENABLED -->
+    <script>
+      // API base: same origin on Render/production, localhost:3000 when developing locally
+      window.GRACEX_API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+        ? 'http://localhost:3000'
+        : window.location.origin;
+      window.GRACEX_BRAIN_API = window.GRACEX_API_BASE + '/api/brain';
+      window.GRACEX_SPORT_API = window.GRACEX_API_BASE + '/api/sport';
+      // Version tracking for cache-busting
+      window.GRACEX_VERSION = 'GX26AI_v7.1.1';
+      // Enable dev tools on localhost
+      window.GRACEX_DEV_MODE = window.location.hostname === 'localhost';
+      // Government-grade build: ENLIL schema, session-only auth, tamper-evident audit
+      window.GRX26_BUILD_FLAVOR = 'ENLIL_GOV';
+      // READ-ONLY DEMO MODE: set by sidebar toggle; disables tasking/targeting/export when true
+      window.GRX26_DEMO_MODE = sessionStorage.getItem('grx26_readonly_demo') === '1';
+      // ENLIL_GOV: Global flags for feature control
+      window.GRX26_FLAGS = window.GRX26_FLAGS || {};
+      window.GRX26_FLAGS.VOICE_INTROS = true; // Enable voice intros and audio replies globally
+      window.GRX26_FLAGS.SAFE_MODE = false; // Global safe mode (lockdown disables actions)
+      
+      // Log configuration for debugging
+      console.log('%c═══════════════════════════════════════════════════════════', 'color: #10b981');
+      console.log('%c🛡️ GRACE-X AI™ ENLIL SECURITY SUITE™ v7.1.1', 'color: #10b981; font-weight: bold; font-size: 18px');
+      console.log('%c   GX26AI — Self-Knowledge Patch', 'color: #00d4ff; font-weight: bold;');
+      console.log('%c   © Zac Crockett 2026', 'color: #10b981; font-weight: bold;');
+      console.log('%c═══════════════════════════════════════════════════════════', 'color: #10b981');
+      console.log('   API Base:', window.GRACEX_API_BASE);
+      console.log('   Backend API:', window.GRACEX_BRAIN_API);
+      console.log('   Sport API:', window.GRACEX_SPORT_API);
+      console.log('   Version:', window.GRACEX_VERSION);
+      console.log('   🛡️ ENLIL SECURITY SUITE ACTIVE');
+    </script>
+    <!-- CORE NETWORK MANAGER - Internet access through Core -->
+    <script src="assets/js/core-network.js?v=SEC7"></script>
+    <!-- UI CONTROLS - Sidebar & Theme System -->
+    <script src="assets/js/gracex-ui-controls.js?v=SEC7"></script>
+    <!-- TITAN EDITION - Production-grade enhancements -->
+    <script src="assets/js/utils-enhanced.js?v=SEC7"></script>
+    <!-- PATCH: Performance.js now conditionally loaded via dev-tools.js -->
+    <script src="assets/js/dev-tools.js?v=SEC7"></script>
+    <!-- PATCH: Removed laser.js redundancy - using laser-ultra.js only -->
+    <!-- Core System -->
+    <script src="assets/js/utils.js?v=SEC7"></script>
+    <script src="assets/js/gracex-v6-utils.js?v=SEC7"></script>
+    <script src="assets/js/speechQueue.js?v=SEC7"></script>
+    <script src="assets/js/audioManager.js?v=SEC7"></script>
+    <script src="assets/js/voiceTTS.js?v=SEC7"></script>
+    <script src="assets/js/voiceAssistant.js?v=SEC7"></script>
+    <script src="assets/js/firewall.js?v=SEC7"></script>
+    <!-- Brain System - PATCHED: Added RAM + Analytics -->
+    <script src="assets/js/brain/gracex.state.js?v=SEC7"></script>
+    <script src="assets/js/brain/gracex.router.js?v=SEC7"></script>
+    <script src="assets/js/brain/gracex.ram.js?v=SEC7"></script>
+    <script src="assets/js/brain/gracex.analytics.js?v=SEC7"></script>
+    <script src="assets/js/brain/gracex.brain.js?v=SEC7"></script>
+    <!-- MASTER CONTROL - Enterprise Orchestration -->
+    <script src="assets/js/gracex-master-control.js?v=SEC7"></script>
+    <!-- GRX26AI — Police/MOD architecture (order matters) -->
+    <script src="assets/js/core/core.registry.js?v=GRX26"></script>
+    <script src="assets/js/forge/forge.model.js?v=GRX26"></script>
+    <script src="assets/js/core/core.audit.js?v=GRX26"></script>
+    <script src="assets/js/governance/sentinel.rules.js?v=GRX26"></script>
+    <script src="assets/js/governance/sentinel.overlay.js?v=GRX26"></script>
+    <script src="assets/js/governance/titan.invoke.js?v=GRX26"></script>
+    <script src="assets/js/governance/permissions.js?v=GRX26"></script>
+    <script src="assets/js/core/core.selftest.js?v=GRX26"></script>
+    <script src="assets/js/core/core.orchestrator.js?v=GRX26"></script>
+    <script src="assets/js/forge/forge.map.js?v=GRX26"></script>
+    <script src="assets/js/ui/sidebar.js?v=GRX26"></script>
+    <script src="assets/js/ui/panels.js?v=GRX26"></script>
+    <!-- ENLIL_GOV: AI Control Strip + Task Bus -->
+    <script src="assets/js/components/enlil-task-bus.js?v=ENLIL"></script>
+    <script src="assets/js/components/ai-control-strip.js?v=ENLIL"></script>
+    <!-- Wire module buttons to router -->
+    <script>
+      (function() {
+        function wireModuleButtons() {
+          document.querySelectorAll('.module-btn[data-module]').forEach(function(btn) {
+            if (btn.dataset.wired) return;
+            btn.dataset.wired = '1';
+            btn.addEventListener('click', function() {
+              const moduleId = this.getAttribute('data-module');
+              if (moduleId && window.GRACEX_Router && window.GRACEX_Router.navigate) {
+                window.GRACEX_Router.navigate(moduleId);
+              } else if (moduleId) {
+                window.location.hash = '#/' + moduleId;
+              }
+            });
+          });
+        }
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', wireModuleButtons);
+        } else {
+          wireModuleButtons();
+        }
+        // Re-wire after dynamic content loads
+        setTimeout(wireModuleButtons, 1000);
+      })();
+    </script>
+    <!-- Enterprise Systems -->
+    <script src="assets/js/callsheets.js?v=SEC7"></script>
+    <script src="assets/js/risk-safety.js?v=SEC7"></script>
+    <!-- Module Scripts -->
+    <script src="assets/js/core.js?v=SEC7"></script>
+    <script src="assets/js/brainLevel5.js?v=SEC7"></script>
+    <script src="assets/js/brainV5Helper.js?v=SEC7"></script>
+    <!-- ENLIL_GOV: Wire all modules to AI brain -->
+    <script src="assets/js/components/enlil-brain-wiring.js?v=ENLIL"></script>
+    <script src="assets/js/GRACEX_LIVE_DATA_INTEGRATION_v1.js?v=SEC7"></script>
+    <script src="assets/js/sport.js?v=SEC7"></script>
+    <script src="assets/js/guardian-alert-system.js?v=SEC7"></script>
+    <script src="assets/js/guardian.js?v=SEC7"></script>
+    <script src="assets/js/osint_engine.js?v=SEC7"></script>
+    <script src="assets/js/osint_sources.js?v=SEC7"></script>
+    <script src="assets/js/osint_report.js?v=SEC7"></script>
+    <script src="assets/js/osint.js?v=SEC7"></script>
+    <script src="assets/js/accounting_engine.js?v=SEC7"></script>
+    <script src="assets/js/accounting_reports.js?v=SEC7"></script>
+    <script src="assets/js/accounting.js?v=SEC7"></script>
+    <script src="assets/js/coreDashboard.js?v=SEC7"></script>
+    <script src="assets/js/forge.js?v=SEC7"></script>
+    <!-- LASER Inspector - Ultra version only -->
+    <script src="assets/js/laser-ultra.js?v=SEC7"></script>
+    <!-- App Entry Point -->
+    <script type="module" src="assets/js/app.js?v=SEC7"></script>
+    <!-- Personalized Greeting Handler -->
+    <script>
+      window.addEventListener('gracex:boot-complete', function() {
+        try {
+          const user = sessionStorage.getItem('gracex_user');
+          if (user === 'dee' && window.GRACEX_TTS) {
+            // Wait a moment for UI to settle
+            setTimeout(() => {
+              window.GRACEX_TTS.speak("Hi dee, welcome to the team . i am grace x . zac has given you master access just ask me if you need help with absoloutley anything", { force: true });
+              // Clear the flag so it doesn't repeat on Every refresh in the same session, 
+              // or keep it if that's desired. User said "welcome THIS user", usually means on login.
+              // sessionStorage lasts for the session, so it will play once per session if we redirect to index.
+            }, 1500);
+          }
+        } catch (e) {
+          console.warn('[GRACEX] Greeting error:', e);
+        }
+      });
+    </script>
+</body>
+</html>
